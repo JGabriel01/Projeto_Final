@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id          Int          @id @default(autoincrement())
+  nome        String
+  email       String       @unique
+  senha       String
+  emprestimos Emprestimo[]
+  reservas    Reserva[]
+  multas      Multa[]
+  criadoEm    DateTime     @default(now())
+}
+
+model Livro {
+  id          Int          @id @default(autoincrement())
+  titulo      String
+  autor       String
+  genero      String
+  ano         Int
+  sinopse     String
+  disponivel  Boolean      @default(true)
+  emprestimos Emprestimo[]
+  reservas    Reserva[]
+}
+
+model Emprestimo {
+  id             Int      @id @default(autoincrement())
+  usuario        Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId      Int
+  livro          Livro    @relation(fields: [livroId], references: [id])
+  livroId        Int
+  dataEmprestimo DateTime
+  dataVencimento DateTime
+  dataDevolucao  DateTime?
+  multa          Multa?
+}
+
+model Reserva {
+  id          Int      @id @default(autoincrement())
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId   Int
+  livro       Livro    @relation(fields: [livroId], references: [id])
+  livroId     Int
+  reservadoEm DateTime @default(now())
+  status      String   @default("ativa")
+}
+
+model Multa {
+  id           Int      @id @default(autoincrement())
+  usuario      Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId    Int
+  emprestimo   Emprestimo @relation(fields: [emprestimoId], references: [id])
+  emprestimoId Int      @unique
+  valorMulta   Float
+  dataMulta    DateTime @default(now())
+  pago         Boolean  @default(false)
+}
