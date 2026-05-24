@@ -26,6 +26,8 @@ model Livro {
   ano         Int
   sinopse     String
   disponivel  Boolean      @default(true)
+  capa        String?
+  arquivo     String?
   emprestimos Emprestimo[]
   reservas    Reserva[]
 }

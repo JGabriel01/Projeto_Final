@@ -1,25 +1,40 @@
 {
   "name": "biblioteca-backend",
   "version": "0.1.0",
-  "description": "Backend minimal para o Sistema de Biblioteca com Prisma",
-  "main": "index.js",
+  "description": "Backend Sistema de Biblioteca com Prisma, TypeScript e Arquitetura em Camadas",
+  "main": "dist/servidor.js",
   "scripts": {
-    "dev": "node index.js",
-    "start": "node index.js",
-    "seed": "node prisma/seed.js",
-    "prisma": "prisma"
+    "dev": "tsx watch src/servidor.ts",
+    "dev:full": "concurrently \"npm run dev\" \"cd ../frontend && npm run dev\"",
+    "build": "tsc",
+    "start": "node dist/servidor.js",
+    "seed": "prisma db seed",
+    "prisma": "prisma",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
+    "@prisma/client": "^5.22.0",
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
-    "@prisma/client": "^5.9.0"
+    "minio": "^7.1.0",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
-    "prisma": "^5.9.0"
+    "@types/bcryptjs": "^2.4.6",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/multer": "^1.4.11",
+    "@types/node": "^20.19.41",
+    "concurrently": "^9.2.1",
+    "prisma": "^5.9.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
   }
 }
