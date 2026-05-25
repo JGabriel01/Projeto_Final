@@ -1,0 +1,12 @@
+{
+  "name": "sistema-biblioteca",
+  "version": "1.0.0",
+  "description": "Entrega 1 - Modelagem de entidades para Sistema de Biblioteca",
+  "type": "module",
+  "main": "src/principal.js",
+  "scripts": {
+    "start": "node src/principal.js"
+  },
+  "author": "Equipe",
+  "license": "MIT"
+}
