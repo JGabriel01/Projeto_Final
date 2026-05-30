@@ -1,4 +1,0 @@
-{
-  // Use o Prisma instalado no próprio projeto (garante compatibilidade entre CLI e Language Server)
-  "prisma.prismaPath": "${workspaceFolder}/node_modules/.bin/prisma"
-}

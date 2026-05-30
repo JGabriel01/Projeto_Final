@@ -1,64 +1,159 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
 }
 
+// Notificação
+model Notificacao {
+  id_notificacao Int     @id @default(autoincrement())
+  tipo           String
+  mensagem       String
+  data_envio     DateTime
+  lido           Boolean @default(false)
+  
+  usuario_id     Int      @unique
+  usuario        Usuario  @relation(fields: [usuario_id], references: [id_usuario])
+}
+
+// Usuário (entidade base com herança)
 model Usuario {
-  id          Int          @id @default(autoincrement())
-  nome        String
-  email       String       @unique
-  senha       String
-  emprestimos Emprestimo[]
+  id_usuario Int       @id @default(autoincrement())
+  nome       String
+  email      String    @unique
+  senha      String
+  data_acesso DateTime
+  tipo       String    // "aluno", "professor", "admin"
+  
+  notificacao Notificacao?
   reservas    Reserva[]
-  multas      Multa[]
-  criadoEm    DateTime     @default(now())
+  emprestimos Emprestimo[]
+  
+  aluno      Aluno?
+  professor  Professor?
+  admin      Admin?
 }
 
+// Aluno (subtipo de Usuario)
+model Aluno {
+  id_aluno          Int     @id @default(autoincrement())
+  numero_ingresso   String  @unique
+  curso             String
+  matricula_aluno   String  @unique
+  
+  usuario_id Int @unique
+  usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario], onDelete: Cascade)
+}
+
+// Professor (subtipo de Usuario)
+model Professor {
+  id_professor      Int    @id @default(autoincrement())
+  departamento      String
+  matricula_professor String @unique
+  
+  usuario_id Int @unique
+  usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario], onDelete: Cascade)
+}
+
+// Admin (subtipo de Usuario)
+model Admin {
+  id_admin Int    @id @default(autoincrement())
+  cargo    String
+  
+  usuario_id Int @unique
+  usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario], onDelete: Cascade)
+}
+
+// Livro
 model Livro {
-  id          Int          @id @default(autoincrement())
-  titulo      String
-  autor       String
-  genero      String
-  ano         Int
-  sinopse     String
-  disponivel  Boolean      @default(true)
-  emprestimos Emprestimo[]
-  reservas    Reserva[]
+  id_livro       Int    @id @default(autoincrement())
+  titulo         String
+  autor          String
+  ano_publicada  Int
+  sinopse        String
+  status         String @default("disponível")
+  
+  reservas       Reserva[]
+  pertences      Pertence[]
 }
 
-model Emprestimo {
-  id             Int      @id @default(autoincrement())
-  usuario        Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId      Int
-  livro          Livro    @relation(fields: [livroId], references: [id])
-  livroId        Int
-  dataEmprestimo DateTime
-  dataVencimento DateTime
-  dataDevolucao  DateTime?
-  multa          Multa?
+// Exemplar
+model Exemplar {
+  id_exemplar      Int    @id @default(autoincrement())
+  codigo_exemplar  String @unique
+  estado           String
+  localizacao      String
+  
+  multas           Multa[]
+  pertences        Pertence[]
 }
 
+// Reserva
 model Reserva {
-  id          Int      @id @default(autoincrement())
-  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId   Int
-  livro       Livro    @relation(fields: [livroId], references: [id])
-  livroId     Int
-  reservadoEm DateTime @default(now())
-  status      String   @default("ativa")
+  id_reserva     Int      @id @default(autoincrement())
+  data_reserva   DateTime @default(now())
+  data_expiracao DateTime
+  status_reserva String   @default("ativa")
+  
+  usuario_id Int
+  usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario])
+  
+  livro_id Int
+  livro    Livro @relation(fields: [livro_id], references: [id_livro])
+  
+  @@index([usuario_id])
+  @@index([livro_id])
 }
 
+// Empréstimo
+model Emprestimo {
+  id_emprestimo    Int      @id @default(autoincrement())
+  data_saida       DateTime @default(now())
+  data_vencimento  DateTime
+  data_devolucao_rea DateTime?
+  
+  usuario_id Int
+  usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario])
+  
+  multa      Multa?
+  
+  @@index([usuario_id])
+}
+
+// Multa
 model Multa {
-  id           Int      @id @default(autoincrement())
-  usuario      Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId    Int
-  emprestimo   Emprestimo @relation(fields: [emprestimoId], references: [id])
-  emprestimoId Int      @unique
-  valorMulta   Float
-  dataMulta    DateTime @default(now())
-  pago         Boolean  @default(false)
+  id_multa         Int      @id @default(autoincrement())
+  valor_multa      Float
+  status_pagamento String   @default("pendente")
+  data_geracao     DateTime @default(now())
+  data_pagamento   DateTime?
+  
+  emprestimo_id Int @unique
+  emprestimo    Emprestimo @relation(fields: [emprestimo_id], references: [id_emprestimo])
+  
+  exemplar_id Int
+  exemplar    Exemplar @relation(fields: [exemplar_id], references: [id_exemplar])
+}
+
+// Pertence (relacionamento entre Livro e Exemplar)
+model Pertence {
+  id_pertence Int @id @default(autoincrement())
+  
+  livro_id Int
+  livro    Livro @relation(fields: [livro_id], references: [id_livro], onDelete: Cascade)
+  
+  exemplar_id Int
+  exemplar    Exemplar @relation(fields: [exemplar_id], references: [id_exemplar], onDelete: Cascade)
+  
+  @@unique([livro_id, exemplar_id])
+  @@index([livro_id])
+  @@index([exemplar_id])
 }
