@@ -20,8 +20,11 @@ model Notificacao {
   data_envio     DateTime
   lido           Boolean @default(false)
   
-  usuario_id     Int      @unique
+  usuario_id     Int
   usuario        Usuario  @relation(fields: [usuario_id], references: [id_usuario])
+  
+  id_emprestimo  Int?
+  emprestimo     Emprestimo? @relation(fields: [id_emprestimo], references: [id_emprestimo])
 }
 
 // Usuário (entidade base com herança)
@@ -30,10 +33,9 @@ model Usuario {
   nome       String
   email      String    @unique
   senha      String
-  data_acesso DateTime
-  tipo       String    // "aluno", "professor", "admin"
+  nivel_acesso String    // "aluno", "professor", "admin", "usuario_comum"
   
-  notificacao Notificacao?
+  notificacoes Notificacao[]
   reservas    Reserva[]
   emprestimos Emprestimo[]
   
@@ -45,7 +47,7 @@ model Usuario {
 // Aluno (subtipo de Usuario)
 model Aluno {
   id_aluno          Int     @id @default(autoincrement())
-  numero_ingresso   String  @unique
+  ano_ingresso      Int
   curso             String
   matricula_aluno   String  @unique
   
@@ -77,7 +79,8 @@ model Livro {
   id_livro       Int    @id @default(autoincrement())
   titulo         String
   autor          String
-  ano_publicada  Int
+  genero         String
+  ano_publicacao Int
   sinopse        String
   status         String @default("disponível")
   
@@ -88,12 +91,13 @@ model Livro {
 // Exemplar
 model Exemplar {
   id_exemplar      Int    @id @default(autoincrement())
-  codigo_exemplar  String @unique
+  codigo_tombo     String @unique
   estado           String
   localizacao      String
   
   multas           Multa[]
   pertences        Pertence[]
+  emprestimos      Emprestimo[]
 }
 
 // Reserva
@@ -118,14 +122,19 @@ model Emprestimo {
   id_emprestimo    Int      @id @default(autoincrement())
   data_saida       DateTime @default(now())
   data_vencimento  DateTime
-  data_devolucao_rea DateTime?
+  data_devolucao_real DateTime?
   
   usuario_id Int
   usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario])
   
+  exemplar_id Int?
+  exemplar    Exemplar? @relation(fields: [exemplar_id], references: [id_exemplar])
+  
+  notificacoes Notificacao[]
   multa      Multa?
   
   @@index([usuario_id])
+  @@index([exemplar_id])
 }
 
 // Multa
