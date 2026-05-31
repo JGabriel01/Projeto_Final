@@ -1,6 +1,6 @@
-/**
- * Classe Aluno - Estende Usuario
- * Herda encapsulamento de Usuario e adiciona campos específicos
+/*
+  Classe Aluno - Estende Usuario
+  Herda encapsulamento de Usuario e adiciona campos específicos
  */
 
 import { Usuario } from "./Usuario.js";
