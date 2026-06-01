@@ -27,7 +27,7 @@ async function main() {
       "Gerente Geral"
     );
     await repositorioUsuarios.adicionarAdmin(admin);
-    console.log("✓ Admin criado");
+    console.log("Admin criado");
 
     const professor = new Professor(
       1,
@@ -39,7 +39,7 @@ async function main() {
       "MAT001"
     );
     await repositorioUsuarios.adicionarProfessor(professor);
-    console.log("✓ Professor criado");
+    console.log("Professor criado");
 
     const aluno = new Aluno(
       1,
@@ -52,17 +52,17 @@ async function main() {
       "ENG2024001"
     );
     await repositorioUsuarios.adicionarAluno(aluno);
-    console.log("✓ Aluno criado");
+    console.log("Aluno criado");
 
     // 2. Encapsulamento e Setters
     console.log("\n2. Testando Encapsulamento");
     aluno.nome = "João Pedro Silva";
-    console.log("✓ Nome atualizado:", aluno.nome);
+    console.log("Nome atualizado:", aluno.nome);
 
     try {
       aluno.nome = "ab";
     } catch (error) {
-      console.log("✓ Validação funcionando:", (error as Error).message);
+      console.log("Validação funcionando:", (error as Error).message);
     }
 
     // 3. Login
@@ -71,7 +71,7 @@ async function main() {
       "joao@aluno.com",
       "senha789"
     );
-    console.log(usuarioLogado ? "✓ Login bem-sucedido" : "✗ Falha no login");
+    console.log(usuarioLogado ? "Login bem-sucedido" : "Falha no login");
 
     // 4. Livros
     console.log("\n4. Criando Livros");
@@ -110,7 +110,7 @@ async function main() {
     );
     await repositorioLivros.adicionarLivro(livro3);
 
-    console.log("✓ 3 livros adicionados");
+    console.log("3 livros adicionados");
 
     // 5. Arrays e Manipulação
     console.log("\n5. Manipulação de Arrays");
@@ -142,9 +142,9 @@ async function main() {
     );
     await repositorioEmprestimos.adicionarEmprestimo(emprestimoAtrasado);
 
-    console.log("✓ Empréstimo normal criado");
+    console.log("Empréstimo normal criado");
     console.log(
-      "✓ Empréstimo atrasado criado (dias de atraso:",
+      "Empréstimo atrasado criado (dias de atraso:",
       emprestimoAtrasado.calcularDiasAtraso() + ")"
     );
 
