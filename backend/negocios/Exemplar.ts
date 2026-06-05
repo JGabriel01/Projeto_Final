@@ -1,4 +1,5 @@
 //Classe Exemplar - Representação de um exemplar físico de um livro
+import { ErroExemplar } from "../excecoes/index.js";
 
 export class Exemplar {
   #idExemplar: number;
@@ -14,6 +15,12 @@ export class Exemplar {
     localizacao: string,
     idLivro: number
   ) {
+    // Validações no construtor
+    this.validarCodigoTombo(codigoTombo);
+    this.validarEstado(estado);
+    this.validarLocalizacao(localizacao);
+    this.validarIdLivro(idLivro);
+
     this.#idExemplar = idExemplar;
     this.#codigoTombo = codigoTombo;
     this.#estado = estado;
@@ -42,30 +49,65 @@ export class Exemplar {
     return this.#idLivro;
   }
 
-  // Setters
+  // Setters com validações
   set codigoTombo(codigo: string) {
-    if (codigo.length < 5) {
-      throw new Error("Código do tombo inválido");
-    }
+    this.validarCodigoTombo(codigo);
     this.#codigoTombo = codigo;
   }
 
   set estado(estado: string) {
-    const estadosValidos = ["novo", "bom", "desgastado", "danificado"];
-    if (!estadosValidos.includes(estado)) {
-      throw new Error("Estado inválido");
-    }
+    this.validarEstado(estado);
     this.#estado = estado;
   }
 
   set localizacao(localizacao: string) {
-    if (localizacao.length < 3) {
-      throw new Error("Localização deve ter nome válido");
-    }
+    this.validarLocalizacao(localizacao);
     this.#localizacao = localizacao;
   }
 
-  // Método para verificar estado
+  // Validações privadas
+  private validarCodigoTombo(codigo: string): void {
+    if (!codigo || typeof codigo !== "string") {
+      throw new ErroExemplar("Código do tombo é obrigatório e deve ser uma string");
+    }
+    if (codigo.trim().length < 5) {
+      throw new ErroExemplar("Código do tombo deve ter pelo menos 5 caracteres");
+    }
+    if (codigo.trim().length > 50) {
+      throw new ErroExemplar("Código do tombo não pode exceder 50 caracteres");
+    }
+    // Validar formato: alfanumérico
+    if (!/^[a-zA-Z0-9\-_]+$/.test(codigo.trim())) {
+      throw new ErroExemplar("Código do tombo deve conter apenas letras, números, hífen e underscore");
+    }
+  }
+
+  private validarEstado(estado: string): void {
+    const estadosValidos = ["novo", "bom", "desgastado", "danificado"];
+    if (!estadosValidos.includes(estado)) {
+      throw new ErroExemplar("Estado inválido. Valores permitidos: novo, bom, desgastado, danificado");
+    }
+  }
+
+  private validarLocalizacao(localizacao: string): void {
+    if (!localizacao || typeof localizacao !== "string") {
+      throw new ErroExemplar("Localização é obrigatória e deve ser uma string");
+    }
+    if (localizacao.trim().length < 3) {
+      throw new ErroExemplar("Localização deve ter pelo menos 3 caracteres");
+    }
+    if (localizacao.trim().length > 100) {
+      throw new ErroExemplar("Localização não pode exceder 100 caracteres");
+    }
+  }
+
+  private validarIdLivro(idLivro: number): void {
+    if (typeof idLivro !== "number" || idLivro <= 0) {
+      throw new ErroExemplar("ID do livro deve ser um número positivo");
+    }
+  }
+
+  // Método para verificar se pode ser emprestado
   podeSerEmprestado(): boolean {
     return this.#estado !== "danificado";
   }
@@ -77,6 +119,7 @@ export class Exemplar {
       estado: this.#estado,
       localizacao: this.#localizacao,
       idLivro: this.#idLivro,
+      podeSerEmprestado: this.podeSerEmprestado(),
     };
   }
 }

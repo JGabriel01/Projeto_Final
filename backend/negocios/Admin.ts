@@ -1,9 +1,6 @@
-/*
-  Classe Admin - Estende Usuario
-   Herda encapsulamento de Usuario e adiciona campos específicos
- */
-
+// Especialização de Usuario com validações específicas
 import { Usuario } from "./Usuario.js";
+import { ErroUsuario, ErroValidacao } from "../excecoes/index.js";
 
 export class Admin extends Usuario {
   #idAdmin: number;
@@ -18,6 +15,10 @@ export class Admin extends Usuario {
     cargo: string
   ) {
     super(idUsuario, nome, email, senha, "admin");
+    
+    // Validações específicas do Admin
+    this.validarCargo(cargo);
+    
     this.#idAdmin = idAdmin;
     this.#cargo = cargo;
   }
@@ -31,12 +32,23 @@ export class Admin extends Usuario {
     return this.#cargo;
   }
 
-  // Setters
+  // Setters com validações
   set cargo(cargo: string) {
-    if (cargo.length < 3) {
-      throw new Error("Cargo deve ter nome válido");
-    }
+    this.validarCargo(cargo);
     this.#cargo = cargo;
+  }
+
+  // Validações privadas
+  private validarCargo(cargo: string): void {
+    if (!cargo || typeof cargo !== "string") {
+      throw new ErroUsuario("Cargo é obrigatório e deve ser uma string");
+    }
+    if (cargo.trim().length < 3) {
+      throw new ErroUsuario("Cargo deve ter pelo menos 3 caracteres");
+    }
+    if (cargo.trim().length > 100) {
+      throw new ErroUsuario("Cargo não pode exceder 100 caracteres");
+    }
   }
 
   toJSON() {

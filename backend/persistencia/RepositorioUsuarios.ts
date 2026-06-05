@@ -124,6 +124,43 @@ export class RepositorioUsuarios {
     return undefined;
   }
 
+  async buscarAlunoPorMatricula(matriculaAluno: string): Promise<Aluno | undefined> {
+    const aluno = await prisma.aluno.findUnique({
+      where: { matricula_aluno: matriculaAluno },
+      include: { usuario: true },
+    });
+    if (!aluno) return undefined;
+    return new Aluno(
+      aluno.id_aluno,
+      aluno.usuario.id_usuario,
+      aluno.usuario.nome,
+      aluno.usuario.email,
+      aluno.usuario.senha,
+      aluno.ano_ingresso,
+      aluno.curso,
+      aluno.matricula_aluno
+    );
+  }
+
+  async buscarProfessorPorMatricula(
+    matriculaProfessor: string
+  ): Promise<Professor | undefined> {
+    const professor = await prisma.professor.findUnique({
+      where: { matricula_professor: matriculaProfessor },
+      include: { usuario: true },
+    });
+    if (!professor) return undefined;
+    return new Professor(
+      professor.id_professor,
+      professor.usuario.id_usuario,
+      professor.usuario.nome,
+      professor.usuario.email,
+      professor.usuario.senha,
+      professor.departamento,
+      professor.matricula_professor
+    );
+  }
+
   async listarAlunos(): Promise<Aluno[]> {
     const usuarios = await prisma.usuario.findMany({
       where: { nivel_acesso: "aluno" },

@@ -1,4 +1,5 @@
 //Classe Livro - Representação de um livro no catálogo
+import { ErroLivro } from "../excecoes/index.js";
 
 export class Livro {
   #idLivro: number;
@@ -18,6 +19,14 @@ export class Livro {
     sinopse: string,
     status: string = "disponível"
   ) {
+    // Validações no construtor
+    this.validarTitulo(titulo);
+    this.validarAutor(autor);
+    this.validarGenero(genero);
+    this.validarAnoPublicacao(anoPublicacao);
+    this.validarSinopse(sinopse);
+    this.validarStatus(status);
+
     this.#idLivro = idLivro;
     this.#titulo = titulo;
     this.#autor = autor;
@@ -56,49 +65,101 @@ export class Livro {
     return this.#status;
   }
 
-  // Setters
+  // Setters com validações
   set titulo(titulo: string) {
-    if (titulo.length < 3) {
-      throw new Error("Título deve ter pelo menos 3 caracteres");
-    }
+    this.validarTitulo(titulo);
     this.#titulo = titulo;
   }
 
   set autor(autor: string) {
-    if (autor.length < 3) {
-      throw new Error("Autor deve ter pelo menos 3 caracteres");
-    }
+    this.validarAutor(autor);
     this.#autor = autor;
   }
 
   set genero(genero: string) {
-    if (genero.length < 3) {
-      throw new Error("Gênero deve ter pelo menos 3 caracteres");
-    }
+    this.validarGenero(genero);
     this.#genero = genero;
   }
 
   set anoPublicacao(ano: number) {
-    const anoAtual = new Date().getFullYear();
-    if (ano < 1000 || ano > anoAtual) {
-      throw new Error("Ano de publicação inválido");
-    }
+    this.validarAnoPublicacao(ano);
     this.#anoPublicacao = ano;
   }
 
   set sinopse(sinopse: string) {
-    if (sinopse.length < 10) {
-      throw new Error("Sinopse deve ter pelo menos 10 caracteres");
-    }
+    this.validarSinopse(sinopse);
     this.#sinopse = sinopse;
   }
 
   set status(status: string) {
+    this.validarStatus(status);
+    this.#status = status;
+  }
+
+  // Validações privadas
+  private validarTitulo(titulo: string): void {
+    if (!titulo || typeof titulo !== "string") {
+      throw new ErroLivro("Título é obrigatório e deve ser uma string");
+    }
+    if (titulo.trim().length < 3) {
+      throw new ErroLivro("Título deve ter pelo menos 3 caracteres");
+    }
+    if (titulo.trim().length > 200) {
+      throw new ErroLivro("Título não pode exceder 200 caracteres");
+    }
+  }
+
+  private validarAutor(autor: string): void {
+    if (!autor || typeof autor !== "string") {
+      throw new ErroLivro("Autor é obrigatório e deve ser uma string");
+    }
+    if (autor.trim().length < 3) {
+      throw new ErroLivro("Autor deve ter pelo menos 3 caracteres");
+    }
+    if (autor.trim().length > 150) {
+      throw new ErroLivro("Autor não pode exceder 150 caracteres");
+    }
+  }
+
+  private validarGenero(genero: string): void {
+    if (!genero || typeof genero !== "string") {
+      throw new ErroLivro("Gênero é obrigatório e deve ser uma string");
+    }
+    if (genero.trim().length < 3) {
+      throw new ErroLivro("Gênero deve ter pelo menos 3 caracteres");
+    }
+    if (genero.trim().length > 100) {
+      throw new ErroLivro("Gênero não pode exceder 100 caracteres");
+    }
+  }
+
+  private validarAnoPublicacao(ano: number): void {
+    if (typeof ano !== "number") {
+      throw new ErroLivro("Ano de publicação deve ser um número");
+    }
+    const anoAtual = new Date().getFullYear();
+    if (ano < 1000 || ano > anoAtual) {
+      throw new ErroLivro(`Ano de publicação deve estar entre 1000 e ${anoAtual}`);
+    }
+  }
+
+  private validarSinopse(sinopse: string): void {
+    if (!sinopse || typeof sinopse !== "string") {
+      throw new ErroLivro("Sinopse é obrigatória e deve ser uma string");
+    }
+    if (sinopse.trim().length < 10) {
+      throw new ErroLivro("Sinopse deve ter pelo menos 10 caracteres");
+    }
+    if (sinopse.trim().length > 5000) {
+      throw new ErroLivro("Sinopse não pode exceder 5000 caracteres");
+    }
+  }
+
+  private validarStatus(status: string): void {
     const statusValidos = ["disponível", "emprestado", "reservado"];
     if (!statusValidos.includes(status)) {
-      throw new Error("Status inválido");
+      throw new ErroLivro("Status inválido. Valores permitidos: disponível, emprestado, reservado");
     }
-    this.#status = status;
   }
 
   // Método para verificar disponibilidade
@@ -106,14 +167,15 @@ export class Livro {
     return this.#status === "disponível";
   }
 
-  // Método para alterar status
+  // Método para alterar status - emprestar
   emprestar(): void {
     if (!this.estaDisponivel()) {
-      throw new Error("Livro não está disponível para empréstimo");
+      throw new ErroLivro("Livro não está disponível para empréstimo");
     }
     this.#status = "emprestado";
   }
 
+  // Método para alterar status - devolver
   devolver(): void {
     this.#status = "disponível";
   }
@@ -135,6 +197,7 @@ export class Livro {
       anoPublicacao: this.#anoPublicacao,
       sinopse: this.#sinopse,
       status: this.#status,
+      estaDisponivel: this.estaDisponivel(),
     };
   }
 }
