@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// Notificação
+model Notificacao {
+  id_notificacao Int     @id @default(autoincrement())
+  tipo           String
+  mensagem       String
+  data_envio     DateTime
+  lido           Boolean @default(false)
+  
+  usuario_id     Int
+  usuario        Usuario  @relation(fields: [usuario_id], references: [id_usuario])
+  
+  id_emprestimo  Int?
+  emprestimo     Emprestimo? @relation(fields: [id_emprestimo], references: [id_emprestimo])
+}
+
+// Usuário (entidade base com herança)
+model Usuario {
+  id_usuario Int       @id @default(autoincrement())
+  nome       String
+  email      String    @unique
+  senha      String
+  nivel_acesso String    // "aluno", "professor", "admin", "usuario_comum"
+  
+  notificacoes Notificacao[]
+  reservas    Reserva[]
+  emprestimos Emprestimo[]
+  
+  aluno      Aluno?
+  professor  Professor?
+  admin      Admin?
+}
+
+// Aluno (subtipo de Usuario)
+model Aluno {
+  usuario_id        Int     @id
+  ano_ingresso      Int
+  curso             String
+  matricula_aluno   String  @unique
+  
+  usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario], onDelete: Cascade)
+}
+
+// Professor (subtipo de Usuario)
+model Professor {
+  usuario_id Int @id
+  departamento      String
+  matricula_professor String @unique
+  
+  usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario], onDelete: Cascade)
+}
+
+// Admin (subtipo de Usuario)
+model Admin {
+  usuario_id Int @id
+  cargo    String
+  
+  usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario], onDelete: Cascade)
+}
+
+// Livro
+model Livro {
+  id_livro       Int    @id @default(autoincrement())
+  titulo         String
+  autor          String
+  genero         String
+  ano_publicacao Int
+  sinopse        String
+  status         String @default("disponível")
+  capa_url       String?
+  capa_objeto    String?
+  
+  reservas       Reserva[]
+  exemplares     Exemplar[]
+}
+
+// Exemplar
+model Exemplar {
+  id_exemplar      Int    @id @default(autoincrement())
+  codigo_tombo     String @unique
+  estado           String
+  localizacao      String
+  livro_id         Int
+  livro            Livro @relation(fields: [livro_id], references: [id_livro], onDelete: Cascade)
+  
+  multas           Multa[]
+  emprestimos      Emprestimo[]
+
+  @@index([livro_id])
+}
+
+// Reserva
+model Reserva {
+  id_reserva     Int      @id @default(autoincrement())
+  data_reserva   DateTime @default(now())
+  data_expiracao DateTime
+  status_reserva String   @default("ativa")
+  
+  usuario_id Int
+  usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario])
+  
+  livro_id Int
+  livro    Livro @relation(fields: [livro_id], references: [id_livro])
+  
+  @@index([usuario_id])
+  @@index([livro_id])
+}
+
+// Empréstimo
+model Emprestimo {
+  id_emprestimo    Int      @id @default(autoincrement())
+  data_saida       DateTime @default(now())
+  data_vencimento  DateTime
+  data_devolucao_real DateTime?
+  
+  usuario_id Int
+  usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario])
+  
+  exemplar_id Int?
+  exemplar    Exemplar? @relation(fields: [exemplar_id], references: [id_exemplar])
+  
+  notificacoes Notificacao[]
+  multa      Multa?
+  
+  @@index([usuario_id])
+  @@index([exemplar_id])
+}
+
+// Multa
+model Multa {
+  id_multa         Int      @id @default(autoincrement())
+  valor_multa      Float
+  status_pagamento String   @default("pendente")
+  data_geracao     DateTime @default(now())
+  data_pagamento   DateTime?
+  
+  emprestimo_id Int @unique
+  emprestimo    Emprestimo @relation(fields: [emprestimo_id], references: [id_emprestimo])
+  
+  exemplar_id Int
+  exemplar    Exemplar @relation(fields: [exemplar_id], references: [id_exemplar])
+}
+
