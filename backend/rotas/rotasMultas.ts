@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ControladorMultas } from "../controller/ControladorMultas.js";
 import { autenticarJwt } from "../middleware/autenticacaoJwt.js";
+import { validarCamposBody } from "../middleware/validarCamposBody.js";
 import { responderResultado } from "./resposta.js";
 
 export const rotasMultas = Router();
@@ -21,7 +22,11 @@ rotasMultas.get("/:id", autenticarJwt, async (req, res) => {
   responderResultado(res, resultado);
 });
 
-rotasMultas.post("/", autenticarJwt, async (req, res) => {
+rotasMultas.post(
+  "/",
+  autenticarJwt,
+  validarCamposBody(["valor", "valor_multa", "emprestimoId", "emprestimo_id", "exemplarId", "exemplar_id", "statusPagamento", "status_pagamento"]),
+  async (req, res) => {
   const resultado = await controladorMultas.criarMulta(
     Number(req.body.valor ?? req.body.valor_multa),
     Number(req.body.emprestimoId ?? req.body.emprestimo_id),
@@ -31,7 +36,11 @@ rotasMultas.post("/", autenticarJwt, async (req, res) => {
   responderResultado(res, resultado, 201);
 });
 
-rotasMultas.post("/gerar-por-emprestimo/:emprestimoId", autenticarJwt, async (req, res) => {
+rotasMultas.post(
+  "/gerar-por-emprestimo/:emprestimoId",
+  autenticarJwt,
+  validarCamposBody(["valorPorDia"]),
+  async (req, res) => {
   const resultado = await controladorMultas.gerarPorEmprestimo(
     Number(req.params.emprestimoId),
     req.body.valorPorDia ? Number(req.body.valorPorDia) : undefined
@@ -39,7 +48,11 @@ rotasMultas.post("/gerar-por-emprestimo/:emprestimoId", autenticarJwt, async (re
   responderResultado(res, resultado, 201);
 });
 
-rotasMultas.put("/:id", autenticarJwt, async (req, res) => {
+rotasMultas.put(
+  "/:id",
+  autenticarJwt,
+  validarCamposBody(["valor", "statusPagamento", "status_pagamento", "dataPagamento"]),
+  async (req, res) => {
   const resultado = await controladorMultas.atualizarMulta(Number(req.params.id), {
     valor: req.body.valor !== undefined ? Number(req.body.valor) : undefined,
     statusPagamento: req.body.statusPagamento ?? req.body.status_pagamento,

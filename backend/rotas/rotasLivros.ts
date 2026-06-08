@@ -2,6 +2,7 @@ import { Router } from "express";
 import multer from "multer";
 import { ControladorLivros } from "../controller/ControladorLivros.js";
 import { autenticarJwt } from "../middleware/autenticacaoJwt.js";
+import { validarCamposBody } from "../middleware/validarCamposBody.js";
 import { ServicoMinio } from "../servicos/ServicoMinio.js";
 import { responderResultado } from "./resposta.js";
 
@@ -23,7 +24,11 @@ rotasLivros.get("/:id", async (req, res) => {
   responderResultado(res, resultado);
 });
 
-rotasLivros.post("/", autenticarJwt, async (req, res) => {
+rotasLivros.post(
+  "/",
+  autenticarJwt,
+  validarCamposBody(["titulo", "autor", "genero", "anoPublicacao", "sinopse"]),
+  async (req, res) => {
   const resultado = await controladorLivros.criarLivro(
     req.body.titulo,
     req.body.autor,
@@ -34,7 +39,11 @@ rotasLivros.post("/", autenticarJwt, async (req, res) => {
   responderResultado(res, resultado, 201);
 });
 
-rotasLivros.put("/:id", autenticarJwt, async (req, res) => {
+rotasLivros.put(
+  "/:id",
+  autenticarJwt,
+  validarCamposBody(["titulo", "autor", "genero", "anoPublicacao", "sinopse", "status"]),
+  async (req, res) => {
   const resultado = await controladorLivros.atualizarLivro(Number(req.params.id), req.body);
   responderResultado(res, resultado);
 });

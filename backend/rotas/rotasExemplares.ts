@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ControladorExemplares } from "../controller/ControladorExemplares.js";
 import { autenticarJwt } from "../middleware/autenticacaoJwt.js";
+import { validarCamposBody } from "../middleware/validarCamposBody.js";
 import { responderResultado } from "./resposta.js";
 
 export const rotasExemplares = Router();
@@ -16,7 +17,11 @@ rotasExemplares.get("/:id", async (req, res) => {
   responderResultado(res, resultado);
 });
 
-rotasExemplares.post("/", autenticarJwt, async (req, res) => {
+rotasExemplares.post(
+  "/",
+  autenticarJwt,
+  validarCamposBody(["livroId", "livro_id", "codigoTombo", "codigo_tombo", "estado", "localizacao"]),
+  async (req, res) => {
   const resultado = await controladorExemplares.criarParaLivro(
     Number(req.body.livroId ?? req.body.livro_id),
     req.body.codigoTombo ?? req.body.codigo_tombo,
@@ -26,7 +31,11 @@ rotasExemplares.post("/", autenticarJwt, async (req, res) => {
   responderResultado(res, resultado, 201);
 });
 
-rotasExemplares.put("/:id", autenticarJwt, async (req, res) => {
+rotasExemplares.put(
+  "/:id",
+  autenticarJwt,
+  validarCamposBody(["livroId", "livro_id", "codigoTombo", "codigo_tombo", "estado", "localizacao"]),
+  async (req, res) => {
   const resultado = await controladorExemplares.atualizar(Number(req.params.id), req.body);
   responderResultado(res, resultado);
 });

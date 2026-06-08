@@ -1,15 +1,33 @@
 import { Router } from "express";
 import { ControladorUsuarios } from "../controller/ControladorUsuarios.js";
-import { autenticarJwt, gerarToken } from "../middleware/autenticacaoJwt.js";
+import {
+  autenticarJwt,
+  encerrarSessao,
+  gerarToken,
+  registrarSessao,
+  usuarioTemSessaoAtiva,
+} from "../middleware/autenticacaoJwt.js";
+import { validarCamposBody } from "../middleware/validarCamposBody.js";
 import { responderResultado, statusErro } from "./resposta.js";
 
 export const rotasAuth = Router();
 const controladorUsuarios = new ControladorUsuarios();
 
-rotasAuth.post("/login", async (req, res) => {
+rotasAuth.post("/login", validarCamposBody(["email", "senha"]), async (req, res) => {
   const resultado = await controladorUsuarios.autenticar(req.body.email, req.body.senha);
   if (!resultado.sucesso || !resultado.dados) {
     res.status(statusErro(resultado)).json(resultado);
+    return;
+  }
+
+  if (usuarioTemSessaoAtiva(resultado.dados.idUsuario)) {
+    res.status(409).json({
+      sucesso: false,
+      erro: {
+        mensagem: "Este usuario ja esta logado. Faca logout antes de entrar novamente",
+        tipo: "ErroAutorizacao",
+      },
+    });
     return;
   }
 
@@ -18,6 +36,8 @@ rotasAuth.post("/login", async (req, res) => {
     email: resultado.dados.email,
     nivelAcesso: resultado.dados.nivelAcesso,
   });
+
+  registrarSessao(resultado.dados.idUsuario, token);
 
   res.json({
     sucesso: true,
@@ -37,11 +57,13 @@ rotasAuth.get("/me", autenticarJwt, (_req, res) => {
   });
 });
 
-rotasAuth.post("/logout", autenticarJwt, (_req, res) => {
+rotasAuth.post("/logout", autenticarJwt, validarCamposBody([]), (_req, res) => {
+  encerrarSessao(Number(res.locals.usuario.idUsuario));
+
   res.json({
     sucesso: true,
     dados: {
-      mensagem: "Logout realizado no cliente removendo o token JWT",
+      mensagem: "Logout realizado com sucesso",
     },
   });
 });

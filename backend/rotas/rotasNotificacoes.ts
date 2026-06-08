@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ControladorNotificacoes } from "../controller/ControladorNotificacoes.js";
 import { autenticarJwt } from "../middleware/autenticacaoJwt.js";
+import { validarCamposBody } from "../middleware/validarCamposBody.js";
 import { responderResultado } from "./resposta.js";
 
 export const rotasNotificacoes = Router();
@@ -23,7 +24,11 @@ rotasNotificacoes.get("/:id", autenticarJwt, async (req, res) => {
   responderResultado(res, resultado);
 });
 
-rotasNotificacoes.post("/", autenticarJwt, async (req, res) => {
+rotasNotificacoes.post(
+  "/",
+  autenticarJwt,
+  validarCamposBody(["tipo", "mensagem", "usuarioId", "usuario_id", "emprestimoId", "id_emprestimo"]),
+  async (req, res) => {
   const resultado = await controladorNotificacoes.criarNotificacao(
     req.body.tipo,
     req.body.mensagem,
@@ -35,7 +40,11 @@ rotasNotificacoes.post("/", autenticarJwt, async (req, res) => {
   responderResultado(res, resultado, 201);
 });
 
-rotasNotificacoes.put("/:id", autenticarJwt, async (req, res) => {
+rotasNotificacoes.put(
+  "/:id",
+  autenticarJwt,
+  validarCamposBody(["tipo", "mensagem", "lido"]),
+  async (req, res) => {
   const resultado = await controladorNotificacoes.atualizarNotificacao(
     Number(req.params.id),
     {

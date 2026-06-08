@@ -10,6 +10,7 @@ export function statusErro(resultado: ResultadoOperacao): number {
   ) {
     return 400;
   }
+  if (tipo === "ErroAutorizacao") return 403;
   if (tipo === "ErroNaoEncontrado") return 404;
   return 500;
 }

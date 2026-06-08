@@ -245,18 +245,26 @@ export class RepositorioUsuarios {
 
   async atualizar(
     id: number,
-    dados: { nome?: string; email?: string; senha?: string }
+    dados: { nome?: string; email?: string; senha?: string; cargo?: string }
   ): Promise<Usuario | null> {
     try {
       const senhaHash = dados.senha
         ? await this.gerarHashSenha(dados.senha)
         : undefined;
+
       const usuarioDb = await prisma.usuario.update({
         where: { id_usuario: id },
         data: {
           ...(dados.nome && { nome: dados.nome }),
           ...(dados.email && { email: dados.email }),
           ...(senhaHash && { senha: senhaHash }),
+          ...(dados.cargo !== undefined && {
+            admin: {
+              update: {
+                cargo: dados.cargo,
+              },
+            },
+          }),
         },
         include: { aluno: true, professor: true, admin: true },
       });

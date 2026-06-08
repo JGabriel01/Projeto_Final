@@ -161,11 +161,29 @@ export class ControladorUsuarios {
 
   async atualizarUsuario(
     id: number,
-    dados: { nome?: string; email?: string; senha?: string }
+    dados: { nome?: string; email?: string; senha?: string; cargo?: string }
   ): Promise<ResultadoOperacao<Usuario>> {
     try {
       if (typeof id !== "number" || id <= 0) {
         throw new ErroValidacao("ID deve ser um numero positivo");
+      }
+
+      if (
+        dados.cargo !== undefined &&
+        (typeof dados.cargo !== "string" ||
+          dados.cargo.trim().length < 3 ||
+          dados.cargo.trim().length > 100)
+      ) {
+        throw new ErroValidacao("Cargo deve ter entre 3 e 100 caracteres");
+      }
+
+      const usuarioExistente = await this.repositorioUsuarios.buscarPorId(id);
+      if (!usuarioExistente) {
+        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+      }
+
+      if (dados.cargo !== undefined && usuarioExistente.nivelAcesso !== "admin") {
+        throw new ErroValidacao("Cargo so pode ser alterado para administradores");
       }
 
       const usuarioAtualizado = await this.repositorioUsuarios.atualizar(id, dados);
@@ -217,6 +235,16 @@ export class ControladorUsuarios {
   }
 
   private tratarErro(erro: any, mensagemDefault: string): ResultadoOperacao {
+    if (erro instanceof ErroNaoEncontrado) {
+      return {
+        sucesso: false,
+        erro: {
+          mensagem: erro.message,
+          tipo: "ErroNaoEncontrado",
+        },
+      };
+    }
+
     if (erro instanceof ErroValidacao) {
       return {
         sucesso: false,
@@ -253,16 +281,6 @@ export class ControladorUsuarios {
         erro: {
           mensagem: erro.message,
           tipo: "ErroDuplicado",
-        },
-      };
-    }
-
-    if (erro instanceof ErroNaoEncontrado) {
-      return {
-        sucesso: false,
-        erro: {
-          mensagem: erro.message,
-          tipo: "ErroNaoEncontrado",
         },
       };
     }

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ControladorEmprestimos } from "../controller/ControladorEmprestimos.js";
 import { autenticarJwt } from "../middleware/autenticacaoJwt.js";
+import { validarCamposBody } from "../middleware/validarCamposBody.js";
 import { responderResultado } from "./resposta.js";
 
 export const rotasEmprestimos = Router();
@@ -16,7 +17,11 @@ rotasEmprestimos.get("/:id", autenticarJwt, async (req, res) => {
   responderResultado(res, resultado);
 });
 
-rotasEmprestimos.post("/", autenticarJwt, async (req, res) => {
+rotasEmprestimos.post(
+  "/",
+  autenticarJwt,
+  validarCamposBody(["usuarioId", "usuario_id", "exemplarId", "exemplar_id", "dataSaida", "dataVencimento"]),
+  async (req, res) => {
   const dataSaida = req.body.dataSaida ? new Date(req.body.dataSaida) : undefined;
   const dataVencimento = req.body.dataVencimento
     ? new Date(req.body.dataVencimento)
@@ -33,7 +38,11 @@ rotasEmprestimos.post("/", autenticarJwt, async (req, res) => {
   responderResultado(res, resultado, 201);
 });
 
-rotasEmprestimos.put("/:id", autenticarJwt, async (req, res) => {
+rotasEmprestimos.put(
+  "/:id",
+  autenticarJwt,
+  validarCamposBody(["exemplarId", "exemplar_id", "dataVencimento"]),
+  async (req, res) => {
   const resultado = await controladorEmprestimos.atualizarEmprestimo(
     Number(req.params.id),
     {
@@ -51,7 +60,11 @@ rotasEmprestimos.put("/:id", autenticarJwt, async (req, res) => {
   responderResultado(res, resultado);
 });
 
-rotasEmprestimos.patch("/:id/devolucao", autenticarJwt, async (req, res) => {
+rotasEmprestimos.patch(
+  "/:id/devolucao",
+  autenticarJwt,
+  validarCamposBody(["dataDevolucaoReal"]),
+  async (req, res) => {
   const resultado = await controladorEmprestimos.registrarDevolucao(
     Number(req.params.id),
     req.body.dataDevolucaoReal

@@ -1,22 +1,32 @@
 import { Router } from "express";
 import { ControladorUsuarios } from "../controller/ControladorUsuarios.js";
-import { autenticarJwt } from "../middleware/autenticacaoJwt.js";
+import {
+  autenticarJwt,
+  autorizarProprioUsuario,
+  autorizarProprioUsuarioBody,
+} from "../middleware/autenticacaoJwt.js";
+import { validarCamposBody } from "../middleware/validarCamposBody.js";
 import { responderResultado } from "./resposta.js";
 
 export const rotasUsuarios = Router();
 const controladorUsuarios = new ControladorUsuarios();
 
 rotasUsuarios.get("/", autenticarJwt, async (_req, res) => {
-  const resultado = await controladorUsuarios.listarTodos();
+  const resultado = await controladorUsuarios.buscarPorId(
+    Number(res.locals.usuario.idUsuario)
+  );
   responderResultado(res, resultado);
 });
 
-rotasUsuarios.get("/:id", autenticarJwt, async (req, res) => {
+rotasUsuarios.get("/:id", autenticarJwt, autorizarProprioUsuario(), async (req, res) => {
   const resultado = await controladorUsuarios.buscarPorId(Number(req.params.id));
   responderResultado(res, resultado);
 });
 
-rotasUsuarios.post("/alunos", async (req, res) => {
+rotasUsuarios.post(
+  "/alunos",
+  validarCamposBody(["nome", "email", "senha", "anoIngresso", "curso", "matriculaAluno"]),
+  async (req, res) => {
   const resultado = await controladorUsuarios.criarAluno(
     req.body.nome,
     req.body.email,
@@ -28,7 +38,10 @@ rotasUsuarios.post("/alunos", async (req, res) => {
   responderResultado(res, resultado, 201);
 });
 
-rotasUsuarios.post("/professores", async (req, res) => {
+rotasUsuarios.post(
+  "/professores",
+  validarCamposBody(["nome", "email", "senha", "departamento", "matriculaProfessor"]),
+  async (req, res) => {
   const resultado = await controladorUsuarios.criarProfessor(
     req.body.nome,
     req.body.email,
@@ -39,7 +52,10 @@ rotasUsuarios.post("/professores", async (req, res) => {
   responderResultado(res, resultado, 201);
 });
 
-rotasUsuarios.post("/admins", async (req, res) => {
+rotasUsuarios.post(
+  "/admins",
+  validarCamposBody(["nome", "email", "senha", "cargo"]),
+  async (req, res) => {
   const resultado = await controladorUsuarios.criarAdmin(
     req.body.nome,
     req.body.email,
@@ -49,7 +65,12 @@ rotasUsuarios.post("/admins", async (req, res) => {
   responderResultado(res, resultado, 201);
 });
 
-rotasUsuarios.put("/:id", autenticarJwt, async (req, res) => {
+rotasUsuarios.put(
+  "/:id",
+  autenticarJwt,
+  autorizarProprioUsuario(),
+  validarCamposBody(["nome", "email", "senha", "cargo"]),
+  async (req, res) => {
   const resultado = await controladorUsuarios.atualizarUsuario(
     Number(req.params.id),
     req.body
@@ -57,12 +78,21 @@ rotasUsuarios.put("/:id", autenticarJwt, async (req, res) => {
   responderResultado(res, resultado);
 });
 
-rotasUsuarios.delete("/:id", autenticarJwt, async (req, res) => {
+rotasUsuarios.delete(
+  "/:id",
+  autenticarJwt,
+  autorizarProprioUsuario(),
+  async (req, res) => {
   const resultado = await controladorUsuarios.excluirNomeCadastro(Number(req.params.id));
   responderResultado(res, resultado);
 });
 
-rotasUsuarios.post("/excluirNomeCadastro", autenticarJwt, async (req, res) => {
+rotasUsuarios.post(
+  "/excluirNomeCadastro",
+  autenticarJwt,
+  validarCamposBody(["idUsuario", "id_usuario", "id"]),
+  autorizarProprioUsuarioBody(),
+  async (req, res) => {
   const id = Number(req.body.idUsuario ?? req.body.id_usuario ?? req.body.id);
   const resultado = await controladorUsuarios.excluirNomeCadastro(id);
   responderResultado(res, resultado);
