@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LibManager - Sistema de Biblioteca</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <main id="authScreen" class="auth-layout">
+    <section class="brand-panel">
+      <div class="gov-bar">LibManager | Biblioteca</div>
+      <div class="brand-copy">
+        <span class="system-tag">Tema 10</span>
+        <h1>LibManager</h1>
+        <p>Sistema de Biblioteca para acervo, reservas, empréstimos, usuários e multas.</p>
+      </div>
+    </section>
+
+    <section class="auth-panel">
+      <button id="themeToggle" class="theme-toggle" type="button" title="Modo escuro">🌙</button>
+      <div class="auth-logo">
+        <div class="auth-logo-mark">LM</div>
+        <div>
+          <strong>LibManager</strong>
+          <span>Sistema de Biblioteca</span>
+        </div>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="loginTab" class="tab-btn active" type="button">Entrar</button>
+        <button id="registerTab" class="tab-btn" type="button">Cadastrar</button>
+      </div>
+
+      <form id="loginForm" class="auth-form active" novalidate>
+        <h2>Acesso ao sistema</h2>
+        <label>E-mail
+          <input id="loginEmail" type="email" autocomplete="email" required>
+        </label>
+        <label>Senha
+          <span class="password-field">
+            <input id="loginPassword" type="password" autocomplete="current-password" required>
+            <button class="password-toggle" type="button" data-password-toggle="loginPassword" aria-label="Mostrar senha"></button>
+          </span>
+        </label>
+        <label class="check-row">
+          <input id="rememberLogin" type="checkbox">
+          <span>Guardar usuário em cookie</span>
+        </label>
+        <button class="primary-btn" type="submit">Entrar</button>
+      </form>
+
+      <form id="registerForm" class="auth-form" novalidate>
+        <h2>Novo cadastro</h2>
+        <label>Nome completo
+          <input id="registerName" type="text" required>
+        </label>
+        <label>E-mail
+          <input id="registerEmail" type="email" required>
+        </label>
+        <label>Senha
+          <span class="password-field">
+            <input id="registerPassword" type="password" required>
+            <button class="password-toggle" type="button" data-password-toggle="registerPassword" aria-label="Mostrar senha"></button>
+          </span>
+        </label>
+        <div id="passwordStrength" class="password-strength" aria-label="Força da senha"></div>
+        <small id="passwordStrengthText" class="password-strength-text">Digite uma senha com letras e números.</small>
+        <label>Tipo de usuário
+          <select id="registerType" required>
+            <option value="alunos">Aluno</option>
+            <option value="professores">Professor</option>
+            <option value="admins">Admin</option>
+          </select>
+        </label>
+        <div id="studentFields" class="type-fields">
+          <label>Ano de ingresso
+            <input id="registerYear" type="number" min="1900">
+          </label>
+          <label>Curso
+            <input id="registerCourse" type="text">
+          </label>
+          <label>Matrícula
+            <input id="registerStudentId" type="text">
+          </label>
+        </div>
+        <div id="teacherFields" class="type-fields hidden">
+          <label>Departamento
+            <input id="registerDepartment" type="text">
+          </label>
+          <label>Matrícula
+            <input id="registerTeacherId" type="text">
+          </label>
+        </div>
+        <div id="adminFields" class="type-fields hidden">
+          <label>Cargo
+            <input id="registerRole" type="text">
+          </label>
+        </div>
+        <button class="primary-btn" type="submit">Criar conta</button>
+      </form>
+    </section>
+  </main>
+
+  <main id="appScreen" class="app-layout hidden">
+    <aside class="sidebar">
+      <div class="logo-mark">LM</div>
+      <div class="top-search">
+        <input id="globalSearch" type="search" placeholder="Busque por título ou autor...">
+      </div>
+      <nav>
+        <button class="nav-btn active" data-view="homeView" type="button">Início</button>
+        <button class="nav-btn" data-view="booksView" type="button">Livros</button>
+        <button class="nav-btn" data-view="usersView" type="button">Usuários</button>
+        <button class="nav-btn" data-view="operationsView" type="button">Operações</button>
+        <button class="nav-btn" data-view="profileView" type="button">Perfil</button>
+      </nav>
+      <div class="top-actions app-actions">
+        <button id="appThemeToggle" class="secondary-btn icon-btn" type="button" title="Modo escuro">🌙</button>
+        <button id="refreshBtn" class="secondary-btn" type="button">Atualizar</button>
+      </div>
+      <button id="logoutBtn" class="ghost-btn" type="button">Sair</button>
+    </aside>
+
+    <section class="workspace">
+      <section id="homeView" class="view active">
+        <div class="book-shelf home-shelf">
+          <div class="shelf-header">
+            <div>
+              <h3>Destaques do acervo</h3>
+              <p>Livros em destaque agora na biblioteca</p>
+            </div>
+          </div>
+          <div class="book-showcase">
+            <div id="homeBooksGrid" class="book-grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="booksView" class="view">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Acervo</span>
+            <h2>Livros</h2>
+          </div>
+          <button id="newBookBtn" class="primary-btn" type="button">Novo livro</button>
+        </div>
+        <div id="bookFormPanel" class="form-panel hidden">
+          <form id="bookForm" novalidate>
+            <input id="bookId" type="hidden">
+            <div class="form-grid">
+              <label>Título<input id="bookTitle" type="text" required></label>
+              <label>Autor<input id="bookAuthor" type="text" required></label>
+              <label>Gênero
+                <select id="bookGenre" required>
+                  <option value="">Selecione</option>
+                  <option>Literatura</option>
+                  <option>Tecnologia</option>
+                  <option>Ciências</option>
+                  <option>História</option>
+                  <option>Didático</option>
+                </select>
+              </label>
+              <label>Ano<input id="bookYear" type="number" min="1000" required></label>
+              <label class="wide">Sinopse<textarea id="bookSynopsis" required></textarea></label>
+              <label class="check-row wide">
+                <input id="bookAvailable" type="checkbox" checked>
+                <span>Livro disponível para consulta/empréstimo</span>
+              </label>
+              <label class="wide">Capa do livro<input id="bookCover" type="file" accept="image/*"></label>
+            </div>
+            <div class="form-actions">
+              <button class="primary-btn" type="submit">Salvar</button>
+              <button id="cancelBookBtn" class="secondary-btn" type="button">Voltar</button>
+            </div>
+          </form>
+        </div>
+        <div class="book-shelf">
+          <div class="shelf-header">
+            <div>
+              <h3>Em Alta</h3>
+              <p>Livros mais movimentados agora no acervo</p>
+            </div>
+            <button class="secondary-btn" type="button" data-view="booksView">Ver mais</button>
+          </div>
+          <div class="book-showcase">
+            <div id="booksGrid" class="book-grid"></div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Título</th><th>Autor</th><th>Gênero</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody id="booksTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="usersView" class="view">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Consulta pública</span>
+            <h2>Usuários</h2>
+          </div>
+        </div>
+        <div id="usersGrid" class="user-grid"></div>
+      </section>
+
+      <section id="operationsView" class="view">
+        <div class="section-heading">
+          <div>
+            <h2>Reservas, empréstimos e multas</h2>
+          </div>
+        </div>
+        <div class="split-grid">
+          <article id="copyCard">
+            <h3>Novo exemplar</h3>
+            <form id="copyForm" class="stack-form">
+              <label>ID do livro<input id="copyBookId" type="number" min="1" required></label>
+              <label>Código de tombo<input id="copyCode" type="text" required></label>
+              <label>Estado
+                <select id="copyState" required>
+                  <option value="novo">Novo</option>
+                  <option value="bom">Bom</option>
+                  <option value="regular">Regular</option>
+                  <option value="danificado">Danificado</option>
+                </select>
+              </label>
+              <label>Localização<input id="copyLocation" type="text" required></label>
+              <button class="primary-btn" type="submit">Cadastrar exemplar</button>
+            </form>
+          </article>
+          <article id="reservationCard">
+            <h3 id="reservationTitle">Nova reserva</h3>
+            <form id="reservationForm" class="stack-form">
+              <label>ID do livro<input id="reservationBookId" type="number" min="1" required></label>
+              <button class="primary-btn" type="submit">Reservar</button>
+            </form>
+          </article>
+          <article id="loanCard">
+            <h3>Novo empréstimo</h3>
+            <form id="loanForm" class="stack-form">
+              <label>ID do exemplar<input id="loanCopyId" type="number" min="1" required></label>
+              <label>Vencimento<input id="loanDueDate" type="date"></label>
+              <button class="primary-btn" type="submit">Registrar</button>
+            </form>
+          </article>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tipo</th><th>ID</th><th>Referência</th><th>Status/Data</th></tr></thead>
+            <tbody id="operationsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="profileView" class="view">
+        <div id="profileCover" class="profile-cover">
+          <div id="profileAvatar" class="profile-avatar">U</div>
+        </div>
+        <div class="profile-card">
+          <div>
+            <span class="eyebrow">Perfil logado</span>
+            <h2 id="profileName">Usuário</h2>
+            <p id="profileMeta">Dados da conta</p>
+          </div>
+          <form id="profileImageForm" class="upload-form">
+            <label>Foto de perfil<input id="profilePhotoInput" name="fotoPerfil" type="file" accept="image/*"></label>
+            <label>Imagem de fundo<input id="profileCoverInput" name="fundoPerfil" type="file" accept="image/*"></label>
+            <button class="primary-btn" type="submit">Enviar imagens</button>
+          </form>
+        </div>
+        <div class="profile-private">
+          <div class="section-heading compact-heading">
+            <div>
+              <span class="eyebrow">Somente seu perfil</span>
+              <h2>Resumo pessoal</h2>
+            </div>
+          </div>
+          <div class="metric-grid profile-metrics">
+            <article><span id="profileBooksCount">0</span><p>livros no acervo</p></article>
+            <article><span id="profileReservationsCount">0</span><p>suas reservas</p></article>
+            <article><span id="profileLoansCount">0</span><p>seus emprÃ©stimos</p></article>
+            <article><span id="profileFinesCount">0</span><p>suas multas</p></article>
+          </div>
+          <div class="profile-details-grid">
+            <article>
+              <h3>Reservas do usuÃ¡rio logado</h3>
+              <div id="profileReservationsList" class="insight-list"></div>
+            </article>
+            <article>
+              <h3>EmprÃ©stimos do usuÃ¡rio logado</h3>
+              <div id="profileLoansList" class="insight-list"></div>
+            </article>
+            <article>
+              <h3>Multas vinculadas aos seus emprÃ©stimos</h3>
+              <div id="profileFinesList" class="insight-list"></div>
+            </article>
+            <article>
+              <h3>Livros cadastrados no acervo</h3>
+              <div id="profileBooksList" class="insight-list"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="login.js"></script>
+</body>
+</html>
