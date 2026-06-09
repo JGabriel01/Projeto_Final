@@ -1,10 +1,12 @@
 import { Emprestimo } from "../negocios/Emprestimo.js";
+import { RepositorioExemplares } from "../persistencia/RepositorioExemplares.js";
 import { RepositorioEmprestimos } from "../persistencia/RepositorioEmprestimos.js";
 import { ErroEmprestimo, ErroNaoEncontrado, ErroValidacao } from "../excecoes/index.js";
 import type { ResultadoOperacao } from "./ControladorUsuarios.js";
 
 export class ControladorEmprestimos {
   private repositorioEmprestimos = new RepositorioEmprestimos();
+  private repositorioExemplares = new RepositorioExemplares();
 
   async criarEmprestimo(
     usuarioId: number,
@@ -19,6 +21,13 @@ export class ControladorEmprestimos {
 
       if (exemplarId !== null && (typeof exemplarId !== "number" || exemplarId <= 0)) {
         throw new ErroEmprestimo("ID do exemplar invalido");
+      }
+
+      if (exemplarId !== null) {
+        const exemplar = await this.repositorioExemplares.buscarPorId(exemplarId);
+        if (!exemplar) {
+          throw new ErroNaoEncontrado(`Exemplar com ID ${exemplarId} nao encontrado`);
+        }
       }
 
       const emprestimo = new Emprestimo(

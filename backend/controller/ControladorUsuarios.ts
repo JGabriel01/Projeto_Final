@@ -21,8 +21,45 @@ export interface ResultadoOperacao<T = any> {
   };
 }
 
+export type UsuarioPublico = {
+  idUsuario: number;
+  nome: string;
+  nivelAcesso: string;
+  fotoPerfilUrl?: string;
+  fundoPerfilUrl?: string;
+  anoIngresso?: number;
+  curso?: string;
+  departamento?: string;
+  cargo?: string;
+};
+
 export class ControladorUsuarios {
   private repositorioUsuarios = new RepositorioUsuarios();
+
+  private formatarUsuarioPublico(usuario: Usuario): UsuarioPublico {
+    const usuarioPublico: UsuarioPublico = {
+      idUsuario: usuario.idUsuario,
+      nome: usuario.nome,
+      nivelAcesso: usuario.nivelAcesso,
+      fotoPerfilUrl: usuario.fotoPerfilUrl,
+      fundoPerfilUrl: usuario.fundoPerfilUrl,
+    };
+
+    if (usuario instanceof Aluno) {
+      usuarioPublico.anoIngresso = usuario.anoIngresso;
+      usuarioPublico.curso = usuario.curso;
+    }
+
+    if (usuario instanceof Professor) {
+      usuarioPublico.departamento = usuario.departamento;
+    }
+
+    if (usuario instanceof Admin) {
+      usuarioPublico.cargo = usuario.cargo;
+    }
+
+    return usuarioPublico;
+  }
 
   async criarAluno(
     nome: string,
@@ -150,10 +187,39 @@ export class ControladorUsuarios {
     }
   }
 
+  async buscarPublicoPorId(id: number): Promise<ResultadoOperacao<UsuarioPublico>> {
+    try {
+      if (typeof id !== "number" || id <= 0) {
+        throw new ErroValidacao("ID deve ser um numero positivo");
+      }
+
+      const usuario = await this.repositorioUsuarios.buscarPorId(id);
+      if (!usuario) {
+        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+      }
+
+      return { sucesso: true, dados: this.formatarUsuarioPublico(usuario) };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao buscar usuario");
+    }
+  }
+
   async listarTodos(): Promise<ResultadoOperacao<Usuario[]>> {
     try {
       const usuarios = await this.repositorioUsuarios.listarTodos();
       return { sucesso: true, dados: usuarios };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao listar usuarios");
+    }
+  }
+
+  async listarPublicos(): Promise<ResultadoOperacao<UsuarioPublico[]>> {
+    try {
+      const usuarios = await this.repositorioUsuarios.listarTodos();
+      return {
+        sucesso: true,
+        dados: usuarios.map((usuario) => this.formatarUsuarioPublico(usuario)),
+      };
     } catch (erro: any) {
       return this.tratarErro(erro, "Erro ao listar usuarios");
     }
@@ -194,6 +260,36 @@ export class ControladorUsuarios {
       return { sucesso: true, dados: usuarioAtualizado };
     } catch (erro: any) {
       return this.tratarErro(erro, "Erro ao atualizar usuario");
+    }
+  }
+
+  async atualizarImagensPerfil(
+    id: number,
+    imagens: {
+      fotoPerfilUrl?: string;
+      fotoPerfilObjeto?: string;
+      fundoPerfilUrl?: string;
+      fundoPerfilObjeto?: string;
+    }
+  ): Promise<ResultadoOperacao<Usuario>> {
+    try {
+      if (typeof id !== "number" || id <= 0) {
+        throw new ErroValidacao("ID deve ser um numero positivo");
+      }
+
+      if (!imagens.fotoPerfilUrl && !imagens.fundoPerfilUrl) {
+        throw new ErroValidacao("Envie pelo menos uma imagem de perfil");
+      }
+
+      const usuarioAtualizado =
+        await this.repositorioUsuarios.atualizarImagensPerfil(id, imagens);
+      if (!usuarioAtualizado) {
+        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+      }
+
+      return { sucesso: true, dados: usuarioAtualizado };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao atualizar imagens de perfil");
     }
   }
 

@@ -1,6 +1,8 @@
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { ControladorUsuarios } from "./controller/ControladorUsuarios.js";
 import { prisma } from "./config/prismaClient.js";
 import { autenticarJwt, autorizarProprioUsuarioBody } from "./middleware/autenticacaoJwt.js";
@@ -11,17 +13,17 @@ import { validarCamposBody } from "./middleware/validarCamposBody.js";
 const app = express();
 const porta = Number(process.env.PORT) || 3000;
 const controladorUsuarios = new ControladorUsuarios();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const frontendPath = path.resolve(__dirname, "../frontend");
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(frontendPath));
 
 app.get("/", (_req, res) => {
-  res.json({
-    sucesso: true,
-    mensagem: "API REST do Sistema de Biblioteca",
-    documentacao: "/api/status",
-  });
+  res.sendFile(path.join(frontendPath, "login.html"));
 });
 
 app.use("/api", rotasApi);

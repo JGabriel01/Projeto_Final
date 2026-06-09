@@ -10,9 +10,11 @@ export class Admin extends Usuario {
     nome: string,
     email: string,
     senha: string,
-    cargo: string
+    cargo: string,
+    fotoPerfilUrl?: string,
+    fundoPerfilUrl?: string
   ) {
-    super(idUsuario, nome, email, senha, "admin");
+    super(idUsuario, nome, email, senha, "admin", fotoPerfilUrl, fundoPerfilUrl);
     
     // Validações específicas do Admin
     this.validarCargo(cargo);

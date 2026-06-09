@@ -12,9 +12,11 @@ export class Professor extends Usuario {
     email: string,
     senha: string,
     departamento: string,
-    matriculaProfessor: string
+    matriculaProfessor: string,
+    fotoPerfilUrl?: string,
+    fundoPerfilUrl?: string
   ) {
-    super(idUsuario, nome, email, senha, "professor");
+    super(idUsuario, nome, email, senha, "professor", fotoPerfilUrl, fundoPerfilUrl);
     
     // Validações específicas do Professor
     this.validarDepartamento(departamento);

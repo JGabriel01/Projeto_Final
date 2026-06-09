@@ -34,6 +34,10 @@ model Usuario {
   email      String    @unique
   senha      String
   nivel_acesso String    // "aluno", "professor", "admin", "usuario_comum"
+  foto_perfil_url String?
+  foto_perfil_objeto String?
+  fundo_perfil_url String?
+  fundo_perfil_objeto String?
   
   notificacoes Notificacao[]
   reservas    Reserva[]

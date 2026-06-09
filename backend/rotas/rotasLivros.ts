@@ -1,7 +1,7 @@
 import { Router } from "express";
 import multer from "multer";
 import { ControladorLivros } from "../controller/ControladorLivros.js";
-import { autenticarJwt } from "../middleware/autenticacaoJwt.js";
+import { autenticarJwt, autorizarAdmin } from "../middleware/autenticacaoJwt.js";
 import { validarCamposBody } from "../middleware/validarCamposBody.js";
 import { ServicoMinio } from "../servicos/ServicoMinio.js";
 import { responderResultado } from "./resposta.js";
@@ -27,6 +27,7 @@ rotasLivros.get("/:id", async (req, res) => {
 rotasLivros.post(
   "/",
   autenticarJwt,
+  autorizarAdmin,
   validarCamposBody(["titulo", "autor", "genero", "anoPublicacao", "sinopse"]),
   async (req, res) => {
   const resultado = await controladorLivros.criarLivro(
@@ -42,13 +43,14 @@ rotasLivros.post(
 rotasLivros.put(
   "/:id",
   autenticarJwt,
+  autorizarAdmin,
   validarCamposBody(["titulo", "autor", "genero", "anoPublicacao", "sinopse", "status"]),
   async (req, res) => {
   const resultado = await controladorLivros.atualizarLivro(Number(req.params.id), req.body);
   responderResultado(res, resultado);
 });
 
-rotasLivros.delete("/:id", autenticarJwt, async (req, res) => {
+rotasLivros.delete("/:id", autenticarJwt, autorizarAdmin, async (req, res) => {
   const resultado = await controladorLivros.excluirLivro(Number(req.params.id));
   responderResultado(res, resultado);
 });
@@ -56,6 +58,7 @@ rotasLivros.delete("/:id", autenticarJwt, async (req, res) => {
 rotasLivros.post(
   "/:id/capa",
   autenticarJwt,
+  autorizarAdmin,
   upload.single("capa"),
   async (req, res) => {
     if (!req.file) {

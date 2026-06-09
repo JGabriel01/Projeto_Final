@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { ControladorExemplares } from "../controller/ControladorExemplares.js";
-import { autenticarJwt } from "../middleware/autenticacaoJwt.js";
+import { autenticarJwt, autorizarAdmin } from "../middleware/autenticacaoJwt.js";
 import { validarCamposBody } from "../middleware/validarCamposBody.js";
 import { responderResultado } from "./resposta.js";
 
@@ -20,6 +20,7 @@ rotasExemplares.get("/:id", async (req, res) => {
 rotasExemplares.post(
   "/",
   autenticarJwt,
+  autorizarAdmin,
   validarCamposBody(["livroId", "livro_id", "codigoTombo", "codigo_tombo", "estado", "localizacao"]),
   async (req, res) => {
   const resultado = await controladorExemplares.criarParaLivro(
@@ -34,13 +35,14 @@ rotasExemplares.post(
 rotasExemplares.put(
   "/:id",
   autenticarJwt,
+  autorizarAdmin,
   validarCamposBody(["livroId", "livro_id", "codigoTombo", "codigo_tombo", "estado", "localizacao"]),
   async (req, res) => {
   const resultado = await controladorExemplares.atualizar(Number(req.params.id), req.body);
   responderResultado(res, resultado);
 });
 
-rotasExemplares.delete("/:id", autenticarJwt, async (req, res) => {
+rotasExemplares.delete("/:id", autenticarJwt, autorizarAdmin, async (req, res) => {
   const resultado = await controladorExemplares.excluir(Number(req.params.id));
   responderResultado(res, resultado);
 });

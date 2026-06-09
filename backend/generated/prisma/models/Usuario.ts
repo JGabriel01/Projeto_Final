@@ -40,6 +40,10 @@ export type UsuarioMinAggregateOutputType = {
   email: string | null
   senha: string | null
   nivel_acesso: string | null
+  foto_perfil_url: string | null
+  foto_perfil_objeto: string | null
+  fundo_perfil_url: string | null
+  fundo_perfil_objeto: string | null
 }
 
 export type UsuarioMaxAggregateOutputType = {
@@ -48,6 +52,10 @@ export type UsuarioMaxAggregateOutputType = {
   email: string | null
   senha: string | null
   nivel_acesso: string | null
+  foto_perfil_url: string | null
+  foto_perfil_objeto: string | null
+  fundo_perfil_url: string | null
+  fundo_perfil_objeto: string | null
 }
 
 export type UsuarioCountAggregateOutputType = {
@@ -56,6 +64,10 @@ export type UsuarioCountAggregateOutputType = {
   email: number
   senha: number
   nivel_acesso: number
+  foto_perfil_url: number
+  foto_perfil_objeto: number
+  fundo_perfil_url: number
+  fundo_perfil_objeto: number
   _all: number
 }
 
@@ -74,6 +86,10 @@ export type UsuarioMinAggregateInputType = {
   email?: true
   senha?: true
   nivel_acesso?: true
+  foto_perfil_url?: true
+  foto_perfil_objeto?: true
+  fundo_perfil_url?: true
+  fundo_perfil_objeto?: true
 }
 
 export type UsuarioMaxAggregateInputType = {
@@ -82,6 +98,10 @@ export type UsuarioMaxAggregateInputType = {
   email?: true
   senha?: true
   nivel_acesso?: true
+  foto_perfil_url?: true
+  foto_perfil_objeto?: true
+  fundo_perfil_url?: true
+  fundo_perfil_objeto?: true
 }
 
 export type UsuarioCountAggregateInputType = {
@@ -90,6 +110,10 @@ export type UsuarioCountAggregateInputType = {
   email?: true
   senha?: true
   nivel_acesso?: true
+  foto_perfil_url?: true
+  foto_perfil_objeto?: true
+  fundo_perfil_url?: true
+  fundo_perfil_objeto?: true
   _all?: true
 }
 
@@ -185,6 +209,10 @@ export type UsuarioGroupByOutputType = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url: string | null
+  foto_perfil_objeto: string | null
+  fundo_perfil_url: string | null
+  fundo_perfil_objeto: string | null
   _count: UsuarioCountAggregateOutputType | null
   _avg: UsuarioAvgAggregateOutputType | null
   _sum: UsuarioSumAggregateOutputType | null
@@ -216,6 +244,10 @@ export type UsuarioWhereInput = {
   email?: Prisma.StringFilter<"Usuario"> | string
   senha?: Prisma.StringFilter<"Usuario"> | string
   nivel_acesso?: Prisma.StringFilter<"Usuario"> | string
+  foto_perfil_url?: Prisma.StringNullableFilter<"Usuario"> | string | null
+  foto_perfil_objeto?: Prisma.StringNullableFilter<"Usuario"> | string | null
+  fundo_perfil_url?: Prisma.StringNullableFilter<"Usuario"> | string | null
+  fundo_perfil_objeto?: Prisma.StringNullableFilter<"Usuario"> | string | null
   notificacoes?: Prisma.NotificacaoListRelationFilter
   reservas?: Prisma.ReservaListRelationFilter
   emprestimos?: Prisma.EmprestimoListRelationFilter
@@ -230,6 +262,10 @@ export type UsuarioOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   senha?: Prisma.SortOrder
   nivel_acesso?: Prisma.SortOrder
+  foto_perfil_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  foto_perfil_objeto?: Prisma.SortOrderInput | Prisma.SortOrder
+  fundo_perfil_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  fundo_perfil_objeto?: Prisma.SortOrderInput | Prisma.SortOrder
   notificacoes?: Prisma.NotificacaoOrderByRelationAggregateInput
   reservas?: Prisma.ReservaOrderByRelationAggregateInput
   emprestimos?: Prisma.EmprestimoOrderByRelationAggregateInput
@@ -247,6 +283,10 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   nome?: Prisma.StringFilter<"Usuario"> | string
   senha?: Prisma.StringFilter<"Usuario"> | string
   nivel_acesso?: Prisma.StringFilter<"Usuario"> | string
+  foto_perfil_url?: Prisma.StringNullableFilter<"Usuario"> | string | null
+  foto_perfil_objeto?: Prisma.StringNullableFilter<"Usuario"> | string | null
+  fundo_perfil_url?: Prisma.StringNullableFilter<"Usuario"> | string | null
+  fundo_perfil_objeto?: Prisma.StringNullableFilter<"Usuario"> | string | null
   notificacoes?: Prisma.NotificacaoListRelationFilter
   reservas?: Prisma.ReservaListRelationFilter
   emprestimos?: Prisma.EmprestimoListRelationFilter
@@ -261,6 +301,10 @@ export type UsuarioOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   senha?: Prisma.SortOrder
   nivel_acesso?: Prisma.SortOrder
+  foto_perfil_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  foto_perfil_objeto?: Prisma.SortOrderInput | Prisma.SortOrder
+  fundo_perfil_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  fundo_perfil_objeto?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UsuarioCountOrderByAggregateInput
   _avg?: Prisma.UsuarioAvgOrderByAggregateInput
   _max?: Prisma.UsuarioMaxOrderByAggregateInput
@@ -277,6 +321,10 @@ export type UsuarioScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
   senha?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
   nivel_acesso?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
+  foto_perfil_url?: Prisma.StringNullableWithAggregatesFilter<"Usuario"> | string | null
+  foto_perfil_objeto?: Prisma.StringNullableWithAggregatesFilter<"Usuario"> | string | null
+  fundo_perfil_url?: Prisma.StringNullableWithAggregatesFilter<"Usuario"> | string | null
+  fundo_perfil_objeto?: Prisma.StringNullableWithAggregatesFilter<"Usuario"> | string | null
 }
 
 export type UsuarioCreateInput = {
@@ -284,6 +332,10 @@ export type UsuarioCreateInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
@@ -298,6 +350,10 @@ export type UsuarioUncheckedCreateInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
@@ -311,6 +367,10 @@ export type UsuarioUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
@@ -325,6 +385,10 @@ export type UsuarioUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -339,6 +403,10 @@ export type UsuarioCreateManyInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
 }
 
 export type UsuarioUpdateManyMutationInput = {
@@ -346,6 +414,10 @@ export type UsuarioUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UsuarioUncheckedUpdateManyInput = {
@@ -354,6 +426,10 @@ export type UsuarioUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UsuarioScalarRelationFilter = {
@@ -367,6 +443,10 @@ export type UsuarioCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   senha?: Prisma.SortOrder
   nivel_acesso?: Prisma.SortOrder
+  foto_perfil_url?: Prisma.SortOrder
+  foto_perfil_objeto?: Prisma.SortOrder
+  fundo_perfil_url?: Prisma.SortOrder
+  fundo_perfil_objeto?: Prisma.SortOrder
 }
 
 export type UsuarioAvgOrderByAggregateInput = {
@@ -379,6 +459,10 @@ export type UsuarioMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   senha?: Prisma.SortOrder
   nivel_acesso?: Prisma.SortOrder
+  foto_perfil_url?: Prisma.SortOrder
+  foto_perfil_objeto?: Prisma.SortOrder
+  fundo_perfil_url?: Prisma.SortOrder
+  fundo_perfil_objeto?: Prisma.SortOrder
 }
 
 export type UsuarioMinOrderByAggregateInput = {
@@ -387,6 +471,10 @@ export type UsuarioMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   senha?: Prisma.SortOrder
   nivel_acesso?: Prisma.SortOrder
+  foto_perfil_url?: Prisma.SortOrder
+  foto_perfil_objeto?: Prisma.SortOrder
+  fundo_perfil_url?: Prisma.SortOrder
+  fundo_perfil_objeto?: Prisma.SortOrder
 }
 
 export type UsuarioSumOrderByAggregateInput = {
@@ -405,6 +493,10 @@ export type UsuarioUpdateOneRequiredWithoutNotificacoesNestedInput = {
   upsert?: Prisma.UsuarioUpsertWithoutNotificacoesInput
   connect?: Prisma.UsuarioWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutNotificacoesInput, Prisma.UsuarioUpdateWithoutNotificacoesInput>, Prisma.UsuarioUncheckedUpdateWithoutNotificacoesInput>
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
 }
 
 export type UsuarioCreateNestedOneWithoutAlunoInput = {
@@ -482,6 +574,10 @@ export type UsuarioCreateWithoutNotificacoesInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
   aluno?: Prisma.AlunoCreateNestedOneWithoutUsuarioInput
@@ -495,6 +591,10 @@ export type UsuarioUncheckedCreateWithoutNotificacoesInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
   aluno?: Prisma.AlunoUncheckedCreateNestedOneWithoutUsuarioInput
@@ -523,6 +623,10 @@ export type UsuarioUpdateWithoutNotificacoesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
   aluno?: Prisma.AlunoUpdateOneWithoutUsuarioNestedInput
@@ -536,6 +640,10 @@ export type UsuarioUncheckedUpdateWithoutNotificacoesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
   aluno?: Prisma.AlunoUncheckedUpdateOneWithoutUsuarioNestedInput
@@ -548,6 +656,10 @@ export type UsuarioCreateWithoutAlunoInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
@@ -561,6 +673,10 @@ export type UsuarioUncheckedCreateWithoutAlunoInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
@@ -589,6 +705,10 @@ export type UsuarioUpdateWithoutAlunoInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
@@ -602,6 +722,10 @@ export type UsuarioUncheckedUpdateWithoutAlunoInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -614,6 +738,10 @@ export type UsuarioCreateWithoutProfessorInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
@@ -627,6 +755,10 @@ export type UsuarioUncheckedCreateWithoutProfessorInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
@@ -655,6 +787,10 @@ export type UsuarioUpdateWithoutProfessorInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
@@ -668,6 +804,10 @@ export type UsuarioUncheckedUpdateWithoutProfessorInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -680,6 +820,10 @@ export type UsuarioCreateWithoutAdminInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
@@ -693,6 +837,10 @@ export type UsuarioUncheckedCreateWithoutAdminInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
@@ -721,6 +869,10 @@ export type UsuarioUpdateWithoutAdminInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
@@ -734,6 +886,10 @@ export type UsuarioUncheckedUpdateWithoutAdminInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -746,6 +902,10 @@ export type UsuarioCreateWithoutReservasInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
   aluno?: Prisma.AlunoCreateNestedOneWithoutUsuarioInput
@@ -759,6 +919,10 @@ export type UsuarioUncheckedCreateWithoutReservasInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
   aluno?: Prisma.AlunoUncheckedCreateNestedOneWithoutUsuarioInput
@@ -787,6 +951,10 @@ export type UsuarioUpdateWithoutReservasInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
   aluno?: Prisma.AlunoUpdateOneWithoutUsuarioNestedInput
@@ -800,6 +968,10 @@ export type UsuarioUncheckedUpdateWithoutReservasInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
   aluno?: Prisma.AlunoUncheckedUpdateOneWithoutUsuarioNestedInput
@@ -812,6 +984,10 @@ export type UsuarioCreateWithoutEmprestimosInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
   aluno?: Prisma.AlunoCreateNestedOneWithoutUsuarioInput
@@ -825,6 +1001,10 @@ export type UsuarioUncheckedCreateWithoutEmprestimosInput = {
   email: string
   senha: string
   nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
   aluno?: Prisma.AlunoUncheckedCreateNestedOneWithoutUsuarioInput
@@ -853,6 +1033,10 @@ export type UsuarioUpdateWithoutEmprestimosInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
   aluno?: Prisma.AlunoUpdateOneWithoutUsuarioNestedInput
@@ -866,6 +1050,10 @@ export type UsuarioUncheckedUpdateWithoutEmprestimosInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
   aluno?: Prisma.AlunoUncheckedUpdateOneWithoutUsuarioNestedInput
@@ -928,6 +1116,10 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   email?: boolean
   senha?: boolean
   nivel_acesso?: boolean
+  foto_perfil_url?: boolean
+  foto_perfil_objeto?: boolean
+  fundo_perfil_url?: boolean
+  fundo_perfil_objeto?: boolean
   notificacoes?: boolean | Prisma.Usuario$notificacoesArgs<ExtArgs>
   reservas?: boolean | Prisma.Usuario$reservasArgs<ExtArgs>
   emprestimos?: boolean | Prisma.Usuario$emprestimosArgs<ExtArgs>
@@ -943,6 +1135,10 @@ export type UsuarioSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   email?: boolean
   senha?: boolean
   nivel_acesso?: boolean
+  foto_perfil_url?: boolean
+  foto_perfil_objeto?: boolean
+  fundo_perfil_url?: boolean
+  fundo_perfil_objeto?: boolean
 }, ExtArgs["result"]["usuario"]>
 
 export type UsuarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -951,6 +1147,10 @@ export type UsuarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   email?: boolean
   senha?: boolean
   nivel_acesso?: boolean
+  foto_perfil_url?: boolean
+  foto_perfil_objeto?: boolean
+  fundo_perfil_url?: boolean
+  fundo_perfil_objeto?: boolean
 }, ExtArgs["result"]["usuario"]>
 
 export type UsuarioSelectScalar = {
@@ -959,9 +1159,13 @@ export type UsuarioSelectScalar = {
   email?: boolean
   senha?: boolean
   nivel_acesso?: boolean
+  foto_perfil_url?: boolean
+  foto_perfil_objeto?: boolean
+  fundo_perfil_url?: boolean
+  fundo_perfil_objeto?: boolean
 }
 
-export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_usuario" | "nome" | "email" | "senha" | "nivel_acesso", ExtArgs["result"]["usuario"]>
+export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_usuario" | "nome" | "email" | "senha" | "nivel_acesso" | "foto_perfil_url" | "foto_perfil_objeto" | "fundo_perfil_url" | "fundo_perfil_objeto", ExtArgs["result"]["usuario"]>
 export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   notificacoes?: boolean | Prisma.Usuario$notificacoesArgs<ExtArgs>
   reservas?: boolean | Prisma.Usuario$reservasArgs<ExtArgs>
@@ -990,6 +1194,10 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     email: string
     senha: string
     nivel_acesso: string
+    foto_perfil_url: string | null
+    foto_perfil_objeto: string | null
+    fundo_perfil_url: string | null
+    fundo_perfil_objeto: string | null
   }, ExtArgs["result"]["usuario"]>
   composites: {}
 }
@@ -1424,6 +1632,10 @@ export interface UsuarioFieldRefs {
   readonly email: Prisma.FieldRef<"Usuario", 'String'>
   readonly senha: Prisma.FieldRef<"Usuario", 'String'>
   readonly nivel_acesso: Prisma.FieldRef<"Usuario", 'String'>
+  readonly foto_perfil_url: Prisma.FieldRef<"Usuario", 'String'>
+  readonly foto_perfil_objeto: Prisma.FieldRef<"Usuario", 'String'>
+  readonly fundo_perfil_url: Prisma.FieldRef<"Usuario", 'String'>
+  readonly fundo_perfil_objeto: Prisma.FieldRef<"Usuario", 'String'>
 }
     
 

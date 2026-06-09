@@ -459,10 +459,6 @@ export type LivroScalarRelationFilter = {
   isNot?: Prisma.LivroWhereInput
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type LivroCreateNestedOneWithoutExemplaresInput = {
   create?: Prisma.XOR<Prisma.LivroCreateWithoutExemplaresInput, Prisma.LivroUncheckedCreateWithoutExemplaresInput>
   connectOrCreate?: Prisma.LivroCreateOrConnectWithoutExemplaresInput

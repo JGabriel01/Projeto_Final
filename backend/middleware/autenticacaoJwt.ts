@@ -134,3 +134,22 @@ export function autorizarProprioUsuarioBody() {
     next();
   };
 }
+
+export function autorizarAdmin(
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): void {
+  if (res.locals.usuario?.nivelAcesso !== "admin") {
+    res.status(403).json({
+      sucesso: false,
+      erro: {
+        mensagem: "Apenas administradores podem realizar esta operacao",
+        tipo: "ErroAutorizacao",
+      },
+    });
+    return;
+  }
+
+  next();
+}

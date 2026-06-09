@@ -23,7 +23,7 @@ rotasApi.get("/status", (_req, res) => {
       api: "Sistema de Biblioteca",
       padrao: "REST API",
       autenticacao: "JWT Bearer Token",
-      armazenamentoArquivos: "MinIO para capas de livros",
+      armazenamentoArquivos: "MinIO para capas de livros e imagens de perfil",
     },
   });
 });

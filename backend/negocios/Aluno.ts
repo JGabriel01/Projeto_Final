@@ -14,9 +14,11 @@ export class Aluno extends Usuario {
     senha: string,
     anoIngresso: number,
     curso: string,
-    matriculaAluno: string
+    matriculaAluno: string,
+    fotoPerfilUrl?: string,
+    fundoPerfilUrl?: string
   ) {
-    super(idUsuario, nome, email, senha, "aluno");
+    super(idUsuario, nome, email, senha, "aluno", fotoPerfilUrl, fundoPerfilUrl);
     
     // Validações específicas do Aluno
     this.validarAnoIngresso(anoIngresso);

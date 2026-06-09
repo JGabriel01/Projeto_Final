@@ -29,7 +29,9 @@ export class RepositorioUsuarios {
       data.senha,
       data.aluno?.ano_ingresso || 0,
       data.aluno?.curso || "",
-      data.aluno?.matricula_aluno || ""
+      data.aluno?.matricula_aluno || "",
+      data.foto_perfil_url || undefined,
+      data.fundo_perfil_url || undefined
     );
   }
 
@@ -40,7 +42,9 @@ export class RepositorioUsuarios {
       data.email,
       data.senha,
       data.professor?.departamento || "",
-      data.professor?.matricula_professor || ""
+      data.professor?.matricula_professor || "",
+      data.foto_perfil_url || undefined,
+      data.fundo_perfil_url || undefined
     );
   }
 
@@ -50,7 +54,9 @@ export class RepositorioUsuarios {
       data.nome,
       data.email,
       data.senha,
-      data.admin?.cargo || ""
+      data.admin?.cargo || "",
+      data.foto_perfil_url || undefined,
+      data.fundo_perfil_url || undefined
     );
   }
 
@@ -151,7 +157,9 @@ export class RepositorioUsuarios {
       aluno.usuario.senha,
       aluno.ano_ingresso,
       aluno.curso,
-      aluno.matricula_aluno
+      aluno.matricula_aluno,
+      aluno.usuario.foto_perfil_url || undefined,
+      aluno.usuario.fundo_perfil_url || undefined
     );
   }
 
@@ -169,7 +177,9 @@ export class RepositorioUsuarios {
       professor.usuario.email,
       professor.usuario.senha,
       professor.departamento,
-      professor.matricula_professor
+      professor.matricula_professor,
+      professor.usuario.foto_perfil_url || undefined,
+      professor.usuario.fundo_perfil_url || undefined
     );
   }
 
@@ -264,6 +274,44 @@ export class RepositorioUsuarios {
                 cargo: dados.cargo,
               },
             },
+          }),
+        },
+        include: { aluno: true, professor: true, admin: true },
+      });
+
+      if (usuarioDb.nivel_acesso === "aluno") return this.criarAlunoDoDb(usuarioDb);
+      if (usuarioDb.nivel_acesso === "professor") return this.criarProfessorDoDb(usuarioDb);
+      if (usuarioDb.nivel_acesso === "admin") return this.criarAdminDoDb(usuarioDb);
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
+  async atualizarImagensPerfil(
+    id: number,
+    imagens: {
+      fotoPerfilUrl?: string;
+      fotoPerfilObjeto?: string;
+      fundoPerfilUrl?: string;
+      fundoPerfilObjeto?: string;
+    }
+  ): Promise<Usuario | null> {
+    try {
+      const usuarioDb = await prisma.usuario.update({
+        where: { id_usuario: id },
+        data: {
+          ...(imagens.fotoPerfilUrl !== undefined && {
+            foto_perfil_url: imagens.fotoPerfilUrl,
+          }),
+          ...(imagens.fotoPerfilObjeto !== undefined && {
+            foto_perfil_objeto: imagens.fotoPerfilObjeto,
+          }),
+          ...(imagens.fundoPerfilUrl !== undefined && {
+            fundo_perfil_url: imagens.fundoPerfilUrl,
+          }),
+          ...(imagens.fundoPerfilObjeto !== undefined && {
+            fundo_perfil_objeto: imagens.fundoPerfilObjeto,
           }),
         },
         include: { aluno: true, professor: true, admin: true },
