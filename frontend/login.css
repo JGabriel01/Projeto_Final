@@ -257,7 +257,8 @@ textarea {
 
 .type-fields,
 .stack-form,
-.upload-form {
+.upload-form,
+.reset-password-fields {
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -324,6 +325,20 @@ textarea {
   box-shadow: 0 5px 20px rgba(44, 62, 80, 0.3);
 }
 
+.link-btn {
+  align-self: center;
+  border: none;
+  background: transparent;
+  color: var(--primary-color);
+  font-weight: 700;
+  padding: 4px 8px;
+}
+
+.link-btn:hover {
+  color: var(--hover-color);
+  text-decoration: underline;
+}
+
 .secondary-btn {
   padding: 12px 20px;
   background-color: var(--secondary-color);
@@ -368,6 +383,7 @@ textarea {
 }
 
 .sidebar {
+  position: relative;
   width: 95vw;
   max-width: 1600px;
   min-height: 78px;
@@ -378,14 +394,39 @@ textarea {
   border-top: 0;
   box-shadow: 0 4px 18px rgba(12, 50, 111, 0.10);
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 18px;
 }
 
+.menu-toggle {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--soft-panel);
+  color: var(--primary-color);
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.menu-toggle:hover,
+.menu-toggle.active {
+  background: var(--primary-color);
+  color: var(--lighter-color);
+  transform: translateY(-1px);
+}
+
 .logo-mark {
   width: 46px;
   height: 46px;
+  flex: 0 0 46px;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: var(--lighter-color);
   border-radius: 8px;
@@ -396,16 +437,26 @@ textarea {
   line-height: 1;
 }
 
-.sidebar nav {
-  flex: 0 1 auto;
+.app-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 72px;
+  z-index: 20;
+  width: min(320px, calc(100vw - 48px));
+  padding: 10px;
+  background: var(--lighter-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 14px 34px rgba(12, 50, 111, 0.18);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 .top-search {
+  position: relative;
   flex: 1;
+  min-width: 240px;
   max-width: 780px;
 }
 
@@ -416,15 +467,54 @@ textarea {
   border: 2px solid #a8a8a8;
   font-size: 20px;
   padding-left: 28px;
+  padding-right: 72px;
+}
+
+.profile-shortcut {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  background: var(--lighter-color);
+  transform: translateY(-50%);
+  padding: 0;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-shortcut:hover,
+.profile-shortcut.active {
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 6px 18px rgba(12, 50, 111, 0.18);
+}
+
+.top-profile-avatar {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: var(--primary-color);
+  color: var(--lighter-color);
+  font-size: 16px;
+  font-weight: 900;
+  background-size: cover;
+  background-position: center;
 }
 
 .nav-btn {
+  width: 100%;
   border: none;
   border-radius: 8px;
-  padding: 11px 14px;
+  padding: 12px 14px;
   background: transparent;
   color: var(--primary-color);
   font-weight: 700;
+  text-align: left;
   transition: all 0.3s ease;
 }
 
@@ -438,7 +528,7 @@ textarea {
   width: 95vw;
   max-width: 1600px;
   min-height: 75vh;
-  margin: 0 auto;
+  margin: 24px auto 0;
   background: #edf5ff;
   border-radius: 0;
   padding: 38px;
@@ -454,6 +544,16 @@ textarea {
   align-items: center;
   gap: 18px;
   margin-bottom: 28px;
+}
+
+.topbar > div,
+.section-heading > div,
+.profile-card > div,
+.shelf-header > div,
+.book-detail-content,
+.card-body,
+.insight-item > div {
+  min-width: 0;
 }
 
 .eyebrow,
@@ -476,6 +576,7 @@ textarea {
 .top-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
   min-width: 0;
 }
@@ -724,15 +825,18 @@ textarea {
   color: #111827;
   font-size: 32px;
   font-weight: 800;
+  overflow-wrap: anywhere;
 }
 
 .shelf-header p {
   color: #1f2937;
   font-size: 18px;
   margin-top: 4px;
+  overflow-wrap: anywhere;
 }
 
 .book-showcase {
+  max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 10px 8px 18px;
@@ -816,6 +920,7 @@ textarea {
 .book-card h3 {
   font-size: 20px;
   line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .book-chip {
@@ -834,8 +939,8 @@ textarea {
 }
 
 .book-detail-panel {
-  width: 720px;
-  flex: 0 0 720px;
+  width: clamp(560px, 52vw, 720px);
+  flex: 0 0 clamp(560px, 52vw, 720px);
   display: grid;
   grid-template-columns: 255px minmax(0, 1fr);
   gap: 22px;
@@ -880,12 +985,14 @@ textarea {
   color: #111827;
   font-size: 22px;
   margin: 0 0 2px;
+  overflow-wrap: anywhere;
 }
 
 .book-detail-author,
 .book-detail-synopsis {
   color: #111827;
   line-height: 1.55;
+  overflow-wrap: anywhere;
 }
 
 .book-detail-author {
@@ -987,6 +1094,23 @@ textarea {
   border-left: 0;
 }
 
+.operations-tables {
+  display: grid;
+  gap: 22px;
+}
+
+.operation-table-group h3 {
+  color: var(--primary-color);
+  font-size: 22px;
+  margin: 0 0 12px;
+}
+
+.empty-table {
+  color: var(--accent-color);
+  font-style: italic;
+  text-align: center;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -1067,6 +1191,7 @@ body.dark-mode {
 body.dark-mode .auth-panel,
 body.dark-mode .workspace,
 body.dark-mode .sidebar,
+body.dark-mode .app-menu,
 body.dark-mode .metric-grid article,
 body.dark-mode .split-grid article,
 body.dark-mode .role-card,
@@ -1101,7 +1226,8 @@ body.dark-mode .user-card {
 body.dark-mode input,
 body.dark-mode select,
 body.dark-mode textarea,
-body.dark-mode .tab-btn {
+body.dark-mode .tab-btn,
+body.dark-mode .menu-toggle {
   background: #3a3a3a;
   color: #ffffff;
   border-color: #555555;
@@ -1113,6 +1239,15 @@ body.dark-mode input[type="password"]::-ms-clear {
 }
 
 body.dark-mode .password-toggle {
+  color: #ffffff;
+}
+
+body.dark-mode .profile-shortcut {
+  background: #2d2d2d;
+  border-color: #ffffff;
+}
+
+body.dark-mode .link-btn {
   color: #ffffff;
 }
 
@@ -1194,7 +1329,9 @@ body.dark-mode .sidebar {
 
 body.dark-mode .tab-btn.active,
 body.dark-mode .nav-btn.active,
-body.dark-mode .nav-btn:hover {
+body.dark-mode .nav-btn:hover,
+body.dark-mode .menu-toggle.active,
+body.dark-mode .menu-toggle:hover {
   background: var(--primary-color);
   color: #ffffff;
 }
@@ -1246,7 +1383,6 @@ body.dark-mode .nav-btn:hover {
     padding: 36px 26px;
   }
 
-  .sidebar,
   .topbar,
   .section-heading,
   .profile-card {
@@ -1254,11 +1390,19 @@ body.dark-mode .nav-btn:hover {
     align-items: stretch;
   }
 
-  .sidebar nav {
-    justify-content: flex-start;
+  .sidebar {
+    align-items: center;
+  }
+
+  .app-menu {
+    left: 16px;
+    right: 16px;
+    width: auto;
   }
 
   .top-search {
+    width: 100%;
+    min-width: 0;
     max-width: none;
   }
 
@@ -1269,7 +1413,7 @@ body.dark-mode .nav-btn:hover {
 
   .top-actions,
   .form-actions {
-    flex-direction: column;
+    align-items: stretch;
   }
 
   .metric-grid,
@@ -1290,8 +1434,8 @@ body.dark-mode .nav-btn:hover {
   }
 
   .book-detail-panel {
-    width: min(86vw, 620px);
-    flex-basis: min(86vw, 620px);
+    width: min(82vw, 620px);
+    flex-basis: min(82vw, 620px);
     grid-template-columns: 1fr;
     transform: translateX(-12px) scale(0.98);
   }
@@ -1311,5 +1455,51 @@ body.dark-mode .nav-btn:hover {
 
   .hero h1 {
     font-size: 30px;
+  }
+}
+
+@media (max-width: 560px) {
+  .auth-layout {
+    padding: 12px;
+  }
+
+  .auth-panel {
+    padding: 34px 18px 24px;
+  }
+
+  .auth-form h2 {
+    font-size: 28px;
+  }
+
+  .sidebar,
+  .workspace {
+    width: calc(100vw - 24px);
+  }
+
+  .sidebar {
+    padding: 16px;
+  }
+
+  .workspace {
+    padding: 18px;
+  }
+
+  .shelf-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .book-detail-panel {
+    width: 78vw;
+    flex-basis: 78vw;
+    padding: 16px;
+  }
+
+  .book-detail-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .upload-form {
+    min-width: 0;
   }
 }

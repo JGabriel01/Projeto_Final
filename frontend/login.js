@@ -21,9 +21,14 @@ const authScreen = qs("#authScreen");
 const appScreen = qs("#appScreen");
 const loginForm = qs("#loginForm");
 const registerForm = qs("#registerForm");
+const forgotPasswordForm = qs("#forgotPasswordForm");
 const toast = qs("#toast");
 const themeToggle = qs("#themeToggle");
 const appThemeToggle = qs("#appThemeToggle");
+const menuToggle = qs("#menuToggle");
+const appMenu = qs("#appMenu");
+const profileShortcut = qs("#profileShortcut");
+let verifiedRecoveryEmail = "";
 
 function setCookie(name, value) {
   document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=7200`;
@@ -52,9 +57,13 @@ function toggleTheme() {
   applyTheme();
 }
 
-function updatePasswordStrength(password) {
-  const bar = qs("#passwordStrength");
-  const text = qs("#passwordStrengthText");
+function updatePasswordStrength(
+  password,
+  barSelector = "#passwordStrength",
+  textSelector = "#passwordStrengthText"
+) {
+  const bar = qs(barSelector);
+  const text = qs(textSelector);
   if (!bar || !text) return;
 
   let score = 0;
@@ -105,6 +114,38 @@ function showAuth() {
   appScreen.classList.add("hidden");
 }
 
+function showLoginForm() {
+  qs("#loginTab").classList.add("active");
+  qs("#registerTab").classList.remove("active");
+  loginForm.classList.add("active");
+  registerForm.classList.remove("active");
+  forgotPasswordForm.classList.remove("active");
+}
+
+function showRegisterForm() {
+  qs("#registerTab").classList.add("active");
+  qs("#loginTab").classList.remove("active");
+  registerForm.classList.add("active");
+  loginForm.classList.remove("active");
+  forgotPasswordForm.classList.remove("active");
+}
+
+function showForgotPasswordForm() {
+  qs("#loginTab").classList.remove("active");
+  qs("#registerTab").classList.remove("active");
+  forgotPasswordForm.classList.add("active");
+  loginForm.classList.remove("active");
+  registerForm.classList.remove("active");
+}
+
+function resetForgotPasswordForm() {
+  verifiedRecoveryEmail = "";
+  forgotPasswordForm.reset();
+  qs("#resetPasswordFields").classList.add("hidden");
+  qs("#verifyForgotEmailBtn").classList.remove("hidden");
+  updatePasswordStrength("", "#forgotPasswordStrength", "#forgotPasswordStrengthText");
+}
+
 function showApp() {
   authScreen.classList.add("hidden");
   appScreen.classList.remove("hidden");
@@ -137,6 +178,7 @@ function renderCurrentUser() {
   qs("#newBookBtn").classList.toggle("hidden", !isAdmin());
   applyRoleInterface();
   renderProfileImages(state.usuario);
+  renderTopProfileShortcut(state.usuario);
 }
 
 function isAdmin() {
@@ -226,6 +268,20 @@ function renderProfileImages(usuario) {
     cover.style.backgroundImage = `linear-gradient(90deg, rgba(7,29,65,.35), rgba(19,81,180,.2)), url("${fundoPerfilUrl}")`;
     cover.style.backgroundSize = "cover";
     cover.style.backgroundPosition = "center";
+  }
+}
+
+function renderTopProfileShortcut(usuario) {
+  const avatar = qs("#topProfileAvatar");
+  if (!avatar) return;
+
+  const fotoPerfilUrl = normalizeImageUrl(usuario.fotoPerfilUrl);
+  avatar.textContent = (usuario.nome || "U").slice(0, 1).toUpperCase();
+  avatar.style.backgroundImage = "";
+
+  if (fotoPerfilUrl) {
+    avatar.textContent = "";
+    avatar.style.backgroundImage = `url("${fotoPerfilUrl}")`;
   }
 }
 
@@ -579,6 +635,68 @@ function renderUsers() {
 }
 
 function renderOperations() {
+  renderTableRows(
+    "#reservationsTable",
+    state.reservas.map((reserva) => `
+      <tr>
+        <td>${reserva.idReserva}</td>
+        <td>${userNameById(reserva.usuarioId)}</td>
+        <td>${bookTitleById(reserva.livroId)}</td>
+        <td>${formatStatus(reserva.statusReserva)}</td>
+        <td>${formatDate(reserva.dataReserva)}</td>
+      </tr>
+    `),
+    5,
+    "Nenhuma reserva cadastrada."
+  );
+
+  renderTableRows(
+    "#loansTable",
+    state.emprestimos.map((emprestimo) => `
+      <tr>
+        <td>${emprestimo.idEmprestimo}</td>
+        <td>${userNameById(emprestimo.usuarioId)}</td>
+        <td>${copyDescriptionById(emprestimo.exemplarId)}</td>
+        <td>${formatDate(emprestimo.dataSaida)}</td>
+        <td>${formatDate(emprestimo.dataVencimento)}</td>
+        <td>${emprestimo.dataDevolucaoReal ? "devolvido" : "em aberto"}</td>
+      </tr>
+    `),
+    6,
+    "Nenhum emprestimo registrado."
+  );
+
+  renderTableRows(
+    "#finesTable",
+    state.multas.map((multa) => `
+      <tr>
+        <td>${multa.idMulta}</td>
+        <td>${multa.idEmprestimo ?? multa.emprestimoId ?? "-"}</td>
+        <td>${multa.exemplarId ?? "-"}</td>
+        <td>R$ ${Number(multa.valor ?? multa.valorMulta ?? 0).toFixed(2)}</td>
+        <td>${formatStatus(multa.statusPagamento)}</td>
+      </tr>
+    `),
+    5,
+    "Nenhuma multa registrada."
+  );
+
+  renderTableRows(
+    "#copiesTable",
+    state.exemplares.map((exemplar) => `
+      <tr>
+        <td>${exemplar.id_exemplar}</td>
+        <td>${exemplar.livro?.titulo || bookTitleById(exemplar.livro_id)}</td>
+        <td>${exemplar.codigo_tombo}</td>
+        <td>${exemplar.estado}</td>
+        <td>${exemplar.localizacao}</td>
+      </tr>
+    `),
+    5,
+    "Nenhum exemplar cadastrado."
+  );
+  return;
+
   const rows = [
     ...state.exemplares.map((exemplar) => ({
       tipo: "Exemplar",
@@ -611,6 +729,14 @@ function renderOperations() {
   `).join("");
 }
 
+function renderTableRows(selector, rows, colSpan, emptyMessage) {
+  const target = qs(selector);
+  if (!target) return;
+  target.innerHTML = rows.length
+    ? rows.join("")
+    : `<tr><td colspan="${colSpan}" class="empty-table">${emptyMessage}</td></tr>`;
+}
+
 function userNameById(id) {
   return state.usuarios.find((usuario) => usuario.idUsuario === id)?.nome || `Usuário ${id}`;
 }
@@ -629,6 +755,22 @@ function copyDescriptionById(id) {
 function setActiveView(viewId) {
   qsa(".nav-btn").forEach((btn) => btn.classList.toggle("active", btn.dataset.view === viewId));
   qsa(".view").forEach((view) => view.classList.toggle("active", view.id === viewId));
+  profileShortcut?.classList.toggle("active", viewId === "profileView");
+  closeAppMenu();
+}
+
+function toggleAppMenu() {
+  const willOpen = appMenu.classList.contains("hidden");
+  appMenu.classList.toggle("hidden", !willOpen);
+  menuToggle.classList.toggle("active", willOpen);
+  menuToggle.setAttribute("aria-expanded", String(willOpen));
+}
+
+function closeAppMenu() {
+  if (!appMenu || !menuToggle) return;
+  appMenu.classList.add("hidden");
+  menuToggle.classList.remove("active");
+  menuToggle.setAttribute("aria-expanded", "false");
 }
 
 function resetBookForm() {
@@ -730,6 +872,41 @@ registerForm.addEventListener("submit", async (event) => {
     await api(`/usuarios/${tipo}`, { method: "POST", body: JSON.stringify(payload) });
     notify("Cadastro criado. Faça login para entrar");
     qs("#loginTab").click();
+  } catch (error) {
+    notify(error.message);
+  }
+});
+
+forgotPasswordForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  try {
+    const email = qs("#forgotEmail").value.trim();
+    await api("/auth/recuperar-senha/verificar-email", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+    verifiedRecoveryEmail = email;
+    qs("#resetPasswordFields").classList.remove("hidden");
+    qs("#verifyForgotEmailBtn").classList.add("hidden");
+    notify("Email encontrado. Crie uma nova senha");
+  } catch (error) {
+    verifiedRecoveryEmail = "";
+    qs("#resetPasswordFields").classList.add("hidden");
+    notify(error.message);
+  }
+});
+
+qs("#resetPasswordBtn").addEventListener("click", async () => {
+  try {
+    const email = verifiedRecoveryEmail || qs("#forgotEmail").value.trim();
+    const senha = qs("#forgotPassword").value;
+    await api("/auth/recuperar-senha/redefinir", {
+      method: "POST",
+      body: JSON.stringify({ email, senha }),
+    });
+    notify("Senha redefinida com sucesso. Faca login para entrar");
+    resetForgotPasswordForm();
+    showLoginForm();
   } catch (error) {
     notify(error.message);
   }
@@ -842,17 +1019,23 @@ qs("#logoutBtn").addEventListener("click", async () => {
 });
 
 qs("#loginTab").addEventListener("click", () => {
-  qs("#loginTab").classList.add("active");
-  qs("#registerTab").classList.remove("active");
-  loginForm.classList.add("active");
-  registerForm.classList.remove("active");
+  resetForgotPasswordForm();
+  showLoginForm();
 });
 
 qs("#registerTab").addEventListener("click", () => {
-  qs("#registerTab").classList.add("active");
-  qs("#loginTab").classList.remove("active");
-  registerForm.classList.add("active");
-  loginForm.classList.remove("active");
+  resetForgotPasswordForm();
+  showRegisterForm();
+});
+
+qs("#forgotPasswordBtn").addEventListener("click", () => {
+  resetForgotPasswordForm();
+  showForgotPasswordForm();
+});
+
+qs("#backToLoginBtn").addEventListener("click", () => {
+  resetForgotPasswordForm();
+  showLoginForm();
 });
 
 qs("#registerType").addEventListener("change", (event) => {
@@ -867,6 +1050,14 @@ qs("#registerPassword").addEventListener("input", (event) => {
   updatePasswordStrength(event.target.value);
 });
 
+qs("#forgotPassword").addEventListener("input", (event) => {
+  updatePasswordStrength(
+    event.target.value,
+    "#forgotPasswordStrength",
+    "#forgotPasswordStrengthText"
+  );
+});
+
 qsa("[data-password-toggle]").forEach((button) => {
   button.addEventListener("click", () => {
     const input = qs(`#${button.dataset.passwordToggle}`);
@@ -879,6 +1070,26 @@ qsa("[data-password-toggle]").forEach((button) => {
 
 qsa(".nav-btn").forEach((btn) => {
   btn.addEventListener("click", () => setActiveView(btn.dataset.view));
+});
+
+menuToggle.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleAppMenu();
+});
+
+profileShortcut.addEventListener("click", () => {
+  setActiveView("profileView");
+});
+
+document.addEventListener("click", (event) => {
+  if (
+    appMenu.classList.contains("hidden") ||
+    appMenu.contains(event.target) ||
+    menuToggle.contains(event.target)
+  ) {
+    return;
+  }
+  closeAppMenu();
 });
 
 qs("#newBookBtn").addEventListener("click", () => openBookForm());

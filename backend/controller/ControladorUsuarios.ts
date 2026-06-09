@@ -6,6 +6,7 @@ import { RepositorioUsuarios } from "../persistencia/RepositorioUsuarios.js";
 import {
   ErroValidacao,
   ErroEmail,
+  ErroSenha,
   ErroDuplicado,
   ErroNaoEncontrado,
   ErroAutenticacao,
@@ -330,6 +331,58 @@ export class ControladorUsuarios {
     }
   }
 
+  async verificarEmailRecuperacao(
+    email: string
+  ): Promise<ResultadoOperacao<{ email: string }>> {
+    try {
+      if (!email) {
+        throw new ErroValidacao("Email e obrigatorio");
+      }
+
+      const usuario = await this.repositorioUsuarios.buscarPorEmail(email);
+      if (!usuario) {
+        throw new ErroNaoEncontrado("Funcionario nao encontrado");
+      }
+
+      return { sucesso: true, dados: { email: usuario.email } };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao verificar email");
+    }
+  }
+
+  async redefinirSenhaPorEmail(
+    email: string,
+    senha: string
+  ): Promise<ResultadoOperacao<{ mensagem: string }>> {
+    try {
+      if (!email || !senha) {
+        throw new ErroValidacao("Email e nova senha sao obrigatorios");
+      }
+
+      const usuario = await this.repositorioUsuarios.buscarPorEmail(email);
+      if (!usuario) {
+        throw new ErroNaoEncontrado("Funcionario nao encontrado");
+      }
+
+      usuario.senha = senha;
+
+      const usuarioAtualizado = await this.repositorioUsuarios.atualizar(
+        usuario.idUsuario,
+        { senha }
+      );
+      if (!usuarioAtualizado) {
+        throw new ErroNaoEncontrado("Funcionario nao encontrado");
+      }
+
+      return {
+        sucesso: true,
+        dados: { mensagem: "Senha redefinida com sucesso" },
+      };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao redefinir senha");
+    }
+  }
+
   private tratarErro(erro: any, mensagemDefault: string): ResultadoOperacao {
     if (erro instanceof ErroNaoEncontrado) {
       return {
@@ -357,6 +410,16 @@ export class ControladorUsuarios {
         erro: {
           mensagem: erro.message,
           tipo: "ErroEmail",
+        },
+      };
+    }
+
+    if (erro instanceof ErroSenha) {
+      return {
+        sucesso: false,
+        erro: {
+          mensagem: erro.message,
+          tipo: "ErroValidacao",
         },
       };
     }

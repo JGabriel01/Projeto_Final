@@ -48,6 +48,19 @@ rotasAuth.post("/login", validarCamposBody(["email", "senha"]), async (req, res)
   });
 });
 
+rotasAuth.post("/recuperar-senha/verificar-email", validarCamposBody(["email"]), async (req, res) => {
+  const resultado = await controladorUsuarios.verificarEmailRecuperacao(req.body.email);
+  responderResultado(res, resultado);
+});
+
+rotasAuth.post("/recuperar-senha/redefinir", validarCamposBody(["email", "senha"]), async (req, res) => {
+  const resultado = await controladorUsuarios.redefinirSenhaPorEmail(
+    req.body.email,
+    req.body.senha
+  );
+  responderResultado(res, resultado);
+});
+
 rotasAuth.get("/me", autenticarJwt, (_req, res) => {
   res.json({
     sucesso: true,

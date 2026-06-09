@@ -48,6 +48,29 @@
           <span>Guardar usuário em cookie</span>
         </label>
         <button class="primary-btn" type="submit">Entrar</button>
+        <button id="forgotPasswordBtn" class="link-btn" type="button">Esqueceu sua senha?</button>
+      </form>
+
+      <form id="forgotPasswordForm" class="auth-form" novalidate>
+        <h2>Recuperar senha</h2>
+        <label>E-mail
+          <input id="forgotEmail" type="email" autocomplete="email" required>
+        </label>
+        <button id="verifyForgotEmailBtn" class="primary-btn" type="submit">Verificar e-mail</button>
+
+        <div id="resetPasswordFields" class="reset-password-fields hidden">
+          <label>Nova senha
+            <span class="password-field">
+              <input id="forgotPassword" type="password" autocomplete="new-password" required>
+              <button class="password-toggle" type="button" data-password-toggle="forgotPassword" aria-label="Mostrar senha"></button>
+            </span>
+          </label>
+          <div id="forgotPasswordStrength" class="password-strength" aria-label="Forca da senha"></div>
+          <small id="forgotPasswordStrengthText" class="password-strength-text">Digite uma senha com letras e numeros.</small>
+          <button id="resetPasswordBtn" class="primary-btn" type="button">Criar nova senha</button>
+        </div>
+
+        <button id="backToLoginBtn" class="link-btn" type="button">Voltar para o login</button>
       </form>
 
       <form id="registerForm" class="auth-form" novalidate>
@@ -105,15 +128,18 @@
   <main id="appScreen" class="app-layout hidden">
     <aside class="sidebar">
       <div class="logo-mark">LM</div>
+      <button id="menuToggle" class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
       <div class="top-search">
         <input id="globalSearch" type="search" placeholder="Busque por título ou autor...">
+        <button id="profileShortcut" class="profile-shortcut" type="button" aria-label="Abrir perfil">
+          <span id="topProfileAvatar" class="top-profile-avatar">U</span>
+        </button>
       </div>
-      <nav>
+      <nav id="appMenu" class="app-menu hidden">
         <button class="nav-btn active" data-view="homeView" type="button">Início</button>
         <button class="nav-btn" data-view="booksView" type="button">Livros</button>
         <button class="nav-btn" data-view="usersView" type="button">Usuários</button>
         <button class="nav-btn" data-view="operationsView" type="button">Operações</button>
-        <button class="nav-btn" data-view="profileView" type="button">Perfil</button>
       </nav>
       <div class="top-actions app-actions">
         <button id="appThemeToggle" class="secondary-btn icon-btn" type="button" title="Modo escuro">🌙</button>
@@ -245,11 +271,52 @@
             </form>
           </article>
         </div>
-        <div class="table-wrap">
+        <div class="table-wrap operations-legacy hidden">
           <table>
             <thead><tr><th>Tipo</th><th>ID</th><th>Referência</th><th>Status/Data</th></tr></thead>
             <tbody id="operationsTable"></tbody>
           </table>
+        </div>
+        <div class="operations-tables">
+          <div class="operation-table-group">
+            <h3>Reservas</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>ID</th><th>Usuario</th><th>Livro</th><th>Status</th><th>Data</th></tr></thead>
+                <tbody id="reservationsTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="operation-table-group">
+            <h3>Emprestimos</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>ID</th><th>Usuario</th><th>Exemplar</th><th>Saida</th><th>Vencimento</th><th>Status</th></tr></thead>
+                <tbody id="loansTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="operation-table-group">
+            <h3>Multas</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>ID</th><th>Emprestimo</th><th>Exemplar</th><th>Valor</th><th>Status</th></tr></thead>
+                <tbody id="finesTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="operation-table-group">
+            <h3>Exemplares</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>ID</th><th>Livro</th><th>Tombo</th><th>Estado</th><th>Localizacao</th></tr></thead>
+                <tbody id="copiesTable"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -306,6 +373,6 @@
   </main>
 
   <div id="toast" class="toast hidden"></div>
-  <script src="login.js"></script>
+  <script src="login.js?v=recuperar-senha"></script>
 </body>
 </html>

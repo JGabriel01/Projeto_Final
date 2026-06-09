@@ -1,0 +1,113 @@
+COMO RODAR O PROJETO
+====================
+
+O backend ja serve o frontend automaticamente.
+Voce nao precisa subir um servidor separado para a pasta frontend.
+
+
+1. Instalar dependencias
+------------------------
+
+Abra o PowerShell na raiz do projeto:
+
+cd C:\Users\jgcda\Downloads\Projeto_Final
+
+Depois entre no backend e instale as dependencias:
+
+cd backend
+npm install
+
+
+2. Rodar frontend e backend juntos
+----------------------------------
+
+Dentro da pasta backend, rode:
+
+npm run server
+
+Depois abra no navegador:
+
+http://localhost:3000
+
+A API tambem fica no mesmo servidor:
+
+http://localhost:3000/api
+
+Para parar o servidor, use:
+
+Ctrl + C
+
+
+3. Rodar o MinIO
+----------------
+
+O MinIO e usado para salvar imagens, como capas de livros e imagens de perfil.
+
+Dentro da pasta backend, rode:
+
+docker compose -f docker-compose.minio.yml up -d
+
+Console do MinIO:
+
+http://localhost:9001
+
+Usuario:
+
+minioadmin
+
+Senha:
+
+minioadmin
+
+URL publica dos arquivos:
+
+http://localhost:9000/biblioteca
+
+Para parar o MinIO:
+
+docker compose -f docker-compose.minio.yml down
+
+Para parar o MinIO e apagar os arquivos salvos no volume:
+
+docker compose -f docker-compose.minio.yml down -v
+
+
+4. Resetar o banco de dados
+---------------------------
+
+O banco usado e SQLite e fica em:
+
+backend\dev.db
+
+Antes de resetar, pare o servidor com Ctrl + C.
+
+Dentro da pasta backend, rode:
+
+npx prisma migrate reset --force
+
+Esse comando apaga os dados do banco e recria as tabelas pelas migrations.
+
+Depois, se quiser garantir que o Prisma Client foi atualizado, rode:
+
+npx prisma generate
+
+Por fim, suba o servidor novamente:
+
+npm run server
+
+Depois do reset, o banco fica vazio. Crie um usuario novamente pela tela de cadastro
+ou pela API.
+
+
+5. Ordem recomendada para rodar tudo
+------------------------------------
+
+Em um terminal:
+
+cd C:\Users\jgcda\Downloads\Projeto_Final\backend
+docker compose -f docker-compose.minio.yml up -d
+npm run server
+
+No navegador:
+
+http://localhost:3000
