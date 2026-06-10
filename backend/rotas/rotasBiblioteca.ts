@@ -177,7 +177,10 @@ rotasBiblioteca.get("/estado", async (_req, res) => {
 
   const [livros, exemplares, reservas, emprestimos, multas, notificacoes, usuarios, solicitacoesExclusaoAdmin] =
     await Promise.all([
-      prisma.livro.findMany({ orderBy: { id_livro: "desc" } }),
+      prisma.livro.findMany({
+        include: { _count: { select: { curtidas: true } } },
+        orderBy: { id_livro: "desc" },
+      }),
       prisma.exemplar.findMany({ include: { livro: true }, orderBy: { id_exemplar: "desc" } }),
       (prisma as any).reserva.findMany({
         include: { livro: true, usuario: true },
@@ -328,6 +331,23 @@ rotasBiblioteca.post("/emprestimos/:id/devolver", async (req, res) => {
       where: { id_emprestimo: emprestimo.id_emprestimo },
       data: { data_devolucao_real: agora },
     });
+    const livroId = emprestimo.exemplar.livro_id;
+
+    if (req.body?.curtirLivro === true && usuario.nivelAcesso !== "admin") {
+      await (prisma as any).curtidaLivro.upsert({
+        where: {
+          usuario_id_livro_id: {
+            usuario_id: emprestimo.usuario_id,
+            livro_id: livroId,
+          },
+        },
+        update: {},
+        create: {
+          usuario_id: emprestimo.usuario_id,
+          livro_id: livroId,
+        },
+      });
+    }
 
     if (agora > new Date(emprestimo.data_vencimento) && !emprestimo.multa) {
       await (prisma as any).multa.create({
@@ -342,7 +362,7 @@ rotasBiblioteca.post("/emprestimos/:id/devolver", async (req, res) => {
       await notificar(emprestimo.usuario_id, "multa", `Uma multa foi gerada por atraso na devolução de "${emprestimo.exemplar.livro.titulo}".`, "gerenciar_multas", emprestimo.id_emprestimo);
     }
 
-    await sincronizarFilaLivro(emprestimo.exemplar.livro_id);
+    await sincronizarFilaLivro(livroId);
     resposta(res, devolvido);
   } catch (e: any) {
     erro(res, e.message || "Erro ao devolver empréstimo");

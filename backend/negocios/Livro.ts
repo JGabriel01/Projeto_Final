@@ -10,6 +10,7 @@ export class Livro {
   #status: string;
   #capaUrl: string | null;
   #capaObjeto: string | null;
+  #curtidasTotal: number;
 
   constructor(
     idLivro: number,
@@ -20,7 +21,8 @@ export class Livro {
     sinopse: string,
     status: string = "disponivel",
     capaUrl: string | null = null,
-    capaObjeto: string | null = null
+    capaObjeto: string | null = null,
+    curtidasTotal: number = 0
   ) {
     this.validarTitulo(titulo);
     this.validarAutor(autor);
@@ -38,6 +40,7 @@ export class Livro {
     this.#status = status;
     this.#capaUrl = capaUrl;
     this.#capaObjeto = capaObjeto;
+    this.#curtidasTotal = curtidasTotal;
   }
 
   get idLivro(): number {
@@ -74,6 +77,10 @@ export class Livro {
 
   get capaObjeto(): string | null {
     return this.#capaObjeto;
+  }
+
+  get curtidasTotal(): number {
+    return this.#curtidasTotal;
   }
 
   set titulo(titulo: string) {
@@ -205,6 +212,7 @@ export class Livro {
       status: this.#status,
       capaUrl: this.#capaUrl,
       capaObjeto: this.#capaObjeto,
+      curtidasTotal: this.#curtidasTotal,
       estaDisponivel: this.estaDisponivel(),
     };
   }

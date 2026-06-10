@@ -72,6 +72,11 @@ export type Admin = Prisma.AdminModel
  */
 export type Livro = Prisma.LivroModel
 /**
+ * Model CurtidaLivro
+ * 
+ */
+export type CurtidaLivro = Prisma.CurtidaLivroModel
+/**
  * Model Exemplar
  * 
  */

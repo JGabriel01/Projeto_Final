@@ -14,7 +14,8 @@ export class RepositorioLivros {
       data.sinopse,
       data.status,
       data.capa_url ?? null,
-      data.capa_objeto ?? null
+      data.capa_objeto ?? null,
+      data._count?.curtidas ?? data.curtidasTotal ?? 0
     );
   }
 
@@ -37,6 +38,7 @@ export class RepositorioLivros {
   async buscarPorId(id: number): Promise<Livro | undefined> {
     const livro = await prisma.livro.findUnique({
       where: { id_livro: id },
+      include: { _count: { select: { curtidas: true } } },
     });
     return livro ? this.criarLivroDoDb(livro) : undefined;
   }
@@ -44,6 +46,7 @@ export class RepositorioLivros {
   async buscarPorTitulo(titulo: string): Promise<Livro[]> {
     const livros = await prisma.livro.findMany({
       where: { titulo: { contains: titulo } },
+      include: { _count: { select: { curtidas: true } } },
     });
     return livros.map((l) => this.criarLivroDoDb(l));
   }
@@ -51,12 +54,15 @@ export class RepositorioLivros {
   async buscarPorAutor(autor: string): Promise<Livro[]> {
     const livros = await prisma.livro.findMany({
       where: { autor: { contains: autor } },
+      include: { _count: { select: { curtidas: true } } },
     });
     return livros.map((l) => this.criarLivroDoDb(l));
   }
 
   async listarTodos(): Promise<Livro[]> {
-    const livros = await prisma.livro.findMany();
+    const livros = await prisma.livro.findMany({
+      include: { _count: { select: { curtidas: true } } },
+    });
     return livros.map((l) => this.criarLivroDoDb(l));
   }
 

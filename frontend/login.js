@@ -200,7 +200,7 @@ function applyRoleInterface() {
       tag: "Painel do administrador",
       title: "Gestão completa da biblioteca.",
       description: "Cadastre livros, atualize capas, acompanhe usuários, reservas, empréstimos e multas.",
-      views: ["homeView", "booksView", "usersView", "operationsView", "profileView"],
+      views: ["homeView", "usersView", "operationsView", "profileView"],
       actions: [
         ["Gerenciar acervo", "Criar, atualizar e remover livros do sistema."],
         ["Acompanhar circulação", "Consultar reservas, empréstimos e multas registrados."],
@@ -211,7 +211,7 @@ function applyRoleInterface() {
       tag: "Painel do professor",
       title: "Consulta acadêmica do acervo.",
       description: "Pesquise livros, consulte usuários públicos e registre reservas vinculadas ao seu perfil.",
-      views: ["homeView", "booksView", "usersView", "operationsView", "profileView"],
+      views: ["homeView", "usersView", "operationsView", "profileView"],
       actions: [
         ["Pesquisar livros", "Acompanhe obras por título, autor e gênero."],
         ["Reservar obra", "Solicite reserva informando o ID do livro desejado."],
@@ -222,7 +222,7 @@ function applyRoleInterface() {
       tag: "Painel do aluno",
       title: "Seu espaço de consulta e reserva.",
       description: "Encontre livros disponíveis, faça reservas e mantenha seu perfil atualizado.",
-      views: ["homeView", "booksView", "operationsView", "profileView"],
+      views: ["homeView", "operationsView", "profileView"],
       actions: [
         ["Explorar acervo", "Veja os livros cadastrados e seus dados principais."],
         ["Fazer reserva", "Informe o ID do livro para criar uma reserva ativa."],
@@ -525,24 +525,6 @@ function renderBooks() {
     ${state.selectedBookId === livro.idLivro ? bookInlineDetailsHtml(livro) : ""}
   `).join("");
 
-  qs("#booksTable").innerHTML = livros.map((livro) => `
-    <tr>
-      <td>${livro.idLivro}</td>
-      <td>${livro.titulo}</td>
-      <td>${livro.autor}</td>
-      <td>${livro.genero}</td>
-      <td>${formatStatus(livro.status)}</td>
-      <td>
-        ${isAdmin() ? `
-          <div class="row-actions">
-            <button class="secondary-btn" type="button" data-edit-book="${livro.idLivro}">Atualizar</button>
-            <button class="danger-btn" type="button" data-delete-book="${livro.idLivro}">Remover</button>
-          </div>
-        ` : "Somente consulta"}
-      </td>
-    </tr>
-  `).join("");
-
 }
 
 function bookCardHtml(livro, selectedId = state.selectedBookId) {
@@ -591,8 +573,14 @@ function bookInlineDetailsHtml(livro) {
         <article><strong>${exemplares.length}</strong><span>exemplares</span></article>
         <article><strong>${disponiveis}</strong><span>disponíveis</span></article>
         <article><strong>${emprestados}</strong><span>emprestados</span></article>
+        <article><strong>${livro.curtidasTotal || livro._count?.curtidas || 0}</strong><span>curtidas</span></article>
       </div>
-      <button class="secondary-btn book-more-btn" type="button">Mais informações</button>
+      ${isAdmin() ? `
+        <div class="row-actions">
+          <button class="secondary-btn" type="button" data-edit-book="${livro.idLivro}">Atualizar</button>
+          <button class="danger-btn" type="button" data-delete-book="${livro.idLivro}">Remover</button>
+        </div>
+      ` : `<button class="secondary-btn book-more-btn" type="button">Mais informações</button>`}
     </div>
     </aside>
   `;
@@ -777,12 +765,27 @@ function resetBookForm() {
   qs("#bookForm").reset();
   qs("#bookId").value = "";
   qs("#bookAvailable").checked = true;
+  qs("#pendingCopiesList") && (qs("#pendingCopiesList").innerHTML = "");
+  qs("#newCopyCode") && (qs("#newCopyCode").value = "");
+  qs("#newCopyLocation") && (qs("#newCopyLocation").value = "");
+  qs("#newCopyState") && (qs("#newCopyState").value = "novo");
 }
 
 function openBookForm(livro = null) {
-  qs("#bookFormPanel").classList.remove("hidden");
+  const panel = qs("#bookFormPanel");
+  const requestedId = livro ? String(livro.idLivro) : "";
+  const currentId = qs("#bookId").value;
+  const isOpen = !panel.classList.contains("hidden");
+
+  if (isOpen && currentId === requestedId) {
+    closeBookForm();
+    return;
+  }
+
+  setActiveView("homeView");
+  panel.classList.remove("hidden");
+  resetBookForm();
   if (!livro) {
-    resetBookForm();
     return;
   }
   qs("#bookId").value = livro.idLivro;
@@ -1094,7 +1097,7 @@ document.addEventListener("click", (event) => {
 
 qs("#newBookBtn").addEventListener("click", () => openBookForm());
 qs("#cancelBookBtn").addEventListener("click", closeBookForm);
-qs("#refreshBtn").addEventListener("click", loadAll);
+qs("#refreshBtn")?.addEventListener("click", loadAll);
 qs("#globalSearch").addEventListener("input", renderAll);
 
 document.addEventListener("click", async (event) => {

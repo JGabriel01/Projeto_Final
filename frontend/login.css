@@ -18,6 +18,7 @@
   --warning-color: #fbc02d;
   --soft-panel: #f7f9fc;
   --gov-yellow: #fdd200;
+  --page-background: #f5f7fb;
 }
 
 html,
@@ -27,7 +28,7 @@ body {
 
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(180deg, #ffffff 0%, #edf2fb 100%);
+  background: var(--page-background);
   color: var(--primary-color);
   min-height: 100vh;
 }
@@ -351,6 +352,17 @@ textarea {
   padding: 12px;
 }
 
+#appThemeToggle {
+  background: transparent;
+  color: var(--primary-color);
+  border: 1.5px solid var(--border-color);
+}
+
+#appThemeToggle:hover {
+  background: var(--soft-panel);
+  color: var(--primary-color);
+}
+
 .secondary-btn:hover {
   background-color: var(--primary-color);
   transform: translateY(-2px);
@@ -378,19 +390,20 @@ textarea {
 /* ===== Dashboard no estilo da home original ===== */
 
 .app-layout {
+  --workspace-padding: 38px;
   min-height: 100vh;
   padding: 30px 0;
 }
 
 .sidebar {
   position: relative;
-  width: 95vw;
-  max-width: 1600px;
+  width: calc(95vw - (var(--workspace-padding) * 2));
+  max-width: calc(1600px - (var(--workspace-padding) * 2));
   min-height: 78px;
   margin: 0 auto;
   padding: 18px 22px;
   background: var(--lighter-color);
-  border-radius: 0;
+  border-radius: 14px;
   border-top: 0;
   box-shadow: 0 4px 18px rgba(12, 50, 111, 0.10);
   display: flex;
@@ -543,12 +556,23 @@ textarea {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 10px;
   padding: 12px;
   margin-bottom: 8px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
   background: var(--soft-panel);
+  color: var(--accent-color);
+}
+
+.notification-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border: 0;
+  background: transparent;
+  padding: 0;
   text-align: left;
   color: var(--accent-color);
 }
@@ -565,6 +589,20 @@ textarea {
 
 .notification-item small {
   color: var(--accent-color);
+}
+
+.notification-dismiss {
+  align-self: flex-start;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 7px 10px;
+  background: var(--lighter-color);
+  color: var(--primary-color);
+  font-weight: 800;
+}
+
+.notification-dismiss:hover {
+  background: #e8f0fe;
 }
 
 .profile-shortcut:hover,
@@ -608,10 +646,10 @@ textarea {
   width: 95vw;
   max-width: 1600px;
   min-height: 75vh;
-  margin: 24px auto 0;
-  background: #edf5ff;
+  margin: 12px auto 0;
+  background: var(--page-background);
   border-radius: 0;
-  padding: 38px;
+  padding: var(--workspace-padding);
   border: 0;
   box-shadow: none;
 }
@@ -873,6 +911,10 @@ textarea {
   padding: 24px;
 }
 
+#bookFormPanel {
+  margin-bottom: 32px;
+}
+
 .metric-grid span {
   color: var(--primary-color);
   font-size: 34px;
@@ -987,7 +1029,7 @@ textarea {
 }
 
 .card-body {
-  padding: 14px 0 0;
+  padding: 14px 0 0 18px;
 }
 
 .card-body h3,
@@ -1001,6 +1043,10 @@ textarea {
   font-size: 20px;
   line-height: 1.2;
   overflow-wrap: anywhere;
+}
+
+.book-card .card-body p {
+  margin-bottom: 18px;
 }
 
 .book-chip {
@@ -1105,7 +1151,7 @@ textarea {
 
 .book-detail-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-bottom: 14px;
 }
@@ -1113,8 +1159,9 @@ textarea {
 .book-detail-stats article {
   padding: 12px;
   border-radius: 8px;
-  background: var(--lighter-color);
-  border-top: 0;
+  background: #f7fbff;
+  border: 1px solid #cfe0f5;
+  box-shadow: 0 6px 16px rgba(12, 50, 111, 0.08);
 }
 
 .book-detail-stats strong {
@@ -1266,6 +1313,14 @@ textarea {
   margin-top: 10px;
 }
 
+.copy-builder-btn {
+  margin-top: 16px;
+}
+
+.existing-copy-block {
+  margin-bottom: 22px;
+}
+
 .copy-list span {
   padding: 10px;
   border-radius: 8px;
@@ -1312,6 +1367,10 @@ textarea {
   line-height: 1.5;
 }
 
+.confirm-modal .form-actions {
+  margin-bottom: 0;
+}
+
 .user-avatar,
 .profile-avatar {
   border-radius: 50%;
@@ -1343,6 +1402,7 @@ textarea {
   display: flex;
   gap: 12px;
   margin-top: 18px;
+  margin-bottom: 24px;
 }
 
 .table-wrap {
@@ -1440,7 +1500,8 @@ th {
 }
 
 body.dark-mode {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  --page-background: #1f1f1f;
+  background: var(--page-background);
   color: #ffffff;
 }
 
@@ -1566,6 +1627,16 @@ body.dark-mode .book-detail-tags span {
   color: #ffffff;
 }
 
+body.dark-mode .book-detail-stats article {
+  background: #242b36;
+  border: 1px solid #465568;
+  box-shadow: none;
+}
+
+body.dark-mode .book-detail-stats span {
+  color: #d8e3f0;
+}
+
 body.dark-mode .notification-item,
 body.dark-mode .reservation-queue,
 body.dark-mode .loan-card,
@@ -1575,6 +1646,24 @@ body.dark-mode .confirm-modal {
   color: #ffffff;
 }
 
+body.dark-mode .notification-content {
+  color: #ffffff;
+}
+
+body.dark-mode .notification-item small {
+  color: #d8e3f0;
+}
+
+body.dark-mode .notification-dismiss {
+  background: #242b36;
+  border-color: #465568;
+  color: #d8e3f0;
+}
+
+body.dark-mode .notification-dismiss:hover {
+  background: #2f3947;
+}
+
 body.dark-mode .loan-card h3,
 body.dark-mode .notifications-panel h3,
 body.dark-mode .notification-item strong,
@@ -1582,9 +1671,17 @@ body.dark-mode .confirm-modal h3 {
   color: #ffffff;
 }
 
+body.dark-mode .confirm-modal p {
+  color: #d8e3f0;
+}
+
 body.dark-mode .book-shelf,
 body.dark-mode .book-detail-panel {
   background: #2d2d2d;
+}
+
+body.dark-mode .workspace {
+  background: var(--page-background);
 }
 
 body.dark-mode .shelf-header h3,
@@ -1652,6 +1749,10 @@ body.dark-mode .menu-toggle:hover {
 }
 
 @media (max-width: 900px) {
+  .app-layout {
+    --workspace-padding: 24px;
+  }
+
   .auth-panel {
     padding: 36px 26px;
   }
@@ -1718,10 +1819,6 @@ body.dark-mode .menu-toggle:hover {
     height: 272px;
   }
 
-  .workspace {
-    padding: 24px;
-  }
-
   .hero {
     padding: 28px;
   }
@@ -1732,6 +1829,10 @@ body.dark-mode .menu-toggle:hover {
 }
 
 @media (max-width: 560px) {
+  .app-layout {
+    --workspace-padding: 18px;
+  }
+
   .auth-layout {
     padding: 12px;
   }
@@ -1744,17 +1845,18 @@ body.dark-mode .menu-toggle:hover {
     font-size: 28px;
   }
 
-  .sidebar,
   .workspace {
     width: calc(100vw - 24px);
   }
 
   .sidebar {
+    width: calc((100vw - 24px) - (var(--workspace-padding) * 2));
+    max-width: none;
     padding: 16px;
   }
 
   .workspace {
-    padding: 18px;
+    padding: var(--workspace-padding);
   }
 
   .shelf-header {

@@ -21,6 +21,7 @@
       idLivro: rawId(livro, "idLivro", "id_livro"),
       anoPublicacao: rawId(livro, "anoPublicacao", "ano_publicacao"),
       capaUrl: rawId(livro, "capaUrl", "capa_url"),
+      curtidasTotal: rawId(livro, "curtidasTotal", "curtidas_total") ?? livro?._count?.curtidas ?? 0,
     };
   }
 
@@ -171,16 +172,20 @@
     `);
   }
 
-  function confirmDialog(title, text) {
+  function confirmDialog(title, text, labels = {}) {
     ensureModal();
     return new Promise((resolve) => {
       byId("confirmModalTitle").textContent = title;
       byId("confirmModalText").textContent = text;
+      byId("confirmModalYes").textContent = labels.yes || "Confirmar";
+      byId("confirmModalNo").textContent = labels.no || "Cancelar";
       byId("confirmModal").classList.remove("hidden");
       const finish = (value) => {
         byId("confirmModal").classList.add("hidden");
         byId("confirmModalYes").onclick = null;
         byId("confirmModalNo").onclick = null;
+        byId("confirmModalYes").textContent = "Confirmar";
+        byId("confirmModalNo").textContent = "Cancelar";
         resolve(value);
       };
       byId("confirmModalYes").onclick = () => finish(true);
@@ -221,7 +226,6 @@
     if (menu) {
       menu.innerHTML = `
         <button class="nav-btn active" data-view="homeView" type="button">Inicio</button>
-        <button class="nav-btn" data-view="booksView" type="button">Livros</button>
         <button class="nav-btn" data-view="usersView" type="button">Usuários</button>
       `;
       menu.querySelectorAll(".nav-btn").forEach((btn) => {
@@ -302,6 +306,7 @@
             <article><strong>${exemplares.length}</strong><span>exemplares</span></article>
             <article><strong>${disponiveis}</strong><span>disponíveis</span></article>
             <article><strong>${emprestados}</strong><span>emprestados</span></article>
+            <article><strong>${livro.curtidasTotal || 0}</strong><span>curtidas</span></article>
           </div>
           ${fila.length ? `
             <div class="reservation-queue">
@@ -313,7 +318,12 @@
               }).join("")}
             </div>
           ` : ""}
-          ${action}
+          ${isAdmin() ? `
+            <div class="row-actions">
+              <button class="secondary-btn" type="button" data-edit-book="${livro.idLivro}">Atualizar</button>
+              <button class="danger-btn" type="button" data-delete-book="${livro.idLivro}">Remover</button>
+            </div>
+          ` : action}
         </div>
       </aside>
     `;
@@ -328,7 +338,6 @@
         ["emprestimos-admin", "Gerenciamento de Empréstimos"],
         ["multas-admin", "Gerenciar pagamento de multas"],
         ["admins", "Admins"],
-        ["livros-admin", "Livros e exemplares"],
         ["dados", "Alterar dados"],
         ["excluir", "Excluir conta"],
       ]
@@ -365,7 +374,6 @@
     if (profileTab === "emprestimos-admin") return adminLoansHtml();
     if (profileTab === "multas-admin") return adminFinesHtml();
     if (profileTab === "admins") return adminPanelHtml();
-    if (profileTab === "livros-admin") return adminBooksHtml();
     return "";
   }
 
@@ -445,7 +453,14 @@
       <form id="editAccountForm" class="form-panel stack-form">
         <label>Nome<input id="editName" value="${escapeAttr(state.usuario.nome || "")}"></label>
         <label>E-mail<input id="editEmail" type="email" value="${escapeAttr(state.usuario.email || "")}"></label>
-        <label>Nova senha<input id="editPassword" type="password" placeholder="Deixe vazio para manter"></label>
+        <label>Nova senha
+          <span class="password-field">
+            <input id="editPassword" type="password" placeholder="Deixe vazio para manter">
+            <button class="password-toggle" type="button" data-password-toggle="editPassword" aria-label="Mostrar senha"></button>
+          </span>
+        </label>
+        <div id="editPasswordStrength" class="password-strength" aria-label="Força da senha"></div>
+        <small id="editPasswordStrengthText" class="password-strength-text">Digite uma senha com letras e números.</small>
         ${isAdmin() ? `<label>Cargo<input id="editRole" value="${escapeAttr(state.usuario.cargo || "")}"></label>` : ""}
         <button class="primary-btn" type="submit">Salvar alterações</button>
       </form>
@@ -456,7 +471,12 @@
     return `
       <form id="deleteAccountForm" class="form-panel stack-form">
         <label>E-mail<input id="deleteEmail" type="email" required></label>
-        <label>Senha<input id="deletePassword" type="password" required></label>
+        <label>Senha
+          <span class="password-field">
+            <input id="deletePassword" type="password" required>
+            <button class="password-toggle" type="button" data-password-toggle="deletePassword" aria-label="Mostrar senha"></button>
+          </span>
+        </label>
         <button class="danger-btn" type="submit">Confirmar exclusão</button>
       </form>
     `;
@@ -503,7 +523,14 @@
           <form id="newAdminForm" class="stack-form">
             <label>Nome<input id="newAdminName" required></label>
             <label>E-mail<input id="newAdminEmail" type="email" required></label>
-            <label>Senha<input id="newAdminPassword" type="password" required></label>
+            <label>Senha
+              <span class="password-field">
+                <input id="newAdminPassword" type="password" required>
+                <button class="password-toggle" type="button" data-password-toggle="newAdminPassword" aria-label="Mostrar senha"></button>
+              </span>
+            </label>
+            <div id="newAdminPasswordStrength" class="password-strength" aria-label="Força da senha"></div>
+            <small id="newAdminPasswordStrengthText" class="password-strength-text">Digite uma senha com letras e números.</small>
             <label>Cargo<input id="newAdminRole" required></label>
             <button class="primary-btn" type="submit">Cadastrar admin</button>
           </form>
@@ -547,16 +574,30 @@
     panel.innerHTML = `
       <h3>Notificações</h3>
       ${(state.notificacoes || []).length ? state.notificacoes.map((n) => `
-        <button class="notification-item ${n.lida ? "" : "unread"}" type="button" data-notification="${n.idNotificacao}" data-action="${n.acao || ""}" data-reference="${n.referenciaId || n.idEmprestimo || ""}">
-          <strong>${n.tipo}</strong>
-          <span>${n.mensagem}</span>
-          <small>${formatDate(n.dataCriacao)}</small>
-        </button>
+        <article class="notification-item ${n.lida ? "" : "unread"}">
+          <button class="notification-content" type="button" data-notification="${n.idNotificacao}" data-action="${n.acao || ""}" data-reference="${n.referenciaId || n.idEmprestimo || ""}">
+            <strong>${n.tipo}</strong>
+            <span>${n.mensagem}</span>
+            <small>${formatDate(n.dataCriacao)}</small>
+          </button>
+          <button class="notification-dismiss" type="button" data-dismiss-notification="${n.idNotificacao}">Dispensar</button>
+        </article>
       `).join("") : `<p class="empty-state">Nenhuma notificação.</p>`}
     `;
   }
 
   document.addEventListener("click", async (event) => {
+    const passwordToggle = event.target.closest("[data-password-toggle]");
+    if (passwordToggle && ["newAdminPassword", "editPassword", "deletePassword"].includes(passwordToggle.dataset.passwordToggle)) {
+      const input = document.querySelector(`#${passwordToggle.dataset.passwordToggle}`);
+      if (!input) return;
+      const showing = input.type === "text";
+      input.type = showing ? "password" : "text";
+      passwordToggle.setAttribute("aria-label", showing ? "Mostrar senha" : "Ocultar senha");
+      passwordToggle.classList.toggle("active", !showing);
+      return;
+    }
+
     const select = event.target.closest("[data-select-book]");
     if (select) {
       event.preventDefault();
@@ -602,7 +643,15 @@
         notify("Reserva cancelada");
       }
       if (actionButton.dataset.returnLoan && await confirmDialog("Confirmar devolução", "Deseja confirmar a devolução deste empréstimo?")) {
-        await apiExtra(`/biblioteca/emprestimos/${actionButton.dataset.returnLoan}/devolver`, { method: "POST", body: JSON.stringify({}) });
+        const curtirLivro = await confirmDialog(
+          "Você gostou do livro?",
+          "Se sim, deixe uma curtida. Se não quiser, clique em Cancelar e a devolução seguirá normalmente.",
+          { yes: "Curtir", no: "Cancelar" }
+        );
+        await apiExtra(`/biblioteca/emprestimos/${actionButton.dataset.returnLoan}/devolver`, {
+          method: "POST",
+          body: JSON.stringify({ curtirLivro }),
+        });
         notify("Devolução registrada");
       }
       if (actionButton.dataset.extendLoan && await confirmDialog("Estender prazo", "Deseja solicitar ao admin mais 15 dias de prazo?")) {
@@ -657,7 +706,10 @@
       }
       if (event.target.id === "deleteAccountForm") {
         event.preventDefault();
-        if (!await confirmDialog("Excluir conta", "Esta ação remove reservas, empréstimos e multas vinculadas. Confirmar?")) return;
+        const mensagemExclusao = isAdmin()
+          ? "Esta ação vai remover sua conta. Confirmar?"
+          : "Esta ação remove reservas, empréstimos e multas vinculadas. Confirmar?";
+        if (!await confirmDialog("Excluir conta", mensagemExclusao)) return;
         await apiExtra("/biblioteca/minha-conta/excluir", {
           method: "POST",
           body: JSON.stringify({ email: byId("deleteEmail").value.trim(), senha: byId("deletePassword").value }),
@@ -690,12 +742,43 @@
     }
   });
 
+  document.addEventListener("input", (event) => {
+    if (event.target.id === "newAdminPassword") {
+      updatePasswordStrength(
+        event.target.value,
+        "#newAdminPasswordStrength",
+        "#newAdminPasswordStrengthText"
+      );
+    }
+    if (event.target.id === "editPassword") {
+      updatePasswordStrength(
+        event.target.value,
+        "#editPasswordStrength",
+        "#editPasswordStrengthText"
+      );
+    }
+  });
+
   byId("notificationsBtn")?.addEventListener("click", () => {
     notificationsOpen = !notificationsOpen;
     renderNotifications();
   });
 
   document.addEventListener("click", async (event) => {
+    const dismiss = event.target.closest("[data-dismiss-notification]");
+    if (dismiss) {
+      event.preventDefault();
+      event.stopPropagation();
+      try {
+        await apiExtra(`/notificacoes/${dismiss.dataset.dismissNotification}`, { method: "DELETE" });
+        notify("Notificação dispensada");
+        await loadAll();
+      } catch (error) {
+        notify(error.message);
+      }
+      return;
+    }
+
     const item = event.target.closest("[data-notification]");
     if (!item) return;
     const action = item.dataset.action;
@@ -717,11 +800,17 @@
         gerenciar_reservas: "reservas",
         consultar_emprestimos: "emprestimos",
         gerenciar_multas: "multas",
+        gerenciar_reservas_admin: "reservas-admin",
         gerenciar_emprestimos: "emprestimos-admin",
         gerenciar_pagamento_multas: "multas-admin",
         gerenciar_admins: "admins",
       };
       profileTab = map[action] || (isAdmin() ? "reservas-admin" : "reservas");
+    }
+    try {
+      await apiExtra(`/notificacoes/${item.dataset.notification}`, { method: "DELETE" });
+    } catch {
+      // Se a exclusão falhar, ao menos a navegação já foi feita.
     }
     notificationsOpen = false;
     await loadAll();
@@ -751,13 +840,17 @@
     if (!form || byId("bookCopiesBuilder")) return;
     form.insertAdjacentHTML("beforeend", `
       <div id="bookCopiesBuilder" class="form-panel wide">
+        <div id="existingBookCopiesBlock" class="existing-copy-block hidden">
+          <h3>Exemplares já cadastrados</h3>
+          <div id="existingBookCopiesList" class="copy-list"></div>
+        </div>
         <h3>Criar novo exemplar</h3>
         <div class="form-grid">
           <label>Código tombo<input id="newCopyCode" type="text"></label>
           <label>Estado<select id="newCopyState"><option value="novo">Novo</option><option value="bom">Bom</option><option value="regular">Regular</option><option value="danificado">Danificado</option></select></label>
           <label class="wide">Localização<input id="newCopyLocation" type="text"></label>
         </div>
-        <button id="addPendingCopyBtn" class="secondary-btn" type="button">Criar exemplar</button>
+        <button id="addPendingCopyBtn" class="secondary-btn copy-builder-btn" type="button">Criar exemplar</button>
         <div id="pendingCopiesList" class="copy-list"></div>
       </div>
     `);
@@ -775,10 +868,31 @@
     });
   }
 
+  function renderExistingBookCopies(livroId) {
+    const block = byId("existingBookCopiesBlock");
+    const list = byId("existingBookCopiesList");
+    if (!block || !list) return;
+    block.classList.toggle("hidden", !livroId);
+    if (!livroId) {
+      list.innerHTML = "";
+      return;
+    }
+
+    const exemplares = copiesForBook(Number(livroId));
+    list.innerHTML = exemplares.length
+      ? exemplares.map((exemplar) => `
+        <span>
+          <b>${exemplar.codigo_tombo}</b> | ${exemplar.estado || "-"} | ${exemplar.localizacao || "-"}
+        </span>
+      `).join("")
+      : `<span>Nenhum exemplar cadastrado para este livro.</span>`;
+  }
+
   const originalOpenBookForm = openBookForm;
   openBookForm = function (livro = null) {
     originalOpenBookForm(livro);
     enhanceBookForm();
+    renderExistingBookCopies(livro?.idLivro || null);
   };
 
   document.addEventListener("DOMContentLoaded", () => {

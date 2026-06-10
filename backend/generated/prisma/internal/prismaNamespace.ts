@@ -390,6 +390,7 @@ export const ModelName = {
   Professor: 'Professor',
   Admin: 'Admin',
   Livro: 'Livro',
+  CurtidaLivro: 'CurtidaLivro',
   Exemplar: 'Exemplar',
   Reserva: 'Reserva',
   Emprestimo: 'Emprestimo',
@@ -410,7 +411,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "notificacao" | "usuario" | "aluno" | "professor" | "admin" | "livro" | "exemplar" | "reserva" | "emprestimo" | "multa" | "solicitacaoExclusaoAdmin"
+    modelProps: "notificacao" | "usuario" | "aluno" | "professor" | "admin" | "livro" | "curtidaLivro" | "exemplar" | "reserva" | "emprestimo" | "multa" | "solicitacaoExclusaoAdmin"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -855,6 +856,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.LivroCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.LivroCountAggregateOutputType> | number
+        }
+      }
+    }
+    CurtidaLivro: {
+      payload: Prisma.$CurtidaLivroPayload<ExtArgs>
+      fields: Prisma.CurtidaLivroFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CurtidaLivroFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CurtidaLivroFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>
+        }
+        findFirst: {
+          args: Prisma.CurtidaLivroFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CurtidaLivroFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>
+        }
+        findMany: {
+          args: Prisma.CurtidaLivroFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>[]
+        }
+        create: {
+          args: Prisma.CurtidaLivroCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>
+        }
+        createMany: {
+          args: Prisma.CurtidaLivroCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CurtidaLivroCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>[]
+        }
+        delete: {
+          args: Prisma.CurtidaLivroDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>
+        }
+        update: {
+          args: Prisma.CurtidaLivroUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>
+        }
+        deleteMany: {
+          args: Prisma.CurtidaLivroDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CurtidaLivroUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CurtidaLivroUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>[]
+        }
+        upsert: {
+          args: Prisma.CurtidaLivroUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>
+        }
+        aggregate: {
+          args: Prisma.CurtidaLivroAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCurtidaLivro>
+        }
+        groupBy: {
+          args: Prisma.CurtidaLivroGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CurtidaLivroGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CurtidaLivroCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CurtidaLivroCountAggregateOutputType> | number
         }
       }
     }
@@ -1336,6 +1411,16 @@ export const LivroScalarFieldEnum = {
 export type LivroScalarFieldEnum = (typeof LivroScalarFieldEnum)[keyof typeof LivroScalarFieldEnum]
 
 
+export const CurtidaLivroScalarFieldEnum = {
+  id_curtida: 'id_curtida',
+  data_curtida: 'data_curtida',
+  usuario_id: 'usuario_id',
+  livro_id: 'livro_id'
+} as const
+
+export type CurtidaLivroScalarFieldEnum = (typeof CurtidaLivroScalarFieldEnum)[keyof typeof CurtidaLivroScalarFieldEnum]
+
+
 export const ExemplarScalarFieldEnum = {
   id_exemplar: 'id_exemplar',
   codigo_tombo: 'codigo_tombo',
@@ -1571,6 +1656,7 @@ export type GlobalOmitConfig = {
   professor?: Prisma.ProfessorOmit
   admin?: Prisma.AdminOmit
   livro?: Prisma.LivroOmit
+  curtidaLivro?: Prisma.CurtidaLivroOmit
   exemplar?: Prisma.ExemplarOmit
   reserva?: Prisma.ReservaOmit
   emprestimo?: Prisma.EmprestimoOmit

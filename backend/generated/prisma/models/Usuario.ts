@@ -251,6 +251,7 @@ export type UsuarioWhereInput = {
   notificacoes?: Prisma.NotificacaoListRelationFilter
   reservas?: Prisma.ReservaListRelationFilter
   emprestimos?: Prisma.EmprestimoListRelationFilter
+  curtidasLivros?: Prisma.CurtidaLivroListRelationFilter
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminListRelationFilter
   aluno?: Prisma.XOR<Prisma.AlunoNullableScalarRelationFilter, Prisma.AlunoWhereInput> | null
   professor?: Prisma.XOR<Prisma.ProfessorNullableScalarRelationFilter, Prisma.ProfessorWhereInput> | null
@@ -270,6 +271,7 @@ export type UsuarioOrderByWithRelationInput = {
   notificacoes?: Prisma.NotificacaoOrderByRelationAggregateInput
   reservas?: Prisma.ReservaOrderByRelationAggregateInput
   emprestimos?: Prisma.EmprestimoOrderByRelationAggregateInput
+  curtidasLivros?: Prisma.CurtidaLivroOrderByRelationAggregateInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminOrderByRelationAggregateInput
   aluno?: Prisma.AlunoOrderByWithRelationInput
   professor?: Prisma.ProfessorOrderByWithRelationInput
@@ -292,6 +294,7 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   notificacoes?: Prisma.NotificacaoListRelationFilter
   reservas?: Prisma.ReservaListRelationFilter
   emprestimos?: Prisma.EmprestimoListRelationFilter
+  curtidasLivros?: Prisma.CurtidaLivroListRelationFilter
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminListRelationFilter
   aluno?: Prisma.XOR<Prisma.AlunoNullableScalarRelationFilter, Prisma.AlunoWhereInput> | null
   professor?: Prisma.XOR<Prisma.ProfessorNullableScalarRelationFilter, Prisma.ProfessorWhereInput> | null
@@ -342,6 +345,7 @@ export type UsuarioCreateInput = {
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminCreateNestedManyWithoutAdminInput
   aluno?: Prisma.AlunoCreateNestedOneWithoutUsuarioInput
   professor?: Prisma.ProfessorCreateNestedOneWithoutUsuarioInput
@@ -361,6 +365,7 @@ export type UsuarioUncheckedCreateInput = {
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedCreateNestedManyWithoutAdminInput
   aluno?: Prisma.AlunoUncheckedCreateNestedOneWithoutUsuarioInput
   professor?: Prisma.ProfessorUncheckedCreateNestedOneWithoutUsuarioInput
@@ -379,6 +384,7 @@ export type UsuarioUpdateInput = {
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUpdateManyWithoutAdminNestedInput
   aluno?: Prisma.AlunoUpdateOneWithoutUsuarioNestedInput
   professor?: Prisma.ProfessorUpdateOneWithoutUsuarioNestedInput
@@ -398,6 +404,7 @@ export type UsuarioUncheckedUpdateInput = {
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedUpdateManyWithoutAdminNestedInput
   aluno?: Prisma.AlunoUncheckedUpdateOneWithoutUsuarioNestedInput
   professor?: Prisma.ProfessorUncheckedUpdateOneWithoutUsuarioNestedInput
@@ -544,6 +551,20 @@ export type UsuarioUpdateOneRequiredWithoutAdminNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutAdminInput, Prisma.UsuarioUpdateWithoutAdminInput>, Prisma.UsuarioUncheckedUpdateWithoutAdminInput>
 }
 
+export type UsuarioCreateNestedOneWithoutCurtidasLivrosInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutCurtidasLivrosInput, Prisma.UsuarioUncheckedCreateWithoutCurtidasLivrosInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutCurtidasLivrosInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioUpdateOneRequiredWithoutCurtidasLivrosNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutCurtidasLivrosInput, Prisma.UsuarioUncheckedCreateWithoutCurtidasLivrosInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutCurtidasLivrosInput
+  upsert?: Prisma.UsuarioUpsertWithoutCurtidasLivrosInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutCurtidasLivrosInput, Prisma.UsuarioUpdateWithoutCurtidasLivrosInput>, Prisma.UsuarioUncheckedUpdateWithoutCurtidasLivrosInput>
+}
+
 export type UsuarioCreateNestedOneWithoutReservasInput = {
   create?: Prisma.XOR<Prisma.UsuarioCreateWithoutReservasInput, Prisma.UsuarioUncheckedCreateWithoutReservasInput>
   connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutReservasInput
@@ -597,6 +618,7 @@ export type UsuarioCreateWithoutNotificacoesInput = {
   fundo_perfil_objeto?: string | null
   reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminCreateNestedManyWithoutAdminInput
   aluno?: Prisma.AlunoCreateNestedOneWithoutUsuarioInput
   professor?: Prisma.ProfessorCreateNestedOneWithoutUsuarioInput
@@ -615,6 +637,7 @@ export type UsuarioUncheckedCreateWithoutNotificacoesInput = {
   fundo_perfil_objeto?: string | null
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedCreateNestedManyWithoutAdminInput
   aluno?: Prisma.AlunoUncheckedCreateNestedOneWithoutUsuarioInput
   professor?: Prisma.ProfessorUncheckedCreateNestedOneWithoutUsuarioInput
@@ -648,6 +671,7 @@ export type UsuarioUpdateWithoutNotificacoesInput = {
   fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUpdateManyWithoutAdminNestedInput
   aluno?: Prisma.AlunoUpdateOneWithoutUsuarioNestedInput
   professor?: Prisma.ProfessorUpdateOneWithoutUsuarioNestedInput
@@ -666,6 +690,7 @@ export type UsuarioUncheckedUpdateWithoutNotificacoesInput = {
   fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedUpdateManyWithoutAdminNestedInput
   aluno?: Prisma.AlunoUncheckedUpdateOneWithoutUsuarioNestedInput
   professor?: Prisma.ProfessorUncheckedUpdateOneWithoutUsuarioNestedInput
@@ -684,6 +709,7 @@ export type UsuarioCreateWithoutAlunoInput = {
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminCreateNestedManyWithoutAdminInput
   professor?: Prisma.ProfessorCreateNestedOneWithoutUsuarioInput
   admin?: Prisma.AdminCreateNestedOneWithoutUsuarioInput
@@ -702,6 +728,7 @@ export type UsuarioUncheckedCreateWithoutAlunoInput = {
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedCreateNestedManyWithoutAdminInput
   professor?: Prisma.ProfessorUncheckedCreateNestedOneWithoutUsuarioInput
   admin?: Prisma.AdminUncheckedCreateNestedOneWithoutUsuarioInput
@@ -735,6 +762,7 @@ export type UsuarioUpdateWithoutAlunoInput = {
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUpdateManyWithoutAdminNestedInput
   professor?: Prisma.ProfessorUpdateOneWithoutUsuarioNestedInput
   admin?: Prisma.AdminUpdateOneWithoutUsuarioNestedInput
@@ -753,6 +781,7 @@ export type UsuarioUncheckedUpdateWithoutAlunoInput = {
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedUpdateManyWithoutAdminNestedInput
   professor?: Prisma.ProfessorUncheckedUpdateOneWithoutUsuarioNestedInput
   admin?: Prisma.AdminUncheckedUpdateOneWithoutUsuarioNestedInput
@@ -770,6 +799,7 @@ export type UsuarioCreateWithoutProfessorInput = {
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminCreateNestedManyWithoutAdminInput
   aluno?: Prisma.AlunoCreateNestedOneWithoutUsuarioInput
   admin?: Prisma.AdminCreateNestedOneWithoutUsuarioInput
@@ -788,6 +818,7 @@ export type UsuarioUncheckedCreateWithoutProfessorInput = {
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedCreateNestedManyWithoutAdminInput
   aluno?: Prisma.AlunoUncheckedCreateNestedOneWithoutUsuarioInput
   admin?: Prisma.AdminUncheckedCreateNestedOneWithoutUsuarioInput
@@ -821,6 +852,7 @@ export type UsuarioUpdateWithoutProfessorInput = {
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUpdateManyWithoutAdminNestedInput
   aluno?: Prisma.AlunoUpdateOneWithoutUsuarioNestedInput
   admin?: Prisma.AdminUpdateOneWithoutUsuarioNestedInput
@@ -839,6 +871,7 @@ export type UsuarioUncheckedUpdateWithoutProfessorInput = {
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedUpdateManyWithoutAdminNestedInput
   aluno?: Prisma.AlunoUncheckedUpdateOneWithoutUsuarioNestedInput
   admin?: Prisma.AdminUncheckedUpdateOneWithoutUsuarioNestedInput
@@ -856,6 +889,7 @@ export type UsuarioCreateWithoutAdminInput = {
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminCreateNestedManyWithoutAdminInput
   aluno?: Prisma.AlunoCreateNestedOneWithoutUsuarioInput
   professor?: Prisma.ProfessorCreateNestedOneWithoutUsuarioInput
@@ -874,6 +908,7 @@ export type UsuarioUncheckedCreateWithoutAdminInput = {
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedCreateNestedManyWithoutAdminInput
   aluno?: Prisma.AlunoUncheckedCreateNestedOneWithoutUsuarioInput
   professor?: Prisma.ProfessorUncheckedCreateNestedOneWithoutUsuarioInput
@@ -907,6 +942,7 @@ export type UsuarioUpdateWithoutAdminInput = {
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUpdateManyWithoutAdminNestedInput
   aluno?: Prisma.AlunoUpdateOneWithoutUsuarioNestedInput
   professor?: Prisma.ProfessorUpdateOneWithoutUsuarioNestedInput
@@ -925,9 +961,100 @@ export type UsuarioUncheckedUpdateWithoutAdminInput = {
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedUpdateManyWithoutAdminNestedInput
   aluno?: Prisma.AlunoUncheckedUpdateOneWithoutUsuarioNestedInput
   professor?: Prisma.ProfessorUncheckedUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioCreateWithoutCurtidasLivrosInput = {
+  nome: string
+  email: string
+  senha: string
+  nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
+  reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
+  emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
+  solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminCreateNestedManyWithoutAdminInput
+  aluno?: Prisma.AlunoCreateNestedOneWithoutUsuarioInput
+  professor?: Prisma.ProfessorCreateNestedOneWithoutUsuarioInput
+  admin?: Prisma.AdminCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioUncheckedCreateWithoutCurtidasLivrosInput = {
+  id_usuario?: number
+  nome: string
+  email: string
+  senha: string
+  nivel_acesso: string
+  foto_perfil_url?: string | null
+  foto_perfil_objeto?: string | null
+  fundo_perfil_url?: string | null
+  fundo_perfil_objeto?: string | null
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
+  reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
+  emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
+  solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedCreateNestedManyWithoutAdminInput
+  aluno?: Prisma.AlunoUncheckedCreateNestedOneWithoutUsuarioInput
+  professor?: Prisma.ProfessorUncheckedCreateNestedOneWithoutUsuarioInput
+  admin?: Prisma.AdminUncheckedCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioCreateOrConnectWithoutCurtidasLivrosInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutCurtidasLivrosInput, Prisma.UsuarioUncheckedCreateWithoutCurtidasLivrosInput>
+}
+
+export type UsuarioUpsertWithoutCurtidasLivrosInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutCurtidasLivrosInput, Prisma.UsuarioUncheckedUpdateWithoutCurtidasLivrosInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutCurtidasLivrosInput, Prisma.UsuarioUncheckedCreateWithoutCurtidasLivrosInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutCurtidasLivrosInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutCurtidasLivrosInput, Prisma.UsuarioUncheckedUpdateWithoutCurtidasLivrosInput>
+}
+
+export type UsuarioUpdateWithoutCurtidasLivrosInput = {
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  senha?: Prisma.StringFieldUpdateOperationsInput | string
+  nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
+  reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
+  emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
+  solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUpdateManyWithoutAdminNestedInput
+  aluno?: Prisma.AlunoUpdateOneWithoutUsuarioNestedInput
+  professor?: Prisma.ProfessorUpdateOneWithoutUsuarioNestedInput
+  admin?: Prisma.AdminUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutCurtidasLivrosInput = {
+  id_usuario?: Prisma.IntFieldUpdateOperationsInput | number
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  senha?: Prisma.StringFieldUpdateOperationsInput | string
+  nivel_acesso?: Prisma.StringFieldUpdateOperationsInput | string
+  foto_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foto_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
+  reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
+  emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
+  solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedUpdateManyWithoutAdminNestedInput
+  aluno?: Prisma.AlunoUncheckedUpdateOneWithoutUsuarioNestedInput
+  professor?: Prisma.ProfessorUncheckedUpdateOneWithoutUsuarioNestedInput
+  admin?: Prisma.AdminUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutReservasInput = {
@@ -941,6 +1068,7 @@ export type UsuarioCreateWithoutReservasInput = {
   fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminCreateNestedManyWithoutAdminInput
   aluno?: Prisma.AlunoCreateNestedOneWithoutUsuarioInput
   professor?: Prisma.ProfessorCreateNestedOneWithoutUsuarioInput
@@ -959,6 +1087,7 @@ export type UsuarioUncheckedCreateWithoutReservasInput = {
   fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedCreateNestedManyWithoutAdminInput
   aluno?: Prisma.AlunoUncheckedCreateNestedOneWithoutUsuarioInput
   professor?: Prisma.ProfessorUncheckedCreateNestedOneWithoutUsuarioInput
@@ -992,6 +1121,7 @@ export type UsuarioUpdateWithoutReservasInput = {
   fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUpdateManyWithoutAdminNestedInput
   aluno?: Prisma.AlunoUpdateOneWithoutUsuarioNestedInput
   professor?: Prisma.ProfessorUpdateOneWithoutUsuarioNestedInput
@@ -1010,6 +1140,7 @@ export type UsuarioUncheckedUpdateWithoutReservasInput = {
   fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedUpdateManyWithoutAdminNestedInput
   aluno?: Prisma.AlunoUncheckedUpdateOneWithoutUsuarioNestedInput
   professor?: Prisma.ProfessorUncheckedUpdateOneWithoutUsuarioNestedInput
@@ -1027,6 +1158,7 @@ export type UsuarioCreateWithoutEmprestimosInput = {
   fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminCreateNestedManyWithoutAdminInput
   aluno?: Prisma.AlunoCreateNestedOneWithoutUsuarioInput
   professor?: Prisma.ProfessorCreateNestedOneWithoutUsuarioInput
@@ -1045,6 +1177,7 @@ export type UsuarioUncheckedCreateWithoutEmprestimosInput = {
   fundo_perfil_objeto?: string | null
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedCreateNestedManyWithoutUsuarioInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedCreateNestedManyWithoutAdminInput
   aluno?: Prisma.AlunoUncheckedCreateNestedOneWithoutUsuarioInput
   professor?: Prisma.ProfessorUncheckedCreateNestedOneWithoutUsuarioInput
@@ -1078,6 +1211,7 @@ export type UsuarioUpdateWithoutEmprestimosInput = {
   fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUpdateManyWithoutAdminNestedInput
   aluno?: Prisma.AlunoUpdateOneWithoutUsuarioNestedInput
   professor?: Prisma.ProfessorUpdateOneWithoutUsuarioNestedInput
@@ -1096,6 +1230,7 @@ export type UsuarioUncheckedUpdateWithoutEmprestimosInput = {
   fundo_perfil_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedUpdateManyWithoutUsuarioNestedInput
   solicitacoesExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminUncheckedUpdateManyWithoutAdminNestedInput
   aluno?: Prisma.AlunoUncheckedUpdateOneWithoutUsuarioNestedInput
   professor?: Prisma.ProfessorUncheckedUpdateOneWithoutUsuarioNestedInput
@@ -1114,6 +1249,7 @@ export type UsuarioCreateWithoutSolicitacoesExclusaoAdminInput = {
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroCreateNestedManyWithoutUsuarioInput
   aluno?: Prisma.AlunoCreateNestedOneWithoutUsuarioInput
   professor?: Prisma.ProfessorCreateNestedOneWithoutUsuarioInput
   admin?: Prisma.AdminCreateNestedOneWithoutUsuarioInput
@@ -1132,6 +1268,7 @@ export type UsuarioUncheckedCreateWithoutSolicitacoesExclusaoAdminInput = {
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutUsuarioInput
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutUsuarioInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutUsuarioInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedCreateNestedManyWithoutUsuarioInput
   aluno?: Prisma.AlunoUncheckedCreateNestedOneWithoutUsuarioInput
   professor?: Prisma.ProfessorUncheckedCreateNestedOneWithoutUsuarioInput
   admin?: Prisma.AdminUncheckedCreateNestedOneWithoutUsuarioInput
@@ -1165,6 +1302,7 @@ export type UsuarioUpdateWithoutSolicitacoesExclusaoAdminInput = {
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUpdateManyWithoutUsuarioNestedInput
   aluno?: Prisma.AlunoUpdateOneWithoutUsuarioNestedInput
   professor?: Prisma.ProfessorUpdateOneWithoutUsuarioNestedInput
   admin?: Prisma.AdminUpdateOneWithoutUsuarioNestedInput
@@ -1183,6 +1321,7 @@ export type UsuarioUncheckedUpdateWithoutSolicitacoesExclusaoAdminInput = {
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutUsuarioNestedInput
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutUsuarioNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutUsuarioNestedInput
+  curtidasLivros?: Prisma.CurtidaLivroUncheckedUpdateManyWithoutUsuarioNestedInput
   aluno?: Prisma.AlunoUncheckedUpdateOneWithoutUsuarioNestedInput
   professor?: Prisma.ProfessorUncheckedUpdateOneWithoutUsuarioNestedInput
   admin?: Prisma.AdminUncheckedUpdateOneWithoutUsuarioNestedInput
@@ -1197,6 +1336,7 @@ export type UsuarioCountOutputType = {
   notificacoes: number
   reservas: number
   emprestimos: number
+  curtidasLivros: number
   solicitacoesExclusaoAdmin: number
 }
 
@@ -1204,6 +1344,7 @@ export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   notificacoes?: boolean | UsuarioCountOutputTypeCountNotificacoesArgs
   reservas?: boolean | UsuarioCountOutputTypeCountReservasArgs
   emprestimos?: boolean | UsuarioCountOutputTypeCountEmprestimosArgs
+  curtidasLivros?: boolean | UsuarioCountOutputTypeCountCurtidasLivrosArgs
   solicitacoesExclusaoAdmin?: boolean | UsuarioCountOutputTypeCountSolicitacoesExclusaoAdminArgs
 }
 
@@ -1241,6 +1382,13 @@ export type UsuarioCountOutputTypeCountEmprestimosArgs<ExtArgs extends runtime.T
 /**
  * UsuarioCountOutputType without action
  */
+export type UsuarioCountOutputTypeCountCurtidasLivrosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CurtidaLivroWhereInput
+}
+
+/**
+ * UsuarioCountOutputType without action
+ */
 export type UsuarioCountOutputTypeCountSolicitacoesExclusaoAdminArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.SolicitacaoExclusaoAdminWhereInput
 }
@@ -1259,6 +1407,7 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   notificacoes?: boolean | Prisma.Usuario$notificacoesArgs<ExtArgs>
   reservas?: boolean | Prisma.Usuario$reservasArgs<ExtArgs>
   emprestimos?: boolean | Prisma.Usuario$emprestimosArgs<ExtArgs>
+  curtidasLivros?: boolean | Prisma.Usuario$curtidasLivrosArgs<ExtArgs>
   solicitacoesExclusaoAdmin?: boolean | Prisma.Usuario$solicitacoesExclusaoAdminArgs<ExtArgs>
   aluno?: boolean | Prisma.Usuario$alunoArgs<ExtArgs>
   professor?: boolean | Prisma.Usuario$professorArgs<ExtArgs>
@@ -1307,6 +1456,7 @@ export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   notificacoes?: boolean | Prisma.Usuario$notificacoesArgs<ExtArgs>
   reservas?: boolean | Prisma.Usuario$reservasArgs<ExtArgs>
   emprestimos?: boolean | Prisma.Usuario$emprestimosArgs<ExtArgs>
+  curtidasLivros?: boolean | Prisma.Usuario$curtidasLivrosArgs<ExtArgs>
   solicitacoesExclusaoAdmin?: boolean | Prisma.Usuario$solicitacoesExclusaoAdminArgs<ExtArgs>
   aluno?: boolean | Prisma.Usuario$alunoArgs<ExtArgs>
   professor?: boolean | Prisma.Usuario$professorArgs<ExtArgs>
@@ -1322,6 +1472,7 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     notificacoes: Prisma.$NotificacaoPayload<ExtArgs>[]
     reservas: Prisma.$ReservaPayload<ExtArgs>[]
     emprestimos: Prisma.$EmprestimoPayload<ExtArgs>[]
+    curtidasLivros: Prisma.$CurtidaLivroPayload<ExtArgs>[]
     solicitacoesExclusaoAdmin: Prisma.$SolicitacaoExclusaoAdminPayload<ExtArgs>[]
     aluno: Prisma.$AlunoPayload<ExtArgs> | null
     professor: Prisma.$ProfessorPayload<ExtArgs> | null
@@ -1734,6 +1885,7 @@ export interface Prisma__UsuarioClient<T, Null = never, ExtArgs extends runtime.
   notificacoes<T extends Prisma.Usuario$notificacoesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$notificacoesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificacaoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reservas<T extends Prisma.Usuario$reservasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$reservasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   emprestimos<T extends Prisma.Usuario$emprestimosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$emprestimosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmprestimoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  curtidasLivros<T extends Prisma.Usuario$curtidasLivrosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$curtidasLivrosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CurtidaLivroPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   solicitacoesExclusaoAdmin<T extends Prisma.Usuario$solicitacoesExclusaoAdminArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$solicitacoesExclusaoAdminArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SolicitacaoExclusaoAdminPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   aluno<T extends Prisma.Usuario$alunoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$alunoArgs<ExtArgs>>): Prisma.Prisma__AlunoClient<runtime.Types.Result.GetResult<Prisma.$AlunoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   professor<T extends Prisma.Usuario$professorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$professorArgs<ExtArgs>>): Prisma.Prisma__ProfessorClient<runtime.Types.Result.GetResult<Prisma.$ProfessorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -2236,6 +2388,30 @@ export type Usuario$emprestimosArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.EmprestimoScalarFieldEnum | Prisma.EmprestimoScalarFieldEnum[]
+}
+
+/**
+ * Usuario.curtidasLivros
+ */
+export type Usuario$curtidasLivrosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CurtidaLivro
+   */
+  select?: Prisma.CurtidaLivroSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CurtidaLivro
+   */
+  omit?: Prisma.CurtidaLivroOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CurtidaLivroInclude<ExtArgs> | null
+  where?: Prisma.CurtidaLivroWhereInput
+  orderBy?: Prisma.CurtidaLivroOrderByWithRelationInput | Prisma.CurtidaLivroOrderByWithRelationInput[]
+  cursor?: Prisma.CurtidaLivroWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CurtidaLivroScalarFieldEnum | Prisma.CurtidaLivroScalarFieldEnum[]
 }
 
 /**

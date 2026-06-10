@@ -44,6 +44,7 @@ model Usuario {
   notificacoes Notificacao[]
   reservas    Reserva[]
   emprestimos Emprestimo[]
+  curtidasLivros CurtidaLivro[]
   solicitacoesExclusaoAdmin SolicitacaoExclusaoAdmin[] @relation("AdminSolicitante")
   
   aluno      Aluno?
@@ -92,6 +93,21 @@ model Livro {
   
   reservas       Reserva[]
   exemplares     Exemplar[]
+  curtidas        CurtidaLivro[]
+}
+
+model CurtidaLivro {
+  id_curtida   Int      @id @default(autoincrement())
+  data_curtida DateTime @default(now())
+
+  usuario_id Int
+  usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario], onDelete: Cascade)
+
+  livro_id Int
+  livro    Livro @relation(fields: [livro_id], references: [id_livro], onDelete: Cascade)
+
+  @@unique([usuario_id, livro_id])
+  @@index([livro_id])
 }
 
 // Exemplar

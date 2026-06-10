@@ -140,37 +140,21 @@
       </div>
       <nav id="appMenu" class="app-menu hidden">
         <button class="nav-btn active" data-view="homeView" type="button">Início</button>
-        <button class="nav-btn" data-view="booksView" type="button">Livros</button>
         <button class="nav-btn" data-view="usersView" type="button">Usuários</button>
         <button class="nav-btn" data-view="operationsView" type="button">Operações</button>
       </nav>
       <div class="top-actions app-actions">
         <button id="appThemeToggle" class="secondary-btn icon-btn" type="button" title="Modo escuro">☾</button>
-        <button id="refreshBtn" class="secondary-btn" type="button">Atualizar</button>
       </div>
       <button id="logoutBtn" class="ghost-btn" type="button">Sair</button>
     </aside>
 
     <section class="workspace">
       <section id="homeView" class="view active">
-        <div class="book-shelf home-shelf">
-          <div class="shelf-header">
-            <div>
-              <h3>Destaques do acervo</h3>
-              <p>Livros em destaque agora na biblioteca</p>
-            </div>
-          </div>
-          <div class="book-showcase">
-            <div id="homeBooksGrid" class="book-grid"></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="booksView" class="view">
         <div class="section-heading">
           <div>
-            <span class="eyebrow">Acervo</span>
-            <h2>Livros</h2>
+            <h2>Destaques do acervo</h2>
+            <p>Livros em destaque agora na biblioteca</p>
           </div>
           <button id="newBookBtn" class="primary-btn" type="button">Novo livro</button>
         </div>
@@ -204,23 +188,24 @@
             </div>
           </form>
         </div>
+        <div class="book-shelf home-shelf">
+          <div class="book-showcase">
+            <div id="homeBooksGrid" class="book-grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="booksView" class="view">
         <div class="book-shelf">
           <div class="shelf-header">
             <div>
               <h3>Em Alta</h3>
               <p>Livros mais movimentados agora no acervo</p>
             </div>
-            <button class="secondary-btn" type="button" data-view="booksView">Ver mais</button>
           </div>
           <div class="book-showcase">
             <div id="booksGrid" class="book-grid"></div>
           </div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>ID</th><th>Título</th><th>Autor</th><th>Gênero</th><th>Status</th><th>Ações</th></tr></thead>
-            <tbody id="booksTable"></tbody>
-          </table>
         </div>
       </section>
 

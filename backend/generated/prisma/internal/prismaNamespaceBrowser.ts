@@ -57,6 +57,7 @@ export const ModelName = {
   Professor: 'Professor',
   Admin: 'Admin',
   Livro: 'Livro',
+  CurtidaLivro: 'CurtidaLivro',
   Exemplar: 'Exemplar',
   Reserva: 'Reserva',
   Emprestimo: 'Emprestimo',
@@ -147,6 +148,16 @@ export const LivroScalarFieldEnum = {
 } as const
 
 export type LivroScalarFieldEnum = (typeof LivroScalarFieldEnum)[keyof typeof LivroScalarFieldEnum]
+
+
+export const CurtidaLivroScalarFieldEnum = {
+  id_curtida: 'id_curtida',
+  data_curtida: 'data_curtida',
+  usuario_id: 'usuario_id',
+  livro_id: 'livro_id'
+} as const
+
+export type CurtidaLivroScalarFieldEnum = (typeof CurtidaLivroScalarFieldEnum)[keyof typeof CurtidaLivroScalarFieldEnum]
 
 
 export const ExemplarScalarFieldEnum = {
