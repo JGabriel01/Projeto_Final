@@ -60,7 +60,8 @@ export const ModelName = {
   Exemplar: 'Exemplar',
   Reserva: 'Reserva',
   Emprestimo: 'Emprestimo',
-  Multa: 'Multa'
+  Multa: 'Multa',
+  SolicitacaoExclusaoAdmin: 'SolicitacaoExclusaoAdmin'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -82,6 +83,8 @@ export const NotificacaoScalarFieldEnum = {
   mensagem: 'mensagem',
   data_envio: 'data_envio',
   lido: 'lido',
+  acao: 'acao',
+  referencia_id: 'referencia_id',
   usuario_id: 'usuario_id',
   id_emprestimo: 'id_emprestimo'
 } as const
@@ -162,6 +165,7 @@ export const ReservaScalarFieldEnum = {
   data_reserva: 'data_reserva',
   data_expiracao: 'data_expiracao',
   status_reserva: 'status_reserva',
+  notificado_em: 'notificado_em',
   usuario_id: 'usuario_id',
   livro_id: 'livro_id'
 } as const
@@ -174,6 +178,8 @@ export const EmprestimoScalarFieldEnum = {
   data_saida: 'data_saida',
   data_vencimento: 'data_vencimento',
   data_devolucao_real: 'data_devolucao_real',
+  renovacoes: 'renovacoes',
+  status_extensao: 'status_extensao',
   usuario_id: 'usuario_id',
   exemplar_id: 'exemplar_id'
 } as const
@@ -192,6 +198,18 @@ export const MultaScalarFieldEnum = {
 } as const
 
 export type MultaScalarFieldEnum = (typeof MultaScalarFieldEnum)[keyof typeof MultaScalarFieldEnum]
+
+
+export const SolicitacaoExclusaoAdminScalarFieldEnum = {
+  id_solicitacao: 'id_solicitacao',
+  admin_id: 'admin_id',
+  status: 'status',
+  data_criacao: 'data_criacao',
+  data_decisao: 'data_decisao',
+  decidido_por: 'decidido_por'
+} as const
+
+export type SolicitacaoExclusaoAdminScalarFieldEnum = (typeof SolicitacaoExclusaoAdminScalarFieldEnum)[keyof typeof SolicitacaoExclusaoAdminScalarFieldEnum]
 
 
 export const SortOrder = {

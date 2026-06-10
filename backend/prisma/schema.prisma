@@ -19,6 +19,8 @@ model Notificacao {
   mensagem       String
   data_envio     DateTime
   lido           Boolean @default(false)
+  acao           String?
+  referencia_id  Int?
   
   usuario_id     Int
   usuario        Usuario  @relation(fields: [usuario_id], references: [id_usuario])
@@ -42,6 +44,7 @@ model Usuario {
   notificacoes Notificacao[]
   reservas    Reserva[]
   emprestimos Emprestimo[]
+  solicitacoesExclusaoAdmin SolicitacaoExclusaoAdmin[] @relation("AdminSolicitante")
   
   aluno      Aluno?
   professor  Professor?
@@ -112,6 +115,7 @@ model Reserva {
   data_reserva   DateTime @default(now())
   data_expiracao DateTime
   status_reserva String   @default("ativa")
+  notificado_em  DateTime?
   
   usuario_id Int
   usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario])
@@ -129,6 +133,8 @@ model Emprestimo {
   data_saida       DateTime @default(now())
   data_vencimento  DateTime
   data_devolucao_real DateTime?
+  renovacoes       Int      @default(0)
+  status_extensao  String   @default("nenhuma")
   
   usuario_id Int
   usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario])
@@ -156,5 +162,18 @@ model Multa {
   
   exemplar_id Int
   exemplar    Exemplar @relation(fields: [exemplar_id], references: [id_exemplar])
+}
+
+model SolicitacaoExclusaoAdmin {
+  id_solicitacao Int      @id @default(autoincrement())
+  admin_id       Int
+  status         String   @default("pendente")
+  data_criacao   DateTime @default(now())
+  data_decisao   DateTime?
+  decidido_por   Int?
+
+  admin          Usuario  @relation("AdminSolicitante", fields: [admin_id], references: [id_usuario], onDelete: Cascade)
+
+  @@index([admin_id])
 }
 

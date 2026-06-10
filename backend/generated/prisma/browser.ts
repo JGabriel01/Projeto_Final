@@ -67,3 +67,8 @@ export type Emprestimo = Prisma.EmprestimoModel
  * 
  */
 export type Multa = Prisma.MultaModel
+/**
+ * Model SolicitacaoExclusaoAdmin
+ * 
+ */
+export type SolicitacaoExclusaoAdmin = Prisma.SolicitacaoExclusaoAdminModel

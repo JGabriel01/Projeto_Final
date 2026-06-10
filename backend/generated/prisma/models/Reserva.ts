@@ -43,6 +43,7 @@ export type ReservaMinAggregateOutputType = {
   data_reserva: Date | null
   data_expiracao: Date | null
   status_reserva: string | null
+  notificado_em: Date | null
   usuario_id: number | null
   livro_id: number | null
 }
@@ -52,6 +53,7 @@ export type ReservaMaxAggregateOutputType = {
   data_reserva: Date | null
   data_expiracao: Date | null
   status_reserva: string | null
+  notificado_em: Date | null
   usuario_id: number | null
   livro_id: number | null
 }
@@ -61,6 +63,7 @@ export type ReservaCountAggregateOutputType = {
   data_reserva: number
   data_expiracao: number
   status_reserva: number
+  notificado_em: number
   usuario_id: number
   livro_id: number
   _all: number
@@ -84,6 +87,7 @@ export type ReservaMinAggregateInputType = {
   data_reserva?: true
   data_expiracao?: true
   status_reserva?: true
+  notificado_em?: true
   usuario_id?: true
   livro_id?: true
 }
@@ -93,6 +97,7 @@ export type ReservaMaxAggregateInputType = {
   data_reserva?: true
   data_expiracao?: true
   status_reserva?: true
+  notificado_em?: true
   usuario_id?: true
   livro_id?: true
 }
@@ -102,6 +107,7 @@ export type ReservaCountAggregateInputType = {
   data_reserva?: true
   data_expiracao?: true
   status_reserva?: true
+  notificado_em?: true
   usuario_id?: true
   livro_id?: true
   _all?: true
@@ -198,6 +204,7 @@ export type ReservaGroupByOutputType = {
   data_reserva: Date
   data_expiracao: Date
   status_reserva: string
+  notificado_em: Date | null
   usuario_id: number
   livro_id: number
   _count: ReservaCountAggregateOutputType | null
@@ -230,6 +237,7 @@ export type ReservaWhereInput = {
   data_reserva?: Prisma.DateTimeFilter<"Reserva"> | Date | string
   data_expiracao?: Prisma.DateTimeFilter<"Reserva"> | Date | string
   status_reserva?: Prisma.StringFilter<"Reserva"> | string
+  notificado_em?: Prisma.DateTimeNullableFilter<"Reserva"> | Date | string | null
   usuario_id?: Prisma.IntFilter<"Reserva"> | number
   livro_id?: Prisma.IntFilter<"Reserva"> | number
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
@@ -241,6 +249,7 @@ export type ReservaOrderByWithRelationInput = {
   data_reserva?: Prisma.SortOrder
   data_expiracao?: Prisma.SortOrder
   status_reserva?: Prisma.SortOrder
+  notificado_em?: Prisma.SortOrderInput | Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   livro_id?: Prisma.SortOrder
   usuario?: Prisma.UsuarioOrderByWithRelationInput
@@ -255,6 +264,7 @@ export type ReservaWhereUniqueInput = Prisma.AtLeast<{
   data_reserva?: Prisma.DateTimeFilter<"Reserva"> | Date | string
   data_expiracao?: Prisma.DateTimeFilter<"Reserva"> | Date | string
   status_reserva?: Prisma.StringFilter<"Reserva"> | string
+  notificado_em?: Prisma.DateTimeNullableFilter<"Reserva"> | Date | string | null
   usuario_id?: Prisma.IntFilter<"Reserva"> | number
   livro_id?: Prisma.IntFilter<"Reserva"> | number
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
@@ -266,6 +276,7 @@ export type ReservaOrderByWithAggregationInput = {
   data_reserva?: Prisma.SortOrder
   data_expiracao?: Prisma.SortOrder
   status_reserva?: Prisma.SortOrder
+  notificado_em?: Prisma.SortOrderInput | Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   livro_id?: Prisma.SortOrder
   _count?: Prisma.ReservaCountOrderByAggregateInput
@@ -283,6 +294,7 @@ export type ReservaScalarWhereWithAggregatesInput = {
   data_reserva?: Prisma.DateTimeWithAggregatesFilter<"Reserva"> | Date | string
   data_expiracao?: Prisma.DateTimeWithAggregatesFilter<"Reserva"> | Date | string
   status_reserva?: Prisma.StringWithAggregatesFilter<"Reserva"> | string
+  notificado_em?: Prisma.DateTimeNullableWithAggregatesFilter<"Reserva"> | Date | string | null
   usuario_id?: Prisma.IntWithAggregatesFilter<"Reserva"> | number
   livro_id?: Prisma.IntWithAggregatesFilter<"Reserva"> | number
 }
@@ -291,6 +303,7 @@ export type ReservaCreateInput = {
   data_reserva?: Date | string
   data_expiracao: Date | string
   status_reserva?: string
+  notificado_em?: Date | string | null
   usuario: Prisma.UsuarioCreateNestedOneWithoutReservasInput
   livro: Prisma.LivroCreateNestedOneWithoutReservasInput
 }
@@ -300,6 +313,7 @@ export type ReservaUncheckedCreateInput = {
   data_reserva?: Date | string
   data_expiracao: Date | string
   status_reserva?: string
+  notificado_em?: Date | string | null
   usuario_id: number
   livro_id: number
 }
@@ -308,6 +322,7 @@ export type ReservaUpdateInput = {
   data_reserva?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_expiracao?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status_reserva?: Prisma.StringFieldUpdateOperationsInput | string
+  notificado_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usuario?: Prisma.UsuarioUpdateOneRequiredWithoutReservasNestedInput
   livro?: Prisma.LivroUpdateOneRequiredWithoutReservasNestedInput
 }
@@ -317,6 +332,7 @@ export type ReservaUncheckedUpdateInput = {
   data_reserva?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_expiracao?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status_reserva?: Prisma.StringFieldUpdateOperationsInput | string
+  notificado_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
   livro_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
@@ -326,6 +342,7 @@ export type ReservaCreateManyInput = {
   data_reserva?: Date | string
   data_expiracao: Date | string
   status_reserva?: string
+  notificado_em?: Date | string | null
   usuario_id: number
   livro_id: number
 }
@@ -334,6 +351,7 @@ export type ReservaUpdateManyMutationInput = {
   data_reserva?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_expiracao?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status_reserva?: Prisma.StringFieldUpdateOperationsInput | string
+  notificado_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ReservaUncheckedUpdateManyInput = {
@@ -341,6 +359,7 @@ export type ReservaUncheckedUpdateManyInput = {
   data_reserva?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_expiracao?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status_reserva?: Prisma.StringFieldUpdateOperationsInput | string
+  notificado_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
   livro_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
@@ -360,6 +379,7 @@ export type ReservaCountOrderByAggregateInput = {
   data_reserva?: Prisma.SortOrder
   data_expiracao?: Prisma.SortOrder
   status_reserva?: Prisma.SortOrder
+  notificado_em?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   livro_id?: Prisma.SortOrder
 }
@@ -375,6 +395,7 @@ export type ReservaMaxOrderByAggregateInput = {
   data_reserva?: Prisma.SortOrder
   data_expiracao?: Prisma.SortOrder
   status_reserva?: Prisma.SortOrder
+  notificado_em?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   livro_id?: Prisma.SortOrder
 }
@@ -384,6 +405,7 @@ export type ReservaMinOrderByAggregateInput = {
   data_reserva?: Prisma.SortOrder
   data_expiracao?: Prisma.SortOrder
   status_reserva?: Prisma.SortOrder
+  notificado_em?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   livro_id?: Prisma.SortOrder
 }
@@ -478,10 +500,15 @@ export type ReservaUncheckedUpdateManyWithoutLivroNestedInput = {
   deleteMany?: Prisma.ReservaScalarWhereInput | Prisma.ReservaScalarWhereInput[]
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type ReservaCreateWithoutUsuarioInput = {
   data_reserva?: Date | string
   data_expiracao: Date | string
   status_reserva?: string
+  notificado_em?: Date | string | null
   livro: Prisma.LivroCreateNestedOneWithoutReservasInput
 }
 
@@ -490,6 +517,7 @@ export type ReservaUncheckedCreateWithoutUsuarioInput = {
   data_reserva?: Date | string
   data_expiracao: Date | string
   status_reserva?: string
+  notificado_em?: Date | string | null
   livro_id: number
 }
 
@@ -526,6 +554,7 @@ export type ReservaScalarWhereInput = {
   data_reserva?: Prisma.DateTimeFilter<"Reserva"> | Date | string
   data_expiracao?: Prisma.DateTimeFilter<"Reserva"> | Date | string
   status_reserva?: Prisma.StringFilter<"Reserva"> | string
+  notificado_em?: Prisma.DateTimeNullableFilter<"Reserva"> | Date | string | null
   usuario_id?: Prisma.IntFilter<"Reserva"> | number
   livro_id?: Prisma.IntFilter<"Reserva"> | number
 }
@@ -534,6 +563,7 @@ export type ReservaCreateWithoutLivroInput = {
   data_reserva?: Date | string
   data_expiracao: Date | string
   status_reserva?: string
+  notificado_em?: Date | string | null
   usuario: Prisma.UsuarioCreateNestedOneWithoutReservasInput
 }
 
@@ -542,6 +572,7 @@ export type ReservaUncheckedCreateWithoutLivroInput = {
   data_reserva?: Date | string
   data_expiracao: Date | string
   status_reserva?: string
+  notificado_em?: Date | string | null
   usuario_id: number
 }
 
@@ -575,6 +606,7 @@ export type ReservaCreateManyUsuarioInput = {
   data_reserva?: Date | string
   data_expiracao: Date | string
   status_reserva?: string
+  notificado_em?: Date | string | null
   livro_id: number
 }
 
@@ -582,6 +614,7 @@ export type ReservaUpdateWithoutUsuarioInput = {
   data_reserva?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_expiracao?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status_reserva?: Prisma.StringFieldUpdateOperationsInput | string
+  notificado_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   livro?: Prisma.LivroUpdateOneRequiredWithoutReservasNestedInput
 }
 
@@ -590,6 +623,7 @@ export type ReservaUncheckedUpdateWithoutUsuarioInput = {
   data_reserva?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_expiracao?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status_reserva?: Prisma.StringFieldUpdateOperationsInput | string
+  notificado_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   livro_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -598,6 +632,7 @@ export type ReservaUncheckedUpdateManyWithoutUsuarioInput = {
   data_reserva?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_expiracao?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status_reserva?: Prisma.StringFieldUpdateOperationsInput | string
+  notificado_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   livro_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -606,6 +641,7 @@ export type ReservaCreateManyLivroInput = {
   data_reserva?: Date | string
   data_expiracao: Date | string
   status_reserva?: string
+  notificado_em?: Date | string | null
   usuario_id: number
 }
 
@@ -613,6 +649,7 @@ export type ReservaUpdateWithoutLivroInput = {
   data_reserva?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_expiracao?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status_reserva?: Prisma.StringFieldUpdateOperationsInput | string
+  notificado_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usuario?: Prisma.UsuarioUpdateOneRequiredWithoutReservasNestedInput
 }
 
@@ -621,6 +658,7 @@ export type ReservaUncheckedUpdateWithoutLivroInput = {
   data_reserva?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_expiracao?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status_reserva?: Prisma.StringFieldUpdateOperationsInput | string
+  notificado_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -629,6 +667,7 @@ export type ReservaUncheckedUpdateManyWithoutLivroInput = {
   data_reserva?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_expiracao?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status_reserva?: Prisma.StringFieldUpdateOperationsInput | string
+  notificado_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -639,6 +678,7 @@ export type ReservaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   data_reserva?: boolean
   data_expiracao?: boolean
   status_reserva?: boolean
+  notificado_em?: boolean
   usuario_id?: boolean
   livro_id?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
@@ -650,6 +690,7 @@ export type ReservaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   data_reserva?: boolean
   data_expiracao?: boolean
   status_reserva?: boolean
+  notificado_em?: boolean
   usuario_id?: boolean
   livro_id?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
@@ -661,6 +702,7 @@ export type ReservaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   data_reserva?: boolean
   data_expiracao?: boolean
   status_reserva?: boolean
+  notificado_em?: boolean
   usuario_id?: boolean
   livro_id?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
@@ -672,11 +714,12 @@ export type ReservaSelectScalar = {
   data_reserva?: boolean
   data_expiracao?: boolean
   status_reserva?: boolean
+  notificado_em?: boolean
   usuario_id?: boolean
   livro_id?: boolean
 }
 
-export type ReservaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_reserva" | "data_reserva" | "data_expiracao" | "status_reserva" | "usuario_id" | "livro_id", ExtArgs["result"]["reserva"]>
+export type ReservaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_reserva" | "data_reserva" | "data_expiracao" | "status_reserva" | "notificado_em" | "usuario_id" | "livro_id", ExtArgs["result"]["reserva"]>
 export type ReservaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   livro?: boolean | Prisma.LivroDefaultArgs<ExtArgs>
@@ -701,6 +744,7 @@ export type $ReservaPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     data_reserva: Date
     data_expiracao: Date
     status_reserva: string
+    notificado_em: Date | null
     usuario_id: number
     livro_id: number
   }, ExtArgs["result"]["reserva"]>
@@ -1132,6 +1176,7 @@ export interface ReservaFieldRefs {
   readonly data_reserva: Prisma.FieldRef<"Reserva", 'DateTime'>
   readonly data_expiracao: Prisma.FieldRef<"Reserva", 'DateTime'>
   readonly status_reserva: Prisma.FieldRef<"Reserva", 'String'>
+  readonly notificado_em: Prisma.FieldRef<"Reserva", 'DateTime'>
   readonly usuario_id: Prisma.FieldRef<"Reserva", 'Int'>
   readonly livro_id: Prisma.FieldRef<"Reserva", 'Int'>
 }

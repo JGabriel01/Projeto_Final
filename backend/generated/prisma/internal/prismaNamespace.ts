@@ -393,7 +393,8 @@ export const ModelName = {
   Exemplar: 'Exemplar',
   Reserva: 'Reserva',
   Emprestimo: 'Emprestimo',
-  Multa: 'Multa'
+  Multa: 'Multa',
+  SolicitacaoExclusaoAdmin: 'SolicitacaoExclusaoAdmin'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -409,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "notificacao" | "usuario" | "aluno" | "professor" | "admin" | "livro" | "exemplar" | "reserva" | "emprestimo" | "multa"
+    modelProps: "notificacao" | "usuario" | "aluno" | "professor" | "admin" | "livro" | "exemplar" | "reserva" | "emprestimo" | "multa" | "solicitacaoExclusaoAdmin"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1153,6 +1154,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SolicitacaoExclusaoAdmin: {
+      payload: Prisma.$SolicitacaoExclusaoAdminPayload<ExtArgs>
+      fields: Prisma.SolicitacaoExclusaoAdminFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SolicitacaoExclusaoAdminFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SolicitacaoExclusaoAdminFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>
+        }
+        findFirst: {
+          args: Prisma.SolicitacaoExclusaoAdminFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SolicitacaoExclusaoAdminFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>
+        }
+        findMany: {
+          args: Prisma.SolicitacaoExclusaoAdminFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>[]
+        }
+        create: {
+          args: Prisma.SolicitacaoExclusaoAdminCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>
+        }
+        createMany: {
+          args: Prisma.SolicitacaoExclusaoAdminCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SolicitacaoExclusaoAdminCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>[]
+        }
+        delete: {
+          args: Prisma.SolicitacaoExclusaoAdminDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>
+        }
+        update: {
+          args: Prisma.SolicitacaoExclusaoAdminUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>
+        }
+        deleteMany: {
+          args: Prisma.SolicitacaoExclusaoAdminDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SolicitacaoExclusaoAdminUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SolicitacaoExclusaoAdminUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>[]
+        }
+        upsert: {
+          args: Prisma.SolicitacaoExclusaoAdminUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>
+        }
+        aggregate: {
+          args: Prisma.SolicitacaoExclusaoAdminAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSolicitacaoExclusaoAdmin>
+        }
+        groupBy: {
+          args: Prisma.SolicitacaoExclusaoAdminGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SolicitacaoExclusaoAdminGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SolicitacaoExclusaoAdminCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SolicitacaoExclusaoAdminCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1195,6 +1270,8 @@ export const NotificacaoScalarFieldEnum = {
   mensagem: 'mensagem',
   data_envio: 'data_envio',
   lido: 'lido',
+  acao: 'acao',
+  referencia_id: 'referencia_id',
   usuario_id: 'usuario_id',
   id_emprestimo: 'id_emprestimo'
 } as const
@@ -1275,6 +1352,7 @@ export const ReservaScalarFieldEnum = {
   data_reserva: 'data_reserva',
   data_expiracao: 'data_expiracao',
   status_reserva: 'status_reserva',
+  notificado_em: 'notificado_em',
   usuario_id: 'usuario_id',
   livro_id: 'livro_id'
 } as const
@@ -1287,6 +1365,8 @@ export const EmprestimoScalarFieldEnum = {
   data_saida: 'data_saida',
   data_vencimento: 'data_vencimento',
   data_devolucao_real: 'data_devolucao_real',
+  renovacoes: 'renovacoes',
+  status_extensao: 'status_extensao',
   usuario_id: 'usuario_id',
   exemplar_id: 'exemplar_id'
 } as const
@@ -1305,6 +1385,18 @@ export const MultaScalarFieldEnum = {
 } as const
 
 export type MultaScalarFieldEnum = (typeof MultaScalarFieldEnum)[keyof typeof MultaScalarFieldEnum]
+
+
+export const SolicitacaoExclusaoAdminScalarFieldEnum = {
+  id_solicitacao: 'id_solicitacao',
+  admin_id: 'admin_id',
+  status: 'status',
+  data_criacao: 'data_criacao',
+  data_decisao: 'data_decisao',
+  decidido_por: 'decidido_por'
+} as const
+
+export type SolicitacaoExclusaoAdminScalarFieldEnum = (typeof SolicitacaoExclusaoAdminScalarFieldEnum)[keyof typeof SolicitacaoExclusaoAdminScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1483,6 +1575,7 @@ export type GlobalOmitConfig = {
   reserva?: Prisma.ReservaOmit
   emprestimo?: Prisma.EmprestimoOmit
   multa?: Prisma.MultaOmit
+  solicitacaoExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminOmit
 }
 
 /* Types for Logging */

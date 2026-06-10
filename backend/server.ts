@@ -1,4 +1,4 @@
-import "dotenv/config";
+﻿import "dotenv/config";
 import cors from "cors";
 import express from "express";
 import path from "node:path";
@@ -42,9 +42,25 @@ app.post(
 app.use((_req, res) => {
   res.status(404).json({
     sucesso: false,
-    erro: { mensagem: "Rota nao encontrada", tipo: "ErroNaoEncontrado" },
+    erro: { mensagem: "Rota não encontrada", tipo: "ErroNaoEncontrado" },
   });
 });
+
+async function garantirAdminBase() {
+  const adminBase = await prisma.usuario.findUnique({
+    where: { email: "admin@biblioteca.com" },
+  });
+  if (adminBase) return;
+  await controladorUsuarios.criarAdmin(
+    "Administrador Base",
+    "admin@biblioteca.com",
+    "admin123",
+    "Administrador"
+  );
+  console.log("Admin base criado: admin@biblioteca.com / admin123");
+}
+
+await garantirAdminBase();
 
 const servidor = app.listen(porta, () => {
   console.log(`API REST rodando em http://localhost:${porta}`);
@@ -54,3 +70,4 @@ process.on("SIGINT", async () => {
   await prisma.$disconnect();
   servidor.close(() => process.exit(0));
 });
+

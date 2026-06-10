@@ -3,6 +3,7 @@ import multer from "multer";
 import { ControladorUsuarios } from "../controller/ControladorUsuarios.js";
 import {
   autenticarJwt,
+  autorizarAdmin,
   autorizarProprioUsuario,
   autorizarProprioUsuarioBody,
 } from "../middleware/autenticacaoJwt.js";
@@ -59,6 +60,8 @@ rotasUsuarios.post(
 
 rotasUsuarios.post(
   "/admins",
+  autenticarJwt,
+  autorizarAdmin,
   validarCamposBody(["nome", "email", "senha", "cargo"]),
   async (req, res) => {
   const resultado = await controladorUsuarios.criarAdmin(

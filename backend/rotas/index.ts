@@ -2,6 +2,7 @@ import { Router } from "express";
 import { ControladorUsuarios } from "../controller/ControladorUsuarios.js";
 import { autenticarJwt, autorizarProprioUsuarioBody } from "../middleware/autenticacaoJwt.js";
 import { rotasAuth } from "./rotasAuth.js";
+import { rotasBiblioteca } from "./rotasBiblioteca.js";
 import { rotasConsultas } from "./rotasConsultas.js";
 import { rotasEmprestimos } from "./rotasEmprestimos.js";
 import { rotasExemplares } from "./rotasExemplares.js";
@@ -29,6 +30,7 @@ rotasApi.get("/status", (_req, res) => {
 });
 
 rotasApi.use("/auth", rotasAuth);
+rotasApi.use("/biblioteca", rotasBiblioteca);
 rotasApi.use("/usuarios", rotasUsuarios);
 rotasApi.use("/livros", rotasLivros);
 rotasApi.use("/exemplares", rotasExemplares);
