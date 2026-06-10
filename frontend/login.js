@@ -586,13 +586,13 @@ function bookInlineDetailsHtml(livro) {
         <span>${livro.anoPublicacao}</span>
         <span>${formatStatus(livro.status)}</span>
       </div>
-      <p class="book-detail-synopsis">${livro.sinopse || "Sinopse nao cadastrada."}</p>
+      <p class="book-detail-synopsis">${livro.sinopse || "Sinopse não cadastrada."}</p>
       <div class="book-detail-stats">
         <article><strong>${exemplares.length}</strong><span>exemplares</span></article>
-        <article><strong>${disponiveis}</strong><span>disponiveis</span></article>
+        <article><strong>${disponiveis}</strong><span>disponíveis</span></article>
         <article><strong>${emprestados}</strong><span>emprestados</span></article>
       </div>
-      <button class="secondary-btn book-more-btn" type="button">Mais informacoes</button>
+      <button class="secondary-btn book-more-btn" type="button">Mais informações</button>
     </div>
     </aside>
   `;
@@ -663,7 +663,7 @@ function renderOperations() {
       </tr>
     `),
     6,
-    "Nenhum emprestimo registrado."
+    "Nenhum empréstimo registrado."
   );
 
   renderTableRows(
@@ -904,7 +904,7 @@ qs("#resetPasswordBtn").addEventListener("click", async () => {
       method: "POST",
       body: JSON.stringify({ email, senha }),
     });
-    notify("Senha redefinida com sucesso. Faca login para entrar");
+    notify("Senha redefinida com sucesso. Faça login para entrar");
     resetForgotPasswordForm();
     showLoginForm();
   } catch (error) {

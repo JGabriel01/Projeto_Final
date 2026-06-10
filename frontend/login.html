@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -18,7 +18,7 @@
     </section>
 
     <section class="auth-panel">
-      <button id="themeToggle" class="theme-toggle" type="button" title="Modo escuro">🌙</button>
+      <button id="themeToggle" class="theme-toggle" type="button" title="Modo escuro">☾</button>
       <div class="auth-logo">
         <div class="auth-logo-mark">LM</div>
         <div>
@@ -93,7 +93,6 @@
           <select id="registerType" required>
             <option value="alunos">Aluno</option>
             <option value="professores">Professor</option>
-            <option value="admins">Admin</option>
           </select>
         </label>
         <div id="studentFields" class="type-fields">
@@ -131,6 +130,10 @@
       <button id="menuToggle" class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
       <div class="top-search">
         <input id="globalSearch" type="search" placeholder="Busque por título ou autor...">
+        <button id="notificationsBtn" class="notifications-shortcut" type="button" aria-label="Abrir notificações">
+          <span>!</span>
+          <strong id="notificationsBadge" class="hidden">0</strong>
+        </button>
         <button id="profileShortcut" class="profile-shortcut" type="button" aria-label="Abrir perfil">
           <span id="topProfileAvatar" class="top-profile-avatar">U</span>
         </button>
@@ -142,7 +145,7 @@
         <button class="nav-btn" data-view="operationsView" type="button">Operações</button>
       </nav>
       <div class="top-actions app-actions">
-        <button id="appThemeToggle" class="secondary-btn icon-btn" type="button" title="Modo escuro">🌙</button>
+        <button id="appThemeToggle" class="secondary-btn icon-btn" type="button" title="Modo escuro">☾</button>
         <button id="refreshBtn" class="secondary-btn" type="button">Atualizar</button>
       </div>
       <button id="logoutBtn" class="ghost-btn" type="button">Sair</button>
@@ -282,17 +285,17 @@
             <h3>Reservas</h3>
             <div class="table-wrap">
               <table>
-                <thead><tr><th>ID</th><th>Usuario</th><th>Livro</th><th>Status</th><th>Data</th></tr></thead>
+                <thead><tr><th>ID</th><th>Usuário</th><th>Livro</th><th>Status</th><th>Data</th></tr></thead>
                 <tbody id="reservationsTable"></tbody>
               </table>
             </div>
           </div>
 
           <div class="operation-table-group">
-            <h3>Emprestimos</h3>
+            <h3>Empréstimos</h3>
             <div class="table-wrap">
               <table>
-                <thead><tr><th>ID</th><th>Usuario</th><th>Exemplar</th><th>Saida</th><th>Vencimento</th><th>Status</th></tr></thead>
+                <thead><tr><th>ID</th><th>Usuário</th><th>Exemplar</th><th>Saída</th><th>Vencimento</th><th>Status</th></tr></thead>
                 <tbody id="loansTable"></tbody>
               </table>
             </div>
@@ -302,7 +305,7 @@
             <h3>Multas</h3>
             <div class="table-wrap">
               <table>
-                <thead><tr><th>ID</th><th>Emprestimo</th><th>Exemplar</th><th>Valor</th><th>Status</th></tr></thead>
+                <thead><tr><th>ID</th><th>Empréstimo</th><th>Exemplar</th><th>Valor</th><th>Status</th></tr></thead>
                 <tbody id="finesTable"></tbody>
               </table>
             </div>
@@ -312,7 +315,7 @@
             <h3>Exemplares</h3>
             <div class="table-wrap">
               <table>
-                <thead><tr><th>ID</th><th>Livro</th><th>Tombo</th><th>Estado</th><th>Localizacao</th></tr></thead>
+                <thead><tr><th>ID</th><th>Livro</th><th>Tombo</th><th>Estado</th><th>Localização</th></tr></thead>
                 <tbody id="copiesTable"></tbody>
               </table>
             </div>
@@ -346,20 +349,20 @@
           <div class="metric-grid profile-metrics">
             <article><span id="profileBooksCount">0</span><p>livros no acervo</p></article>
             <article><span id="profileReservationsCount">0</span><p>suas reservas</p></article>
-            <article><span id="profileLoansCount">0</span><p>seus emprÃ©stimos</p></article>
+            <article><span id="profileLoansCount">0</span><p>seus empréstimos</p></article>
             <article><span id="profileFinesCount">0</span><p>suas multas</p></article>
           </div>
           <div class="profile-details-grid">
             <article>
-              <h3>Reservas do usuÃ¡rio logado</h3>
+              <h3>Reservas do usuário logado</h3>
               <div id="profileReservationsList" class="insight-list"></div>
             </article>
             <article>
-              <h3>EmprÃ©stimos do usuÃ¡rio logado</h3>
+              <h3>Empréstimos do usuário logado</h3>
               <div id="profileLoansList" class="insight-list"></div>
             </article>
             <article>
-              <h3>Multas vinculadas aos seus emprÃ©stimos</h3>
+              <h3>Multas vinculadas aos seus empréstimos</h3>
               <div id="profileFinesList" class="insight-list"></div>
             </article>
             <article>
@@ -374,5 +377,7 @@
 
   <div id="toast" class="toast hidden"></div>
   <script src="login.js?v=recuperar-senha"></script>
+  <script src="biblioteca-extra.js?v=filas-notificacoes"></script>
 </body>
 </html>
+
