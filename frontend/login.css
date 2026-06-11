@@ -1671,6 +1671,10 @@ body.dark-mode .confirm-modal h3 {
   color: #ffffff;
 }
 
+body.dark-mode .loan-card p {
+  color: #d8e3f0;
+}
+
 body.dark-mode .confirm-modal p {
   color: #d8e3f0;
 }

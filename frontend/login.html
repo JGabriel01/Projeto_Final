@@ -32,20 +32,20 @@
         <button id="registerTab" class="tab-btn" type="button">Cadastrar</button>
       </div>
 
-      <form id="loginForm" class="auth-form active" novalidate>
+      <form id="loginForm" class="auth-form active" autocomplete="off" novalidate>
         <h2>Acesso ao sistema</h2>
         <label>E-mail
-          <input id="loginEmail" type="email" autocomplete="email" required>
+          <input id="loginEmail" type="email" autocomplete="off" required>
         </label>
         <label>Senha
           <span class="password-field">
-            <input id="loginPassword" type="password" autocomplete="current-password" required>
+            <input id="loginPassword" type="password" autocomplete="new-password" required>
             <button class="password-toggle" type="button" data-password-toggle="loginPassword" aria-label="Mostrar senha"></button>
           </span>
         </label>
         <label class="check-row">
           <input id="rememberLogin" type="checkbox">
-          <span>Guardar usuário em cookie</span>
+          <span>Lembrar e-mail neste computador</span>
         </label>
         <button class="primary-btn" type="submit">Entrar</button>
         <button id="forgotPasswordBtn" class="link-btn" type="button">Esqueceu sua senha?</button>
@@ -65,8 +65,8 @@
               <button class="password-toggle" type="button" data-password-toggle="forgotPassword" aria-label="Mostrar senha"></button>
             </span>
           </label>
-          <div id="forgotPasswordStrength" class="password-strength" aria-label="Forca da senha"></div>
-          <small id="forgotPasswordStrengthText" class="password-strength-text">Digite uma senha com letras e numeros.</small>
+          <div id="forgotPasswordStrength" class="password-strength" aria-label="Força da senha"></div>
+          <small id="forgotPasswordStrengthText" class="password-strength-text">Digite uma senha com letras e números.</small>
           <button id="resetPasswordBtn" class="primary-btn" type="button">Criar nova senha</button>
         </div>
 

@@ -101,6 +101,15 @@
     };
   }
 
+  function normalizeCurtida(curtida) {
+    return {
+      ...curtida,
+      idCurtida: rawId(curtida, "idCurtida", "id_curtida"),
+      usuarioId: rawId(curtida, "usuarioId", "usuario_id"),
+      livroId: rawId(curtida, "livroId", "livro_id"),
+    };
+  }
+
   function normalizeNotificacao(notificacao) {
     return {
       ...notificacao,
@@ -140,6 +149,10 @@
       userLoanIds.has(multa.idEmprestimo) &&
       ["pendente", "aguardando_confirmacao"].includes(multa.statusPagamento)
     );
+  }
+
+  function userLikedBook(livroId) {
+    return (state.curtidasUsuario || []).some((curtida) => curtida.livroId === livroId);
   }
 
   function reservationQueue(livroId) {
@@ -221,6 +234,7 @@
       state.multas = (dados.multas || []).map(normalizeMulta);
       state.notificacoes = (dados.notificacoes || []).map(normalizeNotificacao);
       state.usuarios = (dados.usuarios || []).map(normalizeUsuario);
+      state.curtidasUsuario = (dados.curtidasUsuario || []).map(normalizeCurtida);
       state.solicitacoesExclusaoAdmin = dados.solicitacoesExclusaoAdmin || [];
       const usuarioAtual = state.usuarios.find((usuario) => usuario.idUsuario === ownId());
       if (usuarioAtual) {
@@ -283,13 +297,16 @@
   bookInlineDetailsHtml = function (livro) {
     const exemplares = copiesForBook(livro.idLivro);
     const emprestados = loansForBook(livro.idLivro).length;
-    const disponiveis = availableCount(livro.idLivro);
+    const inativo = isBookInactive(livro);
+    const disponiveis = inativo ? 0 : availableCount(livro.idLivro);
     const fila = reservationQueue(livro.idLivro);
     const reserva = ownActiveReservation(livro.idLivro);
     const bloqueado = !isAdmin() && hasBlockingFine();
     let action = `<button class="secondary-btn book-more-btn" type="button" disabled>Somente consulta</button>`;
 
-    if (!isAdmin()) {
+    if (inativo) {
+      action = `<button class="secondary-btn book-more-btn" type="button" disabled>Livro inativo</button>`;
+    } else if (!isAdmin()) {
       if (reserva) {
         action = reserva.statusReserva === "pronta"
           ? `<button class="primary-btn book-more-btn" type="button" data-reservation-loan="${reserva.idReserva}">Fazer empréstimo da reserva</button>`
@@ -414,10 +431,13 @@
   }
 
   function myLoansHtml() {
-    const meus = state.emprestimos.filter((e) => e.usuarioId === ownId() && !e.dataDevolucaoReal);
-    if (!meus.length) return `<p class="empty-state">Você não tem empréstimos ativos.</p>`;
+    const meus = state.emprestimos
+      .filter((e) => e.usuarioId === ownId())
+      .sort((a, b) => Number(Boolean(a.dataDevolucaoReal)) - Number(Boolean(b.dataDevolucaoReal)));
+    if (!meus.length) return `<p class="empty-state">Você ainda não tem empréstimos.</p>`;
     return `<div class="loan-list">${meus.map((emprestimo) => {
       const livro = bookForLoan(emprestimo);
+      const concluido = Boolean(emprestimo.dataDevolucaoReal);
       const falta = daysLeft(emprestimo.dataVencimento);
       const multa = state.multas.find((m) => m.idEmprestimo === emprestimo.idEmprestimo && m.statusPagamento !== "paga");
       return `
@@ -425,13 +445,16 @@
           <div class="loan-cover">${bookCoverHtml(livro)}</div>
           <div>
             <h3>${livro.titulo}</h3>
+            <p>Status: ${concluido ? "concluído" : "em andamento"}</p>
             <p>Data de expiração: ${formatDate(emprestimo.dataVencimento)}</p>
-            <p>${falta >= 0 ? `Faltam ${falta} dia(s) para devolução.` : `${Math.abs(falta)} dia(s) em atraso.`}</p>
+            ${concluido
+              ? `<p>Devolvido em ${formatDate(emprestimo.dataDevolucaoReal)}.</p>`
+              : `<p>${falta >= 0 ? `Faltam ${falta} dia(s) para devolução.` : `${Math.abs(falta)} dia(s) em atraso.`}</p>`}
             ${multa ? `<p class="fine-warning">Este empréstimo tem multa pendente. Resolva em Gerenciar multas.</p>` : ""}
-            <div class="row-actions">
+            ${concluido ? "" : `<div class="row-actions">
               <button class="primary-btn" type="button" data-return-loan="${emprestimo.idEmprestimo}">Devolver empréstimo</button>
               <button class="secondary-btn" type="button" data-extend-loan="${emprestimo.idEmprestimo}">Estender prazo</button>
-            </div>
+            </div>`}
           </div>
         </article>
       `;
@@ -446,6 +469,7 @@
       const livro = fineBook(multa);
       const emprestimo = state.emprestimos.find((e) => e.idEmprestimo === multa.idEmprestimo) || multa.emprestimo || {};
       const exemplar = state.exemplares.find((e) => e.id_exemplar === multa.idExemplar) || emprestimo.exemplar || {};
+      const aguardandoConfirmacao = multa.statusPagamento === "aguardando_confirmacao";
       return `
         <article class="loan-card">
           <div class="loan-cover">${bookCoverHtml(livro)}</div>
@@ -455,7 +479,9 @@
             <p>Data do empréstimo: ${formatDate(emprestimo.dataSaida)}</p>
             <p>Autor: ${livro.autor || "-"} | Condição: ${exemplar.estado || "-"}</p>
             <p class="fine-warning">Se não pagar no dia gerado, cada dia de atraso soma R$ 1,00 ao valor base.</p>
-            <button class="primary-btn" type="button" data-pay-fine="${multa.idMulta}">Pagamento</button>
+            ${aguardandoConfirmacao
+              ? `<p>Status: aguardando confirmação do admin.</p>`
+              : `<button class="primary-btn" type="button" data-pay-fine="${multa.idMulta}">Pagamento</button>`}
           </div>
         </article>
       `;
@@ -523,7 +549,7 @@
       const usuario = m.emprestimo?.usuario || state.usuarios.find((u) => u.idUsuario === m.emprestimo?.usuarioId) || {};
       const livro = fineBook(m);
       const foto = normalizeImageUrl(usuario.fotoPerfilUrl);
-      return `<tr><td><span class="admin-user-line">${foto ? `<img src="${foto}" alt="">` : ""}${usuario.nome || "-"}</span></td><td>${livro.titulo || "-"} | Exemplar ${m.idExemplar}</td><td>R$ ${Number(m.valor || 0).toFixed(2)}</td><td><button class="primary-btn" data-confirm-fine="${m.idMulta}">Confirmar pagamento</button></td></tr>`;
+      return `<tr><td><span class="admin-user-line">${foto ? `<img src="${foto}" alt="">` : ""}${usuario.nome || "-"}</span></td><td>${livro.titulo || "-"} | Exemplar ${m.idExemplar}</td><td>R$ ${Number(m.valor || 0).toFixed(2)}</td><td><div class="row-actions"><button class="primary-btn" data-confirm-fine="${m.idMulta}" data-approve="true">Confirmar pagamento</button><button class="danger-btn" data-confirm-fine="${m.idMulta}" data-approve="false">Negar pagamento</button></div></td></tr>`;
     }).join("")}</tbody></table></div>`;
   }
 
@@ -554,7 +580,7 @@
           <div class="insight-list">${admins.map((admin) => `<div class="insight-item"><div class="user-avatar">${admin.nome.slice(0, 1)}</div><div><strong>${admin.nome}</strong><span>${admin.cargo || "Admin"}</span></div></div>`).join("")}</div>
         </article>
       </div>
-      <div class="table-wrap"><table><thead><tr><th>Admin</th><th>Status</th><th>Ação</th></tr></thead><tbody>${solicitacoes.map((s) => `<tr><td>${s.admin?.nome || userNameById(s.admin_id)}</td><td>${s.status}</td><td>${s.admin_id === ownId() && s.status === "aprovada" ? `<button class="danger-btn" data-execute-admin-delete="${s.id_solicitacao}">Excluir conta</button>` : s.admin_id !== ownId() && s.status === "pendente" ? `<button class="primary-btn" data-decide-admin-delete="${s.id_solicitacao}" data-approve="true">Confirmar</button> <button class="danger-btn" data-decide-admin-delete="${s.id_solicitacao}" data-approve="false">Negar</button>` : "-"}</td></tr>`).join("")}</tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Admin</th><th>Status</th><th>Ação</th></tr></thead><tbody>${solicitacoes.map((s) => `<tr><td>${s.admin?.nome || userNameById(s.admin_id)}</td><td>${formatStatus(s.status)}</td><td>${s.admin_id === ownId() && s.status === "aprovada" ? `<button class="danger-btn" data-execute-admin-delete="${s.id_solicitacao}">Excluir conta</button>` : s.admin_id !== ownId() && s.status === "pendente" ? `<button class="primary-btn" data-decide-admin-delete="${s.id_solicitacao}" data-approve="true">Confirmar</button> <button class="danger-btn" data-decide-admin-delete="${s.id_solicitacao}" data-approve="false">Negar</button>` : "-"}</td></tr>`).join("")}</tbody></table></div>
     `;
   }
 
@@ -562,7 +588,7 @@
     return `<div class="loan-list">${state.livros.map((livro) => {
       const exemplares = copiesForBook(livro.idLivro);
       const emprestados = loansForBook(livro.idLivro);
-      return `<article class="loan-card"><div class="loan-cover">${bookCoverHtml(livro)}</div><div><h3>${livro.titulo}</h3><p>${availableCount(livro.idLivro)} disponível(is) | ${emprestados.length} emprestado(s)</p><div class="copy-list">${exemplares.map((e) => `<span>${e.codigo_tombo} | ${e.estado} | ${e.localizacao} | ${emprestados.some((loan) => loan.exemplarId === e.id_exemplar) ? "emprestado" : "disponível"}</span>`).join("")}</div></div></article>`;
+      return `<article class="loan-card"><div class="loan-cover">${bookCoverHtml(livro)}</div><div><h3>${livro.titulo}</h3><p>Status: ${formatStatus(livro.status)} | ${isBookInactive(livro) ? 0 : availableCount(livro.idLivro)} disponível(is) | ${emprestados.length} emprestado(s)</p><div class="copy-list">${exemplares.map((e) => `<span>${e.codigo_tombo} | ${e.estado} | ${e.localizacao} | ${emprestados.some((loan) => loan.exemplarId === e.id_exemplar) ? "emprestado" : "disponível"}</span>`).join("")}</div></div></article>`;
     }).join("")}</div>`;
   }
 
@@ -657,11 +683,15 @@
         notify("Reserva cancelada");
       }
       if (actionButton.dataset.returnLoan && await confirmDialog("Confirmar devolução", "Deseja confirmar a devolução deste empréstimo?")) {
-        const curtirLivro = await confirmDialog(
-          "Você gostou do livro?",
-          "Se sim, deixe uma curtida. Se não quiser, clique em Cancelar e a devolução seguirá normalmente.",
-          { yes: "Curtir", no: "Cancelar" }
-        );
+        const emprestimo = state.emprestimos.find((item) => item.idEmprestimo === Number(actionButton.dataset.returnLoan));
+        const livro = emprestimo ? bookForLoan(emprestimo) : {};
+        const curtirLivro = livro.idLivro && !userLikedBook(livro.idLivro)
+          ? await confirmDialog(
+            "Você gostou do livro?",
+            "Se sim, deixe uma curtida. Se não quiser, clique em Cancelar e a devolução seguirá normalmente.",
+            { yes: "Curtir", no: "Cancelar" }
+          )
+          : false;
         await apiExtra(`/biblioteca/emprestimos/${actionButton.dataset.returnLoan}/devolucao`, {
           method: "PATCH",
           body: JSON.stringify({ curtirLivro }),
@@ -676,9 +706,16 @@
         await apiExtra(`/biblioteca/multas/${actionButton.dataset.payFine}/pagamentos`, { method: "POST", body: JSON.stringify({}) });
         notify("Aguarde a confirmação do pagamento por qualquer admin da biblioteca para o mesmo ser aprovado.");
       }
-      if (actionButton.dataset.confirmFine && await confirmDialog("Confirmar pagamento", "Confirma o recebimento do pagamento da multa?")) {
-        await apiExtra(`/biblioteca/multas/${actionButton.dataset.confirmFine}/pagamentos`, { method: "PATCH", body: JSON.stringify({ statusPagamento: "paga" }) });
-        notify("Pagamento confirmado");
+      if (actionButton.dataset.confirmFine) {
+        const aprovar = actionButton.dataset.approve === "true";
+        const confirmado = await confirmDialog(
+          aprovar ? "Confirmar pagamento" : "Negar pagamento",
+          aprovar ? "Confirma o recebimento do pagamento da multa?" : "Confirma que este pagamento não foi recebido?"
+        );
+        if (confirmado) {
+          await apiExtra(`/biblioteca/multas/${actionButton.dataset.confirmFine}/pagamentos`, { method: "PATCH", body: JSON.stringify({ aprovar }) });
+          notify(aprovar ? "Pagamento confirmado" : "Pagamento negado. O usuário poderá informar o pagamento novamente.");
+        }
       }
       if (actionButton.dataset.decideExtension) {
         await apiExtra(`/biblioteca/emprestimos/${actionButton.dataset.decideExtension}/extensoes`, { method: "PATCH", body: JSON.stringify({ aprovar: actionButton.dataset.approve === "true" }) });

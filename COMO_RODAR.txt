@@ -111,3 +111,10 @@ npm run server
 No navegador:
 
 http://localhost:3000
+
+simular emprestimo atrasado
+
+npm run simular:atraso -- 4 8
+
+4 é o ID do empréstimo.
+8 é a quantidade de dias de atraso.

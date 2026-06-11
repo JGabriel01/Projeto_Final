@@ -12,6 +12,7 @@ const state = {
   reservas: [],
   emprestimos: [],
   multas: [],
+  curtidasUsuario: [],
   selectedBookId: null,
   selectedHomeBookId: null,
 };
@@ -114,6 +115,7 @@ async function api(path, options = {}) {
 function showAuth() {
   authScreen.classList.remove("hidden");
   appScreen.classList.add("hidden");
+  restoreRememberedLogin();
 }
 
 function showLoginForm() {
@@ -364,13 +366,13 @@ function highlightedBooks() {
     reservationScore.set(reserva.livroId, (reservationScore.get(reserva.livroId) || 0) + 1);
   });
 
-  return [...state.livros]
+  return [...activeCatalogBooks()]
     .sort((a, b) => (reservationScore.get(b.idLivro) || 0) - (reservationScore.get(a.idLivro) || 0))
     .slice(0, 12);
 }
 
 function mostReservedBooks() {
-  return state.livros
+  return activeCatalogBooks()
     .map((livro) => {
       const total = state.reservas.filter((reserva) => reserva.livroId === livro.idLivro).length;
       return {
@@ -386,7 +388,7 @@ function mostReservedBooks() {
 }
 
 function bestConditionBooks() {
-  return state.livros
+  return activeCatalogBooks()
     .map((livro) => {
       const exemplares = copiesByBookId(livro.idLivro);
       const bons = exemplares.filter((exemplar) =>
@@ -405,7 +407,7 @@ function bestConditionBooks() {
 }
 
 function soldOutBooks() {
-  return state.livros
+  return activeCatalogBooks()
     .map((livro) => {
       const exemplares = copiesByBookId(livro.idLivro);
       const emprestados = exemplares.filter((exemplar) =>
@@ -444,7 +446,7 @@ function renderProfileSummary() {
     "#profileReservationsList",
     ownReservations.map((reserva) => ({
       title: bookTitleById(reserva.livroId),
-      detail: `Reserva ${reserva.idReserva} | ${reserva.statusReserva || "ativa"}`,
+      detail: `Reserva ${reserva.idReserva} | ${formatStatus(reserva.statusReserva || "ativa")}`,
     })),
     "Você ainda não fez reservas."
   );
@@ -454,7 +456,7 @@ function renderProfileSummary() {
     ownLoans.map((emprestimo) => ({
       title: copyDescriptionById(emprestimo.exemplarId),
       detail: emprestimo.dataDevolucaoReal
-        ? "Devolvido"
+        ? "Concluído"
         : `Vence em ${formatDate(emprestimo.dataVencimento)}`,
     })),
     "Você ainda não tem empréstimos."
@@ -464,14 +466,14 @@ function renderProfileSummary() {
     "#profileFinesList",
     ownFines.map((multa) => ({
       title: `Multa ${multa.idMulta}`,
-      detail: `R$ ${Number(multa.valor || 0).toFixed(2)} | ${multa.statusPagamento}`,
+      detail: `R$ ${Number(multa.valor || 0).toFixed(2)} | ${formatStatus(multa.statusPagamento)}`,
     })),
     "Você não tem multas vinculadas."
   );
 
   renderInsightList(
     "#profileBooksList",
-    state.livros.slice(0, 8).map((livro) => ({
+    visibleBooks().slice(0, 8).map((livro) => ({
       title: livro.titulo,
       detail: `${livro.autor} | ${formatStatus(livro.status)}`,
     })),
@@ -518,11 +520,34 @@ function formatDate(value) {
 
 function filteredBooks() {
   const term = qs("#globalSearch").value.trim().toLowerCase();
-  if (!term) return state.livros;
-  return state.livros.filter((livro) =>
+  const livros = activeCatalogBooks();
+  if (!term) return livros;
+  return livros.filter((livro) =>
     [livro.titulo, livro.autor, livro.genero]
       .filter(Boolean)
       .some((value) => value.toLowerCase().includes(term))
+  );
+}
+
+function isBookInactive(livro) {
+  return String(livro?.status || "").toLowerCase() === "inativo";
+}
+
+function visibleBooks() {
+  return isAdmin()
+    ? state.livros
+    : state.livros.filter((livro) => !isBookInactive(livro));
+}
+
+function activeCatalogBooks() {
+  return state.livros.filter((livro) => !isBookInactive(livro));
+}
+
+function userHasBlockingFines(userId = state.usuario?.idUsuario) {
+  const userLoanIds = new Set(state.emprestimos.filter((emprestimo) => emprestimo.usuarioId === userId).map((emprestimo) => emprestimo.idEmprestimo));
+  return state.multas.some((multa) =>
+    userLoanIds.has(multa.idEmprestimo) &&
+    ["pendente", "aguardando_confirmacao"].includes(multa.statusPagamento)
   );
 }
 
@@ -562,7 +587,25 @@ function bookInlineDetailsHtml(livro) {
       emprestimo.exemplarId === exemplar.id_exemplar && !emprestimo.dataDevolucaoReal
     )
   ).length;
-  const disponiveis = Math.max(exemplares.length - emprestados, 0);
+  const inativo = isBookInactive(livro);
+  const disponiveis = inativo ? 0 : Math.max(exemplares.length - emprestados, 0);
+  const bloqueadoPorMulta = !isAdmin() && userHasBlockingFines();
+  let action = "";
+
+  if (isAdmin()) {
+    action = `
+        <div class="row-actions">
+          <button class="secondary-btn" type="button" data-edit-book="${livro.idLivro}">Atualizar</button>
+          <button class="danger-btn" type="button" data-delete-book="${livro.idLivro}">Remover</button>
+        </div>
+      `;
+  } else if (inativo) {
+    action = `<button class="secondary-btn book-more-btn" type="button" disabled>Livro inativo</button>`;
+  } else if (bloqueadoPorMulta) {
+    action = `<button class="secondary-btn book-more-btn" type="button" disabled>Reservas e empréstimos indisponíveis: pague sua multa pendente</button>`;
+  } else {
+    action = `<button class="secondary-btn book-more-btn" type="button">Mais informações</button>`;
+  }
 
   return `
     <aside class="book-detail-panel open" aria-live="polite">
@@ -588,7 +631,9 @@ function bookInlineDetailsHtml(livro) {
           <button class="secondary-btn" type="button" data-edit-book="${livro.idLivro}">Atualizar</button>
           <button class="danger-btn" type="button" data-delete-book="${livro.idLivro}">Remover</button>
         </div>
-      ` : `<button class="secondary-btn book-more-btn" type="button">Mais informações</button>`}
+      ` : inativo
+        ? `<button class="secondary-btn book-more-btn" type="button" disabled>Livro inativo</button>`
+        : `<button class="secondary-btn book-more-btn" type="button">Mais informações</button>`}
     </div>
     </aside>
   `;
@@ -600,8 +645,15 @@ function formatStatus(status) {
     "disponível": "disponível",
     emprestado: "emprestado",
     reservado: "reservado",
+    inativo: "inativo",
     ativa: "ativa",
+    pronta: "pronta",
+    retirada: "retirada",
+    cancelada: "cancelada",
+    expirada: "expirada",
     pendente: "pendente",
+    aguardando_confirmacao: "aguardando confirmação",
+    paga: "paga",
   };
   return labels[status] || status || "-";
 }
@@ -655,7 +707,7 @@ function renderOperations() {
         <td>${copyDescriptionById(emprestimo.exemplarId)}</td>
         <td>${formatDate(emprestimo.dataSaida)}</td>
         <td>${formatDate(emprestimo.dataVencimento)}</td>
-        <td>${emprestimo.dataDevolucaoReal ? "devolvido" : "em aberto"}</td>
+        <td>${emprestimo.dataDevolucaoReal ? "concluído" : "em aberto"}</td>
       </tr>
     `),
     6,
@@ -710,7 +762,7 @@ function renderOperations() {
       tipo: "Empréstimo",
       id: emprestimo.idEmprestimo,
       referencia: `${userNameById(emprestimo.usuarioId)} pegou ${copyDescriptionById(emprestimo.exemplarId)}`,
-      status: emprestimo.dataDevolucaoReal ? "devolvido" : emprestimo.dataVencimento,
+      status: emprestimo.dataDevolucaoReal ? "concluído" : emprestimo.dataVencimento,
     })),
     ...state.multas.map((multa) => ({
       tipo: "Multa",
@@ -802,7 +854,7 @@ function openBookForm(livro = null) {
   qs("#bookGenre").value = livro.genero;
   qs("#bookYear").value = livro.anoPublicacao;
   qs("#bookSynopsis").value = livro.sinopse;
-  qs("#bookAvailable").checked = livro.status === "disponivel" || livro.status === "disponivel";
+  qs("#bookAvailable").checked = ["disponivel", "disponível"].includes(livro.status);
 }
 
 function closeBookForm() {
@@ -899,7 +951,7 @@ forgotPasswordForm.addEventListener("submit", async (event) => {
     verifiedRecoveryEmail = email;
     qs("#resetPasswordFields").classList.remove("hidden");
     qs("#verifyForgotEmailBtn").classList.add("hidden");
-    notify("Email encontrado. Crie uma nova senha");
+    notify("E-mail encontrado. Crie uma nova senha");
   } catch (error) {
     verifiedRecoveryEmail = "";
     qs("#resetPasswordFields").classList.add("hidden");
@@ -1126,10 +1178,10 @@ document.addEventListener("click", async (event) => {
     const livro = state.livros.find((item) => String(item.idLivro) === String(editId));
     openBookForm(livro);
   }
-  if (deleteId && confirm("Remover este livro?")) {
+  if (deleteId && confirm("Remover este livro? Se ele tiver histórico, será marcado como inativo.")) {
     try {
-      await api(`/livros/${deleteId}`, { method: "DELETE" });
-      notify("Livro removido");
+      const resultado = await api(`/livros/${deleteId}`, { method: "DELETE" });
+      notify(resultado.mensagem || (resultado.acao === "inativado" ? "Livro marcado como inativo" : "Livro removido"));
       await loadAll();
     } catch (error) {
       notify(error.message);
