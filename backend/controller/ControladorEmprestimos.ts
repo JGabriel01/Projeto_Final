@@ -28,6 +28,9 @@ export class ControladorEmprestimos {
         if (!exemplar) {
           throw new ErroNaoEncontrado(`Exemplar com ID ${exemplarId} nao encontrado`);
         }
+        if (String(exemplar.livro?.status || "").toLowerCase() === "inativo") {
+          throw new ErroEmprestimo("Livro inativo nao pode gerar novos emprestimos");
+        }
       }
 
       const emprestimo = new Emprestimo(

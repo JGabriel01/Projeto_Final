@@ -24,6 +24,16 @@ function usuarioLogado(res: any) {
   return res.locals.usuario as { idUsuario: number; nivelAcesso: string; email: string };
 }
 
+function livroEstaInativo(livro?: { status?: string } | null) {
+  return String(livro?.status || "").toLowerCase() === "inativo";
+}
+
+function calcularValorMulta(dataVencimento: Date | string, dataFinal: Date | string = new Date()) {
+  const vencimento = new Date(dataVencimento).getTime();
+  const fim = new Date(dataFinal).getTime();
+  return Math.max(1, Math.ceil((fim - vencimento) / DIA));
+}
+
 async function notificar(usuarioId: number, tipo: string, mensagem: string, acao?: string, referenciaId?: number) {
   return (prisma as any).notificacao.create({
     data: {
@@ -61,16 +71,53 @@ async function multasBloqueantes(usuarioId: number) {
 async function atualizarValoresMultas() {
   const multas = await (prisma as any).multa.findMany({
     where: { status_pagamento: { in: ["pendente", "aguardando_confirmacao"] } },
+    include: { emprestimo: true },
   });
 
   await Promise.all(multas.map((multa: any) => {
-    const dias = Math.max(0, Math.floor((Date.now() - new Date(multa.data_geracao).getTime()) / DIA));
-    const valor = 1 + dias;
+    const vencimento = multa.emprestimo?.data_vencimento || multa.data_geracao;
+    const fim = multa.emprestimo?.data_devolucao_real || new Date();
+    const valor = calcularValorMulta(vencimento, fim);
     if (Number(multa.valor_multa) === valor) return Promise.resolve();
     return (prisma as any).multa.update({
       where: { id_multa: multa.id_multa },
       data: { valor_multa: valor },
     });
+  }));
+}
+
+async function gerarMultasEmprestimosAtrasados() {
+  const agora = new Date();
+  const emprestimos = await (prisma as any).emprestimo.findMany({
+    where: {
+      data_devolucao_real: null,
+      data_vencimento: { lt: agora },
+      multa: { is: null },
+      exemplar_id: { not: null },
+    },
+    include: {
+      exemplar: { include: { livro: true } },
+    },
+  });
+
+  await Promise.all(emprestimos.map(async (emprestimo: any) => {
+    const valorMulta = calcularValorMulta(emprestimo.data_vencimento, agora);
+    const multa = await (prisma as any).multa.create({
+      data: {
+        valor_multa: valorMulta,
+        status_pagamento: "pendente",
+        data_geracao: agora,
+        emprestimo_id: emprestimo.id_emprestimo,
+        exemplar_id: emprestimo.exemplar_id,
+      },
+    });
+    await notificar(
+      emprestimo.usuario_id,
+      "multa",
+      `Uma multa foi gerada por atraso na devolução de "${emprestimo.exemplar.livro.titulo}".`,
+      "gerenciar_multas",
+      multa.id_multa
+    );
   }));
 }
 
@@ -128,12 +175,17 @@ async function sincronizarFilaLivro(livroId: number) {
 }
 
 async function sincronizarBiblioteca() {
+  await gerarMultasEmprestimosAtrasados();
   await atualizarValoresMultas();
   const livros = await prisma.livro.findMany({ select: { id_livro: true } });
   await Promise.all(livros.map((livro) => sincronizarFilaLivro(livro.id_livro)));
 }
 
 async function criarEmprestimo(usuarioId: number, livroId: number, reservaId?: number) {
+  const livro = await prisma.livro.findUnique({ where: { id_livro: livroId } });
+  if (!livro) throw new Error("Livro não encontrado");
+  if (livroEstaInativo(livro)) throw new Error("Livro inativo não pode gerar novos empréstimos");
+
   const disponiveis = await exemplaresDisponiveis(livroId);
   if (!disponiveis.length) throw new Error("Não há exemplares disponíveis para empréstimo");
 
@@ -175,7 +227,7 @@ rotasBiblioteca.get("/estado", async (_req, res) => {
   const usuario = usuarioLogado(res);
   await sincronizarBiblioteca();
 
-  const [livros, exemplares, reservas, emprestimos, multas, notificacoes, usuarios, solicitacoesExclusaoAdmin] =
+  const [livros, exemplares, reservas, emprestimos, multas, notificacoes, usuarios, curtidasUsuario, solicitacoesExclusaoAdmin] =
     await Promise.all([
       prisma.livro.findMany({
         include: { _count: { select: { curtidas: true } } },
@@ -203,19 +255,23 @@ rotasBiblioteca.get("/estado", async (_req, res) => {
         include: { aluno: true, professor: true, admin: true },
         orderBy: [{ nivel_acesso: "asc" }, { nome: "asc" }],
       }),
+      (prisma as any).curtidaLivro.findMany({
+        where: { usuario_id: usuario.idUsuario },
+      }),
       (prisma as any).solicitacaoExclusaoAdmin.findMany({
         include: { admin: true },
         orderBy: { data_criacao: "desc" },
       }).catch(() => []),
     ]);
 
-  resposta(res, { livros, exemplares, reservas, emprestimos, multas, notificacoes, usuarios, solicitacoesExclusaoAdmin });
+  resposta(res, { livros, exemplares, reservas, emprestimos, multas, notificacoes, usuarios, curtidasUsuario, solicitacoesExclusaoAdmin });
 });
 
 rotasBiblioteca.post("/emprestimos", async (req, res) => {
   try {
     const usuario = usuarioLogado(res);
     if (usuario.nivelAcesso === "admin") return erro(res, "Admins não podem fazer empréstimos", 403);
+    await gerarMultasEmprestimosAtrasados();
     if ((await multasBloqueantes(usuario.idUsuario)).length) {
       return erro(res, "Você tem multas pendentes. Resolva suas pendências na aba Gerenciar multas.");
     }
@@ -232,11 +288,16 @@ rotasBiblioteca.post("/reservas", async (req, res) => {
   try {
     const usuario = usuarioLogado(res);
     if (usuario.nivelAcesso === "admin") return erro(res, "Admins não podem fazer reservas", 403);
+    await gerarMultasEmprestimosAtrasados();
     if ((await multasBloqueantes(usuario.idUsuario)).length) {
       return erro(res, "Você tem multas pendentes. Resolva suas pendências na aba Gerenciar multas.");
     }
 
     const livroId = Number(req.body.livroId);
+    const livro = await prisma.livro.findUnique({ where: { id_livro: livroId } });
+    if (!livro) return erro(res, "Livro não encontrado", 404);
+    if (livroEstaInativo(livro)) return erro(res, "Livro inativo não pode receber novas reservas");
+
     const existente = await (prisma as any).reserva.findFirst({
       where: { usuario_id: usuario.idUsuario, livro_id: livroId, status_reserva: { in: ["ativa", "pronta"] } },
     });
@@ -273,6 +334,7 @@ rotasBiblioteca.post("/reservas/:id/emprestimos", async (req, res) => {
       await sincronizarFilaLivro(reserva.livro_id);
       return erro(res, "O prazo de 1 hora desta reserva expirou");
     }
+    await gerarMultasEmprestimosAtrasados();
     if ((await multasBloqueantes(reserva.usuario_id)).length) return erro(res, "Usuário possui multas pendentes");
 
     const emprestimo = await criarEmprestimo(reserva.usuario_id, reserva.livro_id, reserva.id_reserva);
@@ -333,7 +395,7 @@ rotasBiblioteca.patch("/emprestimos/:id/devolucao", async (req, res) => {
     });
     const livroId = emprestimo.exemplar.livro_id;
 
-    if (req.body?.curtirLivro === true && usuario.nivelAcesso !== "admin") {
+    if (req.body?.curtirLivro === true) {
       await (prisma as any).curtidaLivro.upsert({
         where: {
           usuario_id_livro_id: {
@@ -350,9 +412,10 @@ rotasBiblioteca.patch("/emprestimos/:id/devolucao", async (req, res) => {
     }
 
     if (agora > new Date(emprestimo.data_vencimento) && !emprestimo.multa) {
+      const valorMulta = calcularValorMulta(emprestimo.data_vencimento, agora);
       await (prisma as any).multa.create({
         data: {
-          valor_multa: 1,
+          valor_multa: valorMulta,
           status_pagamento: "pendente",
           data_geracao: agora,
           emprestimo_id: emprestimo.id_emprestimo,
@@ -436,11 +499,22 @@ rotasBiblioteca.patch("/multas/:id/pagamentos", autorizarAdmin, async (req, res)
     include: { emprestimo: { include: { usuario: true, exemplar: { include: { livro: true } } } } },
   });
   if (!multa) return erro(res, "Multa não encontrada", 404);
+  const aprovar = req.body.aprovar !== false && req.body.statusPagamento !== "pendente";
   const atualizada = await (prisma as any).multa.update({
     where: { id_multa: multa.id_multa },
-    data: { status_pagamento: "paga", data_pagamento: new Date() },
+    data: aprovar
+      ? { status_pagamento: "paga", data_pagamento: new Date() }
+      : { status_pagamento: "pendente", data_pagamento: null },
   });
-  await notificar(multa.emprestimo.usuario_id, "multa", `Pagamento da multa de "${multa.emprestimo.exemplar.livro.titulo}" confirmado.`, "gerenciar_multas", multa.id_multa);
+  await notificar(
+    multa.emprestimo.usuario_id,
+    "multa",
+    aprovar
+      ? `Pagamento da multa de "${multa.emprestimo.exemplar.livro.titulo}" confirmado.`
+      : `Pagamento da multa de "${multa.emprestimo.exemplar.livro.titulo}" não confirmado. Envie o pagamento novamente.`,
+    "gerenciar_multas",
+    multa.id_multa
+  );
   resposta(res, atualizada);
 });
 

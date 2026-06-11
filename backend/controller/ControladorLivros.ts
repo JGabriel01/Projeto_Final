@@ -80,18 +80,47 @@ export class ControladorLivros {
     }
   }
 
-  async excluirLivro(id: number): Promise<ResultadoOperacao<{ id: number }>> {
+  async excluirLivro(
+    id: number
+  ): Promise<
+    ResultadoOperacao<{
+      id: number;
+      acao: "excluido" | "inativado";
+      mensagem: string;
+      livro?: Livro;
+    }>
+  > {
     try {
       if (typeof id !== "number" || id <= 0) {
         throw new ErroValidacao("ID deve ser um numero positivo");
       }
 
-      const excluiu = await this.repositorioLivros.deletar(id);
-      if (!excluiu) {
+      const resultado = await this.repositorioLivros.removerOuInativar(id);
+      if (!resultado) {
         throw new ErroNaoEncontrado(`Livro com ID ${id} nao encontrado`);
       }
 
-      return { sucesso: true, dados: { id } };
+      if (resultado.acao === "inativado") {
+        return {
+          sucesso: true,
+          dados: {
+            id,
+            acao: "inativado",
+            mensagem:
+              "Livro possui historico vinculado, foi marcado como inativo e teve reservas pendentes canceladas.",
+            livro: resultado.livro,
+          },
+        };
+      }
+
+      return {
+        sucesso: true,
+        dados: {
+          id,
+          acao: "excluido",
+          mensagem: "Livro excluido do acervo.",
+        },
+      };
     } catch (erro: any) {
       return this.tratarErro(erro, "Erro ao excluir livro");
     }

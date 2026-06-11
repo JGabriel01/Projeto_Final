@@ -172,9 +172,9 @@ export class Livro {
   }
 
   private validarStatus(status: string): void {
-    const statusValidos = ["disponivel", "disponível", "disponÃ­vel", "emprestado", "reservado"];
+    const statusValidos = ["disponivel", "dispon�vel", "disponível", "disponÃ­vel", "emprestado", "reservado", "inativo"];
     if (!statusValidos.includes(status)) {
-      throw new ErroLivro("Status invalido. Valores permitidos: disponivel, emprestado, reservado");
+      throw new ErroLivro("Status invalido. Valores permitidos: disponivel, emprestado, reservado, inativo");
     }
   }
 

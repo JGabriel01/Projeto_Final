@@ -144,6 +144,62 @@ export class RepositorioLivros {
     }
   }
 
+  async removerOuInativar(id: number): Promise<
+    | { acao: "excluido"; livro: null }
+    | { acao: "inativado"; livro: Livro }
+    | null
+  > {
+    try {
+      return await prisma.$transaction(async (tx) => {
+        const livro = await tx.livro.findUnique({
+          where: { id_livro: id },
+          include: {
+            reservas: { select: { id_reserva: true } },
+            exemplares: {
+              select: {
+                id_exemplar: true,
+                emprestimos: { select: { id_emprestimo: true } },
+                multas: { select: { id_multa: true } },
+              },
+            },
+            _count: { select: { curtidas: true } },
+          },
+        });
+
+        if (!livro) return null;
+
+        const possuiHistorico =
+          livro.reservas.length > 0 ||
+          livro.exemplares.some(
+            (exemplar) =>
+              exemplar.emprestimos.length > 0 || exemplar.multas.length > 0
+          );
+
+        if (possuiHistorico) {
+          await tx.reserva.updateMany({
+            where: {
+              livro_id: id,
+              status_reserva: { in: ["ativa", "pronta"] },
+            },
+            data: { status_reserva: "cancelada" },
+          });
+
+          const livroDb = await tx.livro.update({
+            where: { id_livro: id },
+            data: { status: "inativo" },
+            include: { _count: { select: { curtidas: true } } },
+          });
+          return { acao: "inativado", livro: this.criarLivroDoDb(livroDb) };
+        }
+
+        await tx.livro.delete({ where: { id_livro: id } });
+        return { acao: "excluido", livro: null };
+      });
+    } catch {
+      return null;
+    }
+  }
+
   async atualizarCapa(
     id: number,
     capaObjeto: string,
