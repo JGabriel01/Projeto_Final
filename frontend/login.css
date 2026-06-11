@@ -965,6 +965,22 @@ textarea {
   scroll-behavior: smooth;
 }
 
+.genre-sections {
+  display: grid;
+  gap: 24px;
+}
+
+.genre-section h4 {
+  color: var(--primary-color);
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.compact-book-grid {
+  padding: 0 8px 8px;
+  overflow-x: auto;
+}
+
 .book-grid {
   display: flex;
   align-items: stretch;

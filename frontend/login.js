@@ -383,6 +383,8 @@ function renderMetrics() {
 
 function renderHomeInsights() {
   renderHomeBooks();
+  renderGenreSections();
+  renderUnavailableBooks();
   renderInsightList("#mostReservedBooks", mostReservedBooks(), "Ainda não há reservas.");
   renderInsightList("#bestConditionBooks", bestConditionBooks(), "Ainda não há exemplares cadastrados.");
   renderInsightList("#soldOutBooks", soldOutBooks(), "Nenhum livro está esgotado.");
@@ -399,14 +401,62 @@ function renderHomeBooks() {
 }
 
 function highlightedBooks() {
-  const reservationScore = new Map();
-  state.reservas.forEach((reserva) => {
-    reservationScore.set(reserva.livroId, (reservationScore.get(reserva.livroId) || 0) + 1);
-  });
+  const livros = [...activeCatalogBooks()]
+    .sort((a, b) => bookLikes(b) - bookLikes(a) || Number(b.idLivro || 0) - Number(a.idLivro || 0));
+  const term = searchTerm();
 
-  return [...activeCatalogBooks()]
-    .sort((a, b) => (reservationScore.get(b.idLivro) || 0) - (reservationScore.get(a.idLivro) || 0))
-    .slice(0, 12);
+  return term
+    ? livros.filter((livro) => bookMatchesSearch(livro, term))
+    : livros.slice(0, 12);
+}
+
+function bookLikes(livro) {
+  return Number(livro.curtidasTotal ?? livro._count?.curtidas ?? 0);
+}
+
+function renderGenreSections() {
+  const target = qs("#genreSections");
+  if (!target) return;
+  const term = searchTerm();
+  const livros = activeCatalogBooks().filter((livro) => !term || bookMatchesSearch(livro, term));
+  const generos = [...new Set(livros.map((livro) => livro.genero || "Sem gênero"))].sort((a, b) => a.localeCompare(b));
+
+  if (!generos.length) {
+    target.innerHTML = `<p class="empty-state">Nenhum gênero encontrado.</p>`;
+    return;
+  }
+
+  target.innerHTML = generos.map((genero) => {
+    const livrosGenero = livros.filter((livro) => (livro.genero || "Sem gênero") === genero).slice(0, 8);
+    return `
+      <section class="genre-section">
+        <h4>${genero}</h4>
+        <div class="book-grid compact-book-grid">
+          ${livrosGenero.map((livro) => `
+            ${bookCardHtml(livro, state.selectedHomeBookId)}
+            ${state.selectedHomeBookId === livro.idLivro ? bookInlineDetailsHtml(livro) : ""}
+          `).join("")}
+        </div>
+      </section>
+    `;
+  }).join("");
+}
+
+function renderUnavailableBooks() {
+  const target = qs("#unavailableBooksGrid");
+  if (!target) return;
+  const term = searchTerm();
+  const livros = activeCatalogBooks()
+    .filter((livro) => !isBookInactive(livro))
+    .filter((livro) => availableCopiesCount(livro.idLivro) === 0)
+    .filter((livro) => !term || bookMatchesSearch(livro, term));
+
+  target.innerHTML = livros.length
+    ? livros.map((livro) => `
+      ${bookCardHtml(livro, state.selectedHomeBookId)}
+      ${state.selectedHomeBookId === livro.idLivro ? bookInlineDetailsHtml(livro, { forceReservationOnly: true }) : ""}
+    `).join("")
+    : `<p class="empty-state">Nenhum livro indisponível para empréstimo no momento.</p>`;
 }
 
 function mostReservedBooks() {
@@ -551,20 +601,36 @@ function copiesByBookId(bookId) {
   return state.exemplares.filter((exemplar) => exemplar.livro_id === bookId);
 }
 
+function activeLoanForCopy(copyId) {
+  return state.emprestimos.some((emprestimo) =>
+    emprestimo.exemplarId === copyId && !emprestimo.dataDevolucaoReal
+  );
+}
+
+function availableCopiesCount(bookId) {
+  return copiesByBookId(bookId).filter((exemplar) => !activeLoanForCopy(exemplar.id_exemplar)).length;
+}
+
 function formatDate(value) {
   if (!value) return "-";
   return new Date(value).toLocaleDateString("pt-BR");
 }
 
 function filteredBooks() {
-  const term = qs("#globalSearch").value.trim().toLowerCase();
+  const term = searchTerm();
   const livros = activeCatalogBooks();
   if (!term) return livros;
-  return livros.filter((livro) =>
-    [livro.titulo, livro.autor, livro.genero]
-      .filter(Boolean)
-      .some((value) => value.toLowerCase().includes(term))
-  );
+  return livros.filter((livro) => bookMatchesSearch(livro, term));
+}
+
+function searchTerm() {
+  return qs("#globalSearch").value.trim().toLowerCase();
+}
+
+function bookMatchesSearch(livro, term) {
+  return [livro.titulo, livro.autor, livro.genero]
+    .filter(Boolean)
+    .some((value) => value.toLowerCase().includes(term));
 }
 
 function isBookInactive(livro) {
@@ -618,16 +684,19 @@ function bookCoverHtml(livro) {
   return `<img src="${normalizeImageUrl(livro.capaUrl)}" alt="Capa de ${livro.titulo}">`;
 }
 
-function bookInlineDetailsHtml(livro) {
+function bookInlineDetailsHtml(livro, options = {}) {
   const exemplares = copiesByBookId(livro.idLivro);
   const emprestados = exemplares.filter((exemplar) =>
-    state.emprestimos.some((emprestimo) =>
-      emprestimo.exemplarId === exemplar.id_exemplar && !emprestimo.dataDevolucaoReal
-    )
+    activeLoanForCopy(exemplar.id_exemplar)
   ).length;
   const livroInativo = isBookInactive(livro);
   const bloqueadoPorMulta = !isAdmin() && userHasBlockingFines();
-  const disponiveis = livroInativo ? 0 : Math.max(exemplares.length - emprestados, 0);
+  const disponiveis = livroInativo ? 0 : availableCopiesCount(livro.idLivro);
+  const reserva = state.reservas.find((item) =>
+    item.livroId === livro.idLivro &&
+    item.usuarioId === state.usuario?.idUsuario &&
+    ["ativa", "pronta"].includes(item.statusReserva)
+  );
   let action = "";
 
   if (isAdmin()) {
@@ -641,6 +710,10 @@ function bookInlineDetailsHtml(livro) {
     action = `<button class="secondary-btn book-more-btn" type="button" disabled>Livro inativo</button>`;
   } else if (bloqueadoPorMulta) {
     action = `<button class="secondary-btn book-more-btn" type="button" disabled>Reservas e empréstimos indisponíveis: pague sua multa pendente</button>`;
+  } else if (options.forceReservationOnly) {
+    action = reserva
+      ? `<button class="reserved-btn book-more-btn" type="button" disabled>Reservado</button>`
+      : `<button class="secondary-btn book-more-btn" type="button" data-reserve-book="${livro.idLivro}">Reservar livro</button>`;
   } else {
     action = `<button class="secondary-btn book-more-btn" type="button">Mais informações</button>`;
   }
@@ -1204,6 +1277,7 @@ qs("#globalSearch").addEventListener("input", renderAll);
 
 document.addEventListener("click", async (event) => {
   const selectBookId = event.target.closest("[data-select-book]")?.dataset.selectBook;
+  const reserveBookId = event.target.closest("[data-reserve-book]")?.dataset.reserveBook;
   const editId = event.target.dataset?.editBook;
   const deleteId = event.target.dataset?.deleteBook;
   if (selectBookId) {
@@ -1213,6 +1287,16 @@ document.addEventListener("click", async (event) => {
     } else {
       state.selectedBookId = Number(selectBookId);
       renderBooks();
+    }
+    return;
+  }
+  if (reserveBookId && confirm("Deseja reservar este livro indisponível para empréstimo?")) {
+    try {
+      await api("/biblioteca/reservas", { method: "POST", body: JSON.stringify({ livroId: Number(reserveBookId) }) });
+      notify("Reserva criada. Acompanhe sua posição na fila.");
+      await loadAll();
+    } catch (error) {
+      notify(error.message);
     }
     return;
   }
