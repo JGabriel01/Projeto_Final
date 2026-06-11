@@ -1,5 +1,7 @@
-const API_URL = "http://localhost:3000/api";
-const MINIO_PUBLIC_BASE = "http://localhost:9000/biblioteca";
+const API_ORIGIN = window.location.protocol.startsWith("http")
+  ? window.location.origin
+  : "http://localhost:3000";
+const API_URL = `${API_ORIGIN}/api`;
 
 const state = {
   token: localStorage.getItem("token"),
@@ -287,8 +289,14 @@ function renderTopProfileShortcut(usuario) {
 
 function normalizeImageUrl(url) {
   if (!url) return "";
-  if (/^https?:\/\//.test(url)) return url;
-  return `${MINIO_PUBLIC_BASE}/${String(url).replace(/^\/+/, "")}`;
+  const texto = String(url).trim();
+  const objetoMinio = texto.match(/\/biblioteca\/(.+)$/)?.[1];
+  if (objetoMinio) {
+    return `${API_ORIGIN}/api/arquivos/${objetoMinio.replace(/^\/+/, "")}`;
+  }
+  if (texto.startsWith("/api/")) return `${API_ORIGIN}${texto}`;
+  if (/^https?:\/\//.test(texto)) return texto;
+  return `${API_ORIGIN}/api/arquivos/${texto.replace(/^\/+/, "")}`;
 }
 
 async function loadAll() {

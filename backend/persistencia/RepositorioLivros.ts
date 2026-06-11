@@ -1,6 +1,7 @@
 // Repositório de Livros - Persistência com Prisma
 
 import { prisma } from "../config/prismaClient.js";
+import { montarUrlArquivoApi } from "../config/minioClient.js";
 import { Livro } from "../negocios/Livro.js";
 
 export class RepositorioLivros {
@@ -13,7 +14,7 @@ export class RepositorioLivros {
       data.ano_publicacao,
       data.sinopse,
       data.status,
-      data.capa_url ?? null,
+      data.capa_objeto ? montarUrlArquivoApi(data.capa_objeto) : data.capa_url ?? null,
       data.capa_objeto ?? null,
       data._count?.curtidas ?? data.curtidasTotal ?? 0
     );

@@ -212,7 +212,7 @@ rotasBiblioteca.get("/estado", async (_req, res) => {
   resposta(res, { livros, exemplares, reservas, emprestimos, multas, notificacoes, usuarios, solicitacoesExclusaoAdmin });
 });
 
-rotasBiblioteca.post("/emprestar", async (req, res) => {
+rotasBiblioteca.post("/emprestimos", async (req, res) => {
   try {
     const usuario = usuarioLogado(res);
     if (usuario.nivelAcesso === "admin") return erro(res, "Admins não podem fazer empréstimos", 403);
@@ -228,7 +228,7 @@ rotasBiblioteca.post("/emprestar", async (req, res) => {
   }
 });
 
-rotasBiblioteca.post("/reservar", async (req, res) => {
+rotasBiblioteca.post("/reservas", async (req, res) => {
   try {
     const usuario = usuarioLogado(res);
     if (usuario.nivelAcesso === "admin") return erro(res, "Admins não podem fazer reservas", 403);
@@ -262,7 +262,7 @@ rotasBiblioteca.post("/reservar", async (req, res) => {
   }
 });
 
-rotasBiblioteca.post("/reservas/:id/emprestar", async (req, res) => {
+rotasBiblioteca.post("/reservas/:id/emprestimos", async (req, res) => {
   try {
     const usuario = usuarioLogado(res);
     const reserva = await (prisma as any).reserva.findUnique({ where: { id_reserva: Number(req.params.id) } });
@@ -282,7 +282,7 @@ rotasBiblioteca.post("/reservas/:id/emprestar", async (req, res) => {
   }
 });
 
-rotasBiblioteca.post("/reservas/:id/cancelar", async (req, res) => {
+rotasBiblioteca.patch("/reservas/:id", async (req, res) => {
   try {
     const usuario = usuarioLogado(res);
     const reserva = await (prisma as any).reserva.findUnique({
@@ -315,7 +315,7 @@ rotasBiblioteca.post("/reservas/:id/cancelar", async (req, res) => {
   }
 });
 
-rotasBiblioteca.post("/emprestimos/:id/devolver", async (req, res) => {
+rotasBiblioteca.patch("/emprestimos/:id/devolucao", async (req, res) => {
   try {
     const usuario = usuarioLogado(res);
     const emprestimo = await (prisma as any).emprestimo.findUnique({
@@ -369,7 +369,7 @@ rotasBiblioteca.post("/emprestimos/:id/devolver", async (req, res) => {
   }
 });
 
-rotasBiblioteca.post("/emprestimos/:id/solicitar-extensao", async (req, res) => {
+rotasBiblioteca.post("/emprestimos/:id/extensoes", async (req, res) => {
   const usuario = usuarioLogado(res);
   const emprestimo = await (prisma as any).emprestimo.findUnique({
     where: { id_emprestimo: Number(req.params.id) },
@@ -393,7 +393,7 @@ rotasBiblioteca.post("/emprestimos/:id/solicitar-extensao", async (req, res) => 
   resposta(res, { mensagem: "Solicitação enviada. Aguarde a confirmação de um admin." });
 });
 
-rotasBiblioteca.post("/emprestimos/:id/decidir-extensao", autorizarAdmin, async (req, res) => {
+rotasBiblioteca.patch("/emprestimos/:id/extensoes", autorizarAdmin, async (req, res) => {
   const aprovar = Boolean(req.body.aprovar);
   const emprestimo = await (prisma as any).emprestimo.findUnique({
     where: { id_emprestimo: Number(req.params.id) },
@@ -412,7 +412,7 @@ rotasBiblioteca.post("/emprestimos/:id/decidir-extensao", autorizarAdmin, async 
   resposta(res, atualizado);
 });
 
-rotasBiblioteca.post("/multas/:id/solicitar-pagamento", async (req, res) => {
+rotasBiblioteca.post("/multas/:id/pagamentos", async (req, res) => {
   const usuario = usuarioLogado(res);
   const multa = await (prisma as any).multa.findUnique({
     where: { id_multa: Number(req.params.id) },
@@ -430,7 +430,7 @@ rotasBiblioteca.post("/multas/:id/solicitar-pagamento", async (req, res) => {
   resposta(res, atualizada);
 });
 
-rotasBiblioteca.post("/multas/:id/confirmar-pagamento", autorizarAdmin, async (req, res) => {
+rotasBiblioteca.patch("/multas/:id/pagamentos", autorizarAdmin, async (req, res) => {
   const multa = await (prisma as any).multa.findUnique({
     where: { id_multa: Number(req.params.id) },
     include: { emprestimo: { include: { usuario: true, exemplar: { include: { livro: true } } } } },
@@ -444,7 +444,7 @@ rotasBiblioteca.post("/multas/:id/confirmar-pagamento", autorizarAdmin, async (r
   resposta(res, atualizada);
 });
 
-rotasBiblioteca.post("/minha-conta/excluir", async (req, res) => {
+rotasBiblioteca.delete("/minha-conta", async (req, res) => {
   const usuario = usuarioLogado(res);
   const atual = await prisma.usuario.findUnique({ where: { id_usuario: usuario.idUsuario } });
   if (!atual) return erro(res, "Usuário não encontrado", 404);
@@ -467,7 +467,7 @@ rotasBiblioteca.post("/minha-conta/excluir", async (req, res) => {
   resposta(res, { mensagem: "Conta excluída" });
 });
 
-rotasBiblioteca.post("/admins/exclusoes/:id/decidir", autorizarAdmin, async (req, res) => {
+rotasBiblioteca.patch("/admins/exclusoes/:id", autorizarAdmin, async (req, res) => {
   const usuario = usuarioLogado(res);
   const solicitacao = await (prisma as any).solicitacaoExclusaoAdmin.findUnique({
     where: { id_solicitacao: Number(req.params.id) },
@@ -485,7 +485,7 @@ rotasBiblioteca.post("/admins/exclusoes/:id/decidir", autorizarAdmin, async (req
   resposta(res, { mensagem: aprovar ? "Solicitação aprovada" : "Solicitação negada" });
 });
 
-rotasBiblioteca.post("/admins/exclusoes/:id/executar", async (req, res) => {
+rotasBiblioteca.delete("/admins/exclusoes/:id", async (req, res) => {
   const usuario = usuarioLogado(res);
   const solicitacao = await (prisma as any).solicitacaoExclusaoAdmin.findUnique({ where: { id_solicitacao: Number(req.params.id) } });
   if (!solicitacao || solicitacao.admin_id !== usuario.idUsuario) return erro(res, "Solicitação não encontrada", 404);

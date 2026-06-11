@@ -5,7 +5,6 @@ import {
   autenticarJwt,
   autorizarAdmin,
   autorizarProprioUsuario,
-  autorizarProprioUsuarioBody,
 } from "../middleware/autenticacaoJwt.js";
 import { validarCamposBody } from "../middleware/validarCamposBody.js";
 import { ServicoMinio } from "../servicos/ServicoMinio.js";
@@ -156,17 +155,6 @@ rotasUsuarios.delete(
   autenticarJwt,
   autorizarProprioUsuario(),
   async (req, res) => {
-  const resultado = await controladorUsuarios.excluirNomeCadastro(Number(req.params.id));
-  responderResultado(res, resultado);
-});
-
-rotasUsuarios.post(
-  "/excluirNomeCadastro",
-  autenticarJwt,
-  validarCamposBody(["idUsuario", "id_usuario", "id"]),
-  autorizarProprioUsuarioBody(),
-  async (req, res) => {
-  const id = Number(req.body.idUsuario ?? req.body.id_usuario ?? req.body.id);
-  const resultado = await controladorUsuarios.excluirNomeCadastro(id);
+  const resultado = await controladorUsuarios.excluirUsuario(Number(req.params.id));
   responderResultado(res, resultado);
 });

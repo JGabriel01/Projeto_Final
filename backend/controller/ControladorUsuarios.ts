@@ -294,7 +294,7 @@ export class ControladorUsuarios {
     }
   }
 
-  async excluirNomeCadastro(id: number): Promise<ResultadoOperacao<{ id: number }>> {
+  async excluirUsuario(id: number): Promise<ResultadoOperacao<{ id: number }>> {
     try {
       if (typeof id !== "number" || id <= 0) {
         throw new ErroValidacao("A chave primaria idUsuario deve ser um numero positivo");

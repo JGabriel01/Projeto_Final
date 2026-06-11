@@ -9,7 +9,4 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     volumes:
-      - minio_data:/data
-
-volumes:
-  minio_data:
+      - ./minio-data:/data

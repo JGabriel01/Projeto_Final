@@ -124,7 +124,7 @@ Executa o script de demonstração configurado em `package.json`.
 
 ## Como Executar o MinIO
 
-O MinIO é usado para salvar capas de livros.
+O MinIO é usado para salvar capas de livros e imagens de perfil. Os dados ficam em `backend/minio-data`, uma pasta do próprio projeto, para que as imagens acompanhem o código quando a pasta for copiada para outro computador.
 
 Subir o serviço:
 
@@ -143,6 +143,13 @@ Credenciais padrão:
 ```text
 usuario: minioadmin
 senha: minioadmin
+```
+
+Se você já tinha imagens no volume Docker antigo, copie o volume para a pasta do projeto antes de levar para outro PC:
+
+```powershell
+docker compose -f docker-compose.minio.yml down
+docker run --rm -v backend_minio_data:/from -v ${PWD}/minio-data:/to alpine sh -c "cp -a /from/. /to/"
 ```
 
 ## Banco de Dados
@@ -233,7 +240,7 @@ Responsabilidades:
 - configura leitura de JSON;
 - registra a rota raiz `/`;
 - registra todas as rotas da API no prefixo `/api`;
-- mantém compatibilidade com `/excluirNomeCadastro`;
+- registra apenas endpoints no padrão REST dentro de `/api`;
 - retorna erro 404 para rotas inexistentes;
 - inicia o servidor na porta do `.env` ou na porta `3000`;
 - fecha a conexão Prisma ao receber `SIGINT`.
@@ -300,7 +307,7 @@ Responsabilidades:
 - ler endpoint, porta, chave e segredo do `.env`;
 - definir o bucket padrão;
 - criar o cliente `Minio.Client`;
-- montar URL pública para arquivos enviados.
+- montar URL REST da API para arquivos enviados.
 
 ## Pasta `middleware`
 
@@ -327,7 +334,7 @@ Fluxo:
 2. cria um nome único para o objeto usando `randomUUID`;
 3. garante que o bucket exista;
 4. envia o arquivo para o MinIO com `putObject`;
-5. retorna o nome do objeto e a URL pública.
+5. retorna o nome do objeto e a URL REST `/api/arquivos/...`.
 
 ## Pasta `excecoes`
 
@@ -697,7 +704,7 @@ Principais métodos:
 - `buscarPorId`;
 - `listarTodos`;
 - `atualizarUsuario`;
-- `excluirNomeCadastro`;
+- `excluirUsuario`;
 - `autenticar`.
 
 ### `ControladorLivros.ts`
@@ -812,9 +819,10 @@ Registra:
 - `/api/reservas`;
 - `/api/multas`;
 - `/api/notificacoes`;
-- `/api/consultas`.
+- `/api/consultas`;
+- `/api/arquivos`.
 
-Também define `/api/status` e `/api/excluirNomeCadastro`.
+Também define `/api/status`.
 
 ### `rotas/resposta.ts`
 
@@ -843,8 +851,8 @@ Rotas de usuários:
 - cadastrar professor;
 - cadastrar admin;
 - atualizar;
-- excluir;
-- excluir pela rota obrigatória `excluirNomeCadastro`.
+- excluir com `DELETE /api/usuarios/:id`;
+- atualizar imagens de perfil com `POST /api/usuarios/:id/imagens-perfil`.
 
 ### `rotas/rotasLivros.ts`
 
@@ -997,8 +1005,7 @@ POST   /api/usuarios/professores
 POST   /api/usuarios/admins
 PUT    /api/usuarios/:id
 DELETE /api/usuarios/:id
-POST   /api/excluirNomeCadastro
-DELETE /api/excluirNomeCadastro
+POST   /api/usuarios/:id/imagens-perfil
 ```
 
 Livros:
@@ -1051,9 +1058,15 @@ GET    /api/multas
 GET    /api/multas/pendentes
 GET    /api/multas/:id
 POST   /api/multas
-POST   /api/multas/gerar-por-emprestimo/:emprestimoId
+POST   /api/multas/emprestimos/:emprestimoId
 PUT    /api/multas/:id
 DELETE /api/multas/:id
+```
+
+Arquivos:
+
+```text
+GET /api/arquivos/:objeto
 ```
 
 Notificacoes:

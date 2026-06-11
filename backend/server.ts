@@ -5,10 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { ControladorUsuarios } from "./controller/ControladorUsuarios.js";
 import { prisma } from "./config/prismaClient.js";
-import { autenticarJwt, autorizarProprioUsuarioBody } from "./middleware/autenticacaoJwt.js";
 import { rotasApi } from "./rotas/index.js";
-import { responderResultado } from "./rotas/resposta.js";
-import { validarCamposBody } from "./middleware/validarCamposBody.js";
 
 const app = express();
 const porta = Number(process.env.PORT) || 3000;
@@ -27,17 +24,6 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/api", rotasApi);
-
-app.post(
-  "/excluirNomeCadastro",
-  autenticarJwt,
-  validarCamposBody(["idUsuario", "id_usuario", "id"]),
-  autorizarProprioUsuarioBody(),
-  async (req, res) => {
-  const id = Number(req.body.idUsuario ?? req.body.id_usuario ?? req.body.id);
-  const resultado = await controladorUsuarios.excluirNomeCadastro(id);
-  responderResultado(res, resultado);
-});
 
 app.use((_req, res) => {
   res.status(404).json({

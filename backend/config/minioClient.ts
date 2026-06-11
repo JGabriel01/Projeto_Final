@@ -14,12 +14,11 @@ export const minioClient = new Minio.Client({
   secretKey: process.env.MINIO_SECRET_KEY || "minioadmin",
 });
 
-export function montarUrlPublica(nomeObjeto: string): string {
-  const publicUrl = process.env.MINIO_PUBLIC_URL;
-  if (publicUrl) {
-    return `${publicUrl.replace(/\/$/, "")}/${minioBucket}/${nomeObjeto}`;
-  }
+export function montarUrlArquivoApi(nomeObjeto: string): string {
+  const objetoCodificado = nomeObjeto
+    .split("/")
+    .map((parte) => encodeURIComponent(parte))
+    .join("/");
 
-  const protocolo = useSSL ? "https" : "http";
-  return `${protocolo}://${endpoint}:${port}/${minioBucket}/${nomeObjeto}`;
+  return `/api/arquivos/${objetoCodificado}`;
 }

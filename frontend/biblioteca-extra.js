@@ -15,12 +15,20 @@
     return item?.[camel] ?? item?.[snake];
   }
 
+  function arquivoApiUrl(objeto, url) {
+    if (objeto) return `/api/arquivos/${String(objeto).replace(/^\/+/, "")}`;
+    return url;
+  }
+
   function normalizeLivro(livro) {
     return {
       ...livro,
       idLivro: rawId(livro, "idLivro", "id_livro"),
       anoPublicacao: rawId(livro, "anoPublicacao", "ano_publicacao"),
-      capaUrl: rawId(livro, "capaUrl", "capa_url"),
+      capaUrl: arquivoApiUrl(
+        rawId(livro, "capaObjeto", "capa_objeto"),
+        rawId(livro, "capaUrl", "capa_url")
+      ),
       curtidasTotal: rawId(livro, "curtidasTotal", "curtidas_total") ?? livro?._count?.curtidas ?? 0,
     };
   }
@@ -33,8 +41,14 @@
       ...usuario,
       idUsuario: rawId(usuario, "idUsuario", "id_usuario"),
       nivelAcesso: rawId(usuario, "nivelAcesso", "nivel_acesso"),
-      fotoPerfilUrl: rawId(usuario, "fotoPerfilUrl", "foto_perfil_url"),
-      fundoPerfilUrl: rawId(usuario, "fundoPerfilUrl", "fundo_perfil_url"),
+      fotoPerfilUrl: arquivoApiUrl(
+        rawId(usuario, "fotoPerfilObjeto", "foto_perfil_objeto"),
+        rawId(usuario, "fotoPerfilUrl", "foto_perfil_url")
+      ),
+      fundoPerfilUrl: arquivoApiUrl(
+        rawId(usuario, "fundoPerfilObjeto", "fundo_perfil_objeto"),
+        rawId(usuario, "fundoPerfilUrl", "fundo_perfil_url")
+      ),
       anoIngresso: aluno.ano_ingresso,
       curso: aluno.curso,
       departamento: professor.departamento,
@@ -627,19 +641,19 @@
         return;
       }
       if (actionButton.dataset.loanBook && await confirmDialog("Confirmar empréstimo", "Tem certeza que quer fazer o empréstimo deste livro?")) {
-        await apiExtra("/biblioteca/emprestar", { method: "POST", body: JSON.stringify({ livroId: Number(actionButton.dataset.loanBook) }) });
+        await apiExtra("/biblioteca/emprestimos", { method: "POST", body: JSON.stringify({ livroId: Number(actionButton.dataset.loanBook) }) });
         notify("Empréstimo criado com prazo máximo de 15 dias");
       }
       if (actionButton.dataset.reserveBook) {
-        await apiExtra("/biblioteca/reservar", { method: "POST", body: JSON.stringify({ livroId: Number(actionButton.dataset.reserveBook) }) });
+        await apiExtra("/biblioteca/reservas", { method: "POST", body: JSON.stringify({ livroId: Number(actionButton.dataset.reserveBook) }) });
         notify("Reserva criada. Acompanhe sua posição na fila.");
       }
       if (actionButton.dataset.reservationLoan && await confirmDialog("Reserva pronta", "Tem certeza que quer fazer o empréstimo desse livro?")) {
-        await apiExtra(`/biblioteca/reservas/${actionButton.dataset.reservationLoan}/emprestar`, { method: "POST", body: JSON.stringify({}) });
+        await apiExtra(`/biblioteca/reservas/${actionButton.dataset.reservationLoan}/emprestimos`, { method: "POST", body: JSON.stringify({}) });
         notify("Empréstimo criado com prazo máximo de 15 dias");
       }
       if (actionButton.dataset.cancelReservation && await confirmDialog("Cancelar reserva", "Deseja sair da lista de espera deste livro?")) {
-        await apiExtra(`/biblioteca/reservas/${actionButton.dataset.cancelReservation}/cancelar`, { method: "POST", body: JSON.stringify({}) });
+        await apiExtra(`/biblioteca/reservas/${actionButton.dataset.cancelReservation}`, { method: "PATCH", body: JSON.stringify({ statusReserva: "cancelada" }) });
         notify("Reserva cancelada");
       }
       if (actionButton.dataset.returnLoan && await confirmDialog("Confirmar devolução", "Deseja confirmar a devolução deste empréstimo?")) {
@@ -648,34 +662,34 @@
           "Se sim, deixe uma curtida. Se não quiser, clique em Cancelar e a devolução seguirá normalmente.",
           { yes: "Curtir", no: "Cancelar" }
         );
-        await apiExtra(`/biblioteca/emprestimos/${actionButton.dataset.returnLoan}/devolver`, {
-          method: "POST",
+        await apiExtra(`/biblioteca/emprestimos/${actionButton.dataset.returnLoan}/devolucao`, {
+          method: "PATCH",
           body: JSON.stringify({ curtirLivro }),
         });
         notify("Devolução registrada");
       }
       if (actionButton.dataset.extendLoan && await confirmDialog("Estender prazo", "Deseja solicitar ao admin mais 15 dias de prazo?")) {
-        await apiExtra(`/biblioteca/emprestimos/${actionButton.dataset.extendLoan}/solicitar-extensao`, { method: "POST", body: JSON.stringify({}) });
+        await apiExtra(`/biblioteca/emprestimos/${actionButton.dataset.extendLoan}/extensoes`, { method: "POST", body: JSON.stringify({}) });
         notify("Solicitação enviada. Aguarde confirmação de um admin.");
       }
       if (actionButton.dataset.payFine && await confirmDialog("Confirmar pagamento", "Confirma que realizou o pagamento desta multa?")) {
-        await apiExtra(`/biblioteca/multas/${actionButton.dataset.payFine}/solicitar-pagamento`, { method: "POST", body: JSON.stringify({}) });
+        await apiExtra(`/biblioteca/multas/${actionButton.dataset.payFine}/pagamentos`, { method: "POST", body: JSON.stringify({}) });
         notify("Aguarde a confirmação do pagamento por qualquer admin da biblioteca para o mesmo ser aprovado.");
       }
       if (actionButton.dataset.confirmFine && await confirmDialog("Confirmar pagamento", "Confirma o recebimento do pagamento da multa?")) {
-        await apiExtra(`/biblioteca/multas/${actionButton.dataset.confirmFine}/confirmar-pagamento`, { method: "POST", body: JSON.stringify({}) });
+        await apiExtra(`/biblioteca/multas/${actionButton.dataset.confirmFine}/pagamentos`, { method: "PATCH", body: JSON.stringify({ statusPagamento: "paga" }) });
         notify("Pagamento confirmado");
       }
       if (actionButton.dataset.decideExtension) {
-        await apiExtra(`/biblioteca/emprestimos/${actionButton.dataset.decideExtension}/decidir-extensao`, { method: "POST", body: JSON.stringify({ aprovar: actionButton.dataset.approve === "true" }) });
+        await apiExtra(`/biblioteca/emprestimos/${actionButton.dataset.decideExtension}/extensoes`, { method: "PATCH", body: JSON.stringify({ aprovar: actionButton.dataset.approve === "true" }) });
         notify("Solicitação atualizada");
       }
       if (actionButton.dataset.decideAdminDelete) {
-        await apiExtra(`/biblioteca/admins/exclusoes/${actionButton.dataset.decideAdminDelete}/decidir`, { method: "POST", body: JSON.stringify({ aprovar: actionButton.dataset.approve === "true" }) });
+        await apiExtra(`/biblioteca/admins/exclusoes/${actionButton.dataset.decideAdminDelete}`, { method: "PATCH", body: JSON.stringify({ aprovar: actionButton.dataset.approve === "true" }) });
         notify("Solicitação de admin atualizada");
       }
       if (actionButton.dataset.executeAdminDelete && await confirmDialog("Excluir conta", "Sua exclusão foi aprovada. Deseja excluir sua conta agora?")) {
-        await apiExtra(`/biblioteca/admins/exclusoes/${actionButton.dataset.executeAdminDelete}/executar`, { method: "POST", body: JSON.stringify({}) });
+        await apiExtra(`/biblioteca/admins/exclusoes/${actionButton.dataset.executeAdminDelete}`, { method: "DELETE", body: JSON.stringify({}) });
         clearSession();
         showAuth();
         notify("Conta excluída");
@@ -710,8 +724,8 @@
           ? "Esta ação vai remover sua conta. Confirmar?"
           : "Esta ação remove reservas, empréstimos e multas vinculadas. Confirmar?";
         if (!await confirmDialog("Excluir conta", mensagemExclusao)) return;
-        await apiExtra("/biblioteca/minha-conta/excluir", {
-          method: "POST",
+        await apiExtra("/biblioteca/minha-conta", {
+          method: "DELETE",
           body: JSON.stringify({ email: byId("deleteEmail").value.trim(), senha: byId("deletePassword").value }),
         });
         if (isAdmin()) {
@@ -791,7 +805,7 @@
 
     if (action === "reserva_pronta" && reference) {
       if (await confirmDialog("Reserva pronta para empréstimo", "Tem certeza que quer fazer o empréstimo desse livro?")) {
-        await apiExtra(`/biblioteca/reservas/${reference}/emprestar`, { method: "POST", body: JSON.stringify({}) });
+        await apiExtra(`/biblioteca/reservas/${reference}/emprestimos`, { method: "POST", body: JSON.stringify({}) });
         notify("Empréstimo criado com prazo máximo de 15 dias");
       }
     } else {

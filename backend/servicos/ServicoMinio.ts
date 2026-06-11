@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import {
   minioBucket,
   minioClient,
-  montarUrlPublica,
+  montarUrlArquivoApi,
 } from "../config/minioClient.js";
 
 export class ServicoMinio {
@@ -26,7 +26,7 @@ export class ServicoMinio {
 
     return {
       objeto,
-      url: montarUrlPublica(objeto),
+      url: montarUrlArquivoApi(objeto),
     };
   }
 
@@ -51,7 +51,7 @@ export class ServicoMinio {
 
     return {
       objeto,
-      url: montarUrlPublica(objeto),
+      url: montarUrlArquivoApi(objeto),
     };
   }
 

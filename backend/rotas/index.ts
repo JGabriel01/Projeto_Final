@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { ControladorUsuarios } from "../controller/ControladorUsuarios.js";
-import { autenticarJwt, autorizarProprioUsuarioBody } from "../middleware/autenticacaoJwt.js";
+import { rotasArquivos } from "./rotasArquivos.js";
 import { rotasAuth } from "./rotasAuth.js";
 import { rotasBiblioteca } from "./rotasBiblioteca.js";
 import { rotasConsultas } from "./rotasConsultas.js";
@@ -11,11 +10,8 @@ import { rotasMultas } from "./rotasMultas.js";
 import { rotasNotificacoes } from "./rotasNotificacoes.js";
 import { rotasReservas } from "./rotasReservas.js";
 import { rotasUsuarios } from "./rotasUsuarios.js";
-import { responderResultado } from "./resposta.js";
-import { validarCamposBody } from "../middleware/validarCamposBody.js";
 
 export const rotasApi = Router();
-const controladorUsuarios = new ControladorUsuarios();
 
 rotasApi.get("/status", (_req, res) => {
   res.json({
@@ -29,6 +25,7 @@ rotasApi.get("/status", (_req, res) => {
   });
 });
 
+rotasApi.use("/arquivos", rotasArquivos);
 rotasApi.use("/auth", rotasAuth);
 rotasApi.use("/biblioteca", rotasBiblioteca);
 rotasApi.use("/usuarios", rotasUsuarios);
@@ -39,25 +36,3 @@ rotasApi.use("/reservas", rotasReservas);
 rotasApi.use("/multas", rotasMultas);
 rotasApi.use("/notificacoes", rotasNotificacoes);
 rotasApi.use("/consultas", rotasConsultas);
-
-rotasApi.post(
-  "/excluirNomeCadastro",
-  autenticarJwt,
-  validarCamposBody(["idUsuario", "id_usuario", "id"]),
-  autorizarProprioUsuarioBody(),
-  async (req, res) => {
-  const id = Number(req.body.idUsuario ?? req.body.id_usuario ?? req.body.id);
-  const resultado = await controladorUsuarios.excluirNomeCadastro(id);
-  responderResultado(res, resultado);
-});
-
-rotasApi.delete(
-  "/excluirNomeCadastro",
-  autenticarJwt,
-  validarCamposBody(["idUsuario", "id_usuario", "id"]),
-  autorizarProprioUsuarioBody(),
-  async (req, res) => {
-  const id = Number(req.body.idUsuario ?? req.body.id_usuario ?? req.body.id);
-  const resultado = await controladorUsuarios.excluirNomeCadastro(id);
-  responderResultado(res, resultado);
-});

@@ -1,6 +1,7 @@
 // Repositório de Usuários - Persistência com Prisma
 
 import bcrypt from "bcryptjs";
+import { montarUrlArquivoApi } from "../config/minioClient.js";
 import { prisma } from "../config/prismaClient.js";
 import { Usuario } from "../negocios/Usuario.js";
 import { Aluno } from "../negocios/Aluno.js";
@@ -9,6 +10,10 @@ import { Admin } from "../negocios/Admin.js";
 
 export class RepositorioUsuarios {
   private readonly saltRounds = 10;
+
+  private montarUrlImagem(objeto?: string | null, url?: string | null): string | undefined {
+    return objeto ? montarUrlArquivoApi(objeto) : url || undefined;
+  }
 
   private senhaEstaComHash(senha: string): boolean {
     return /^\$2[aby]\$\d{2}\$/.test(senha);
@@ -30,8 +35,8 @@ export class RepositorioUsuarios {
       data.aluno?.ano_ingresso || 0,
       data.aluno?.curso || "",
       data.aluno?.matricula_aluno || "",
-      data.foto_perfil_url || undefined,
-      data.fundo_perfil_url || undefined
+      this.montarUrlImagem(data.foto_perfil_objeto, data.foto_perfil_url),
+      this.montarUrlImagem(data.fundo_perfil_objeto, data.fundo_perfil_url)
     );
   }
 
@@ -43,8 +48,8 @@ export class RepositorioUsuarios {
       data.senha,
       data.professor?.departamento || "",
       data.professor?.matricula_professor || "",
-      data.foto_perfil_url || undefined,
-      data.fundo_perfil_url || undefined
+      this.montarUrlImagem(data.foto_perfil_objeto, data.foto_perfil_url),
+      this.montarUrlImagem(data.fundo_perfil_objeto, data.fundo_perfil_url)
     );
   }
 
@@ -55,8 +60,8 @@ export class RepositorioUsuarios {
       data.email,
       data.senha,
       data.admin?.cargo || "",
-      data.foto_perfil_url || undefined,
-      data.fundo_perfil_url || undefined
+      this.montarUrlImagem(data.foto_perfil_objeto, data.foto_perfil_url),
+      this.montarUrlImagem(data.fundo_perfil_objeto, data.fundo_perfil_url)
     );
   }
 
@@ -158,8 +163,8 @@ export class RepositorioUsuarios {
       aluno.ano_ingresso,
       aluno.curso,
       aluno.matricula_aluno,
-      aluno.usuario.foto_perfil_url || undefined,
-      aluno.usuario.fundo_perfil_url || undefined
+      this.montarUrlImagem(aluno.usuario.foto_perfil_objeto, aluno.usuario.foto_perfil_url),
+      this.montarUrlImagem(aluno.usuario.fundo_perfil_objeto, aluno.usuario.fundo_perfil_url)
     );
   }
 
@@ -178,8 +183,8 @@ export class RepositorioUsuarios {
       professor.usuario.senha,
       professor.departamento,
       professor.matricula_professor,
-      professor.usuario.foto_perfil_url || undefined,
-      professor.usuario.fundo_perfil_url || undefined
+      this.montarUrlImagem(professor.usuario.foto_perfil_objeto, professor.usuario.foto_perfil_url),
+      this.montarUrlImagem(professor.usuario.fundo_perfil_objeto, professor.usuario.fundo_perfil_url)
     );
   }
 

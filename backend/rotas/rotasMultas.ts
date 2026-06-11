@@ -37,7 +37,7 @@ rotasMultas.post(
 });
 
 rotasMultas.post(
-  "/gerar-por-emprestimo/:emprestimoId",
+  "/emprestimos/:emprestimoId",
   autenticarJwt,
   validarCamposBody(["valorPorDia"]),
   async (req, res) => {
