@@ -63,6 +63,7 @@ export class RepositorioLivros {
   async listarTodos(): Promise<Livro[]> {
     const livros = await prisma.livro.findMany({
       include: { _count: { select: { curtidas: true } } },
+      orderBy: { id_livro: "desc" },
     });
     return livros.map((l) => this.criarLivroDoDb(l));
   }

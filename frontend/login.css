@@ -1560,6 +1560,15 @@ body.dark-mode .password-toggle {
   color: #ffffff;
 }
 
+body.dark-mode .theme-toggle,
+body.dark-mode #appThemeToggle {
+  color: #ffffff;
+}
+
+body.dark-mode #appThemeToggle:hover {
+  color: #ffffff;
+}
+
 body.dark-mode .profile-shortcut {
   background: #2d2d2d;
   border-color: #ffffff;

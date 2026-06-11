@@ -25,6 +25,7 @@ export class RepositorioExemplares {
       include: {
         livro: true,
       },
+      orderBy: { id_exemplar: "desc" },
     });
   }
 

@@ -1,4 +1,4 @@
-const API_ORIGIN = window.location.protocol.startsWith("http")
+﻿const API_ORIGIN = window.location.protocol.startsWith("http")
   ? window.location.origin
   : "http://localhost:3000";
 const API_URL = `${API_ORIGIN}/api`;
@@ -37,6 +37,15 @@ function setCookie(name, value) {
   document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=7200`;
 }
 
+function getCookie(name) {
+  return document.cookie
+    .split("; ")
+    .find((item) => item.startsWith(`${name}=`))
+    ?.split("=")
+    .slice(1)
+    .join("=") || "";
+}
+
 function clearCookie(name) {
   document.cookie = `${name}=; path=/; max-age=0`;
 }
@@ -50,8 +59,8 @@ function notify(message) {
 function applyTheme() {
   const darkMode = localStorage.getItem("darkMode") === "true";
   document.body.classList.toggle("dark-mode", darkMode);
-  if (themeToggle) themeToggle.textContent = darkMode ? "☀️" : "🌙";
-  if (appThemeToggle) appThemeToggle.textContent = darkMode ? "☀️" : "🌙";
+  if (themeToggle) themeToggle.textContent = darkMode ? "\u2600" : "\u263e";
+  if (appThemeToggle) appThemeToggle.textContent = darkMode ? "\u2600" : "\u263e";
 }
 
 function toggleTheme() {
@@ -116,6 +125,29 @@ function showAuth() {
   authScreen.classList.remove("hidden");
   appScreen.classList.add("hidden");
   restoreRememberedLogin();
+}
+
+function restoreRememberedLogin() {
+  const remember = qs("#rememberLogin");
+  const email = qs("#loginEmail");
+  const password = qs("#loginPassword");
+  if (!remember || !email || !password) return;
+
+  const rememberedEmail = decodeURIComponent(getCookie("bibliotecaUsuario"));
+  remember.checked = Boolean(rememberedEmail);
+  email.value = rememberedEmail;
+  password.value = "";
+
+  if (!rememberedEmail) {
+    const clearAutofill = () => {
+      if (!remember.checked) {
+        email.value = "";
+        password.value = "";
+      }
+    };
+    setTimeout(clearAutofill, 250);
+    setTimeout(clearAutofill, 1000);
+  }
 }
 
 function showLoginForm() {
@@ -301,6 +333,12 @@ function normalizeImageUrl(url) {
   return `${API_ORIGIN}/api/arquivos/${texto.replace(/^\/+/, "")}`;
 }
 
+function sortByNewestId(items, camelKey, snakeKey) {
+  return [...(items || [])].sort((a, b) =>
+    Number(b?.[camelKey] ?? b?.[snakeKey] ?? 0) - Number(a?.[camelKey] ?? a?.[snakeKey] ?? 0)
+  );
+}
+
 async function loadAll() {
   try {
     const [livros, usuarios, usuarioAtual, exemplares, reservas, emprestimos, multas] = await Promise.all([
@@ -314,9 +352,9 @@ async function loadAll() {
     ]);
     state.usuario = { ...state.usuario, ...usuarioAtual };
     localStorage.setItem("usuario", JSON.stringify(state.usuario));
-    state.livros = livros || [];
+    state.livros = sortByNewestId(livros, "idLivro", "id_livro");
     state.usuarios = usuarios || [];
-    state.exemplares = exemplares || [];
+    state.exemplares = sortByNewestId(exemplares, "idExemplar", "id_exemplar");
     state.reservas = reservas || [];
     state.emprestimos = emprestimos || [];
     state.multas = multas || [];
@@ -540,7 +578,7 @@ function visibleBooks() {
 }
 
 function activeCatalogBooks() {
-  return state.livros.filter((livro) => !isBookInactive(livro));
+  return state.livros;
 }
 
 function userHasBlockingFines(userId = state.usuario?.idUsuario) {
@@ -587,9 +625,9 @@ function bookInlineDetailsHtml(livro) {
       emprestimo.exemplarId === exemplar.id_exemplar && !emprestimo.dataDevolucaoReal
     )
   ).length;
-  const inativo = isBookInactive(livro);
-  const disponiveis = inativo ? 0 : Math.max(exemplares.length - emprestados, 0);
+  const livroInativo = isBookInactive(livro);
   const bloqueadoPorMulta = !isAdmin() && userHasBlockingFines();
+  const disponiveis = livroInativo ? 0 : Math.max(exemplares.length - emprestados, 0);
   let action = "";
 
   if (isAdmin()) {
@@ -599,7 +637,7 @@ function bookInlineDetailsHtml(livro) {
           <button class="danger-btn" type="button" data-delete-book="${livro.idLivro}">Remover</button>
         </div>
       `;
-  } else if (inativo) {
+  } else if (livroInativo) {
     action = `<button class="secondary-btn book-more-btn" type="button" disabled>Livro inativo</button>`;
   } else if (bloqueadoPorMulta) {
     action = `<button class="secondary-btn book-more-btn" type="button" disabled>Reservas e empréstimos indisponíveis: pague sua multa pendente</button>`;
@@ -626,14 +664,7 @@ function bookInlineDetailsHtml(livro) {
         <article><strong>${emprestados}</strong><span>emprestados</span></article>
         <article><strong>${livro.curtidasTotal || livro._count?.curtidas || 0}</strong><span>curtidas</span></article>
       </div>
-      ${isAdmin() ? `
-        <div class="row-actions">
-          <button class="secondary-btn" type="button" data-edit-book="${livro.idLivro}">Atualizar</button>
-          <button class="danger-btn" type="button" data-delete-book="${livro.idLivro}">Remover</button>
-        </div>
-      ` : inativo
-        ? `<button class="secondary-btn book-more-btn" type="button" disabled>Livro inativo</button>`
-        : `<button class="secondary-btn book-more-btn" type="button">Mais informações</button>`}
+      ${action}
     </div>
     </aside>
   `;
@@ -896,11 +927,22 @@ loginForm.addEventListener("submit", async (event) => {
       }),
     });
     saveSession(dados);
-    if (!qs("#rememberLogin").checked) clearCookie("bibliotecaUsuario");
+    if (qs("#rememberLogin").checked) {
+      setCookie("bibliotecaUsuario", qs("#loginEmail").value.trim());
+    } else {
+      clearCookie("bibliotecaUsuario");
+    }
     notify("Login realizado com sucesso");
     showApp();
   } catch (error) {
     notify(error.message);
+  }
+});
+
+qs("#rememberLogin").addEventListener("change", () => {
+  if (!qs("#rememberLogin").checked) {
+    clearCookie("bibliotecaUsuario");
+    qs("#loginPassword").value = "";
   }
 });
 
@@ -1074,11 +1116,11 @@ qs("#logoutBtn").addEventListener("click", async () => {
   try {
     if (state.token) await api("/auth/logout", { method: "POST", body: JSON.stringify({}) });
   } catch {
-    // Mesmo que a sessão já tenha expirado, limpa o cliente.
+    // Mesmo que a sessao ja tenha expirado, limpa o cliente.
   }
   clearSession();
   showAuth();
-  notify("Você saiu do sistema");
+  notify("Voc\u00ea saiu do sistema");
 });
 
 qs("#loginTab").addEventListener("click", () => {

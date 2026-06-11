@@ -110,6 +110,12 @@
     };
   }
 
+  function sortByNewestId(items, camelKey, snakeKey) {
+    return [...(items || [])].sort((a, b) =>
+      Number(b?.[camelKey] ?? b?.[snakeKey] ?? 0) - Number(a?.[camelKey] ?? a?.[snakeKey] ?? 0)
+    );
+  }
+
   function normalizeNotificacao(notificacao) {
     return {
       ...notificacao,
@@ -227,8 +233,8 @@
   loadAll = async function () {
     try {
       const dados = await apiExtra("/biblioteca/estado");
-      state.livros = (dados.livros || []).map(normalizeLivro);
-      state.exemplares = dados.exemplares || [];
+      state.livros = sortByNewestId((dados.livros || []).map(normalizeLivro), "idLivro", "id_livro");
+      state.exemplares = sortByNewestId(dados.exemplares || [], "idExemplar", "id_exemplar");
       state.reservas = (dados.reservas || []).map(normalizeReserva);
       state.emprestimos = (dados.emprestimos || []).map(normalizeEmprestimo);
       state.multas = (dados.multas || []).map(normalizeMulta);
@@ -312,7 +318,7 @@
           ? `<button class="primary-btn book-more-btn" type="button" data-reservation-loan="${reserva.idReserva}">Fazer empréstimo da reserva</button>`
           : `<button class="reserved-btn book-more-btn" type="button" disabled>Reservado</button>`;
       } else if (bloqueado) {
-        action = `<button class="danger-btn book-more-btn" type="button" data-open-fines="1">Multas pendentes</button>`;
+        action = `<button class="secondary-btn book-more-btn" type="button" disabled>Reservas e empréstimos indisponíveis: pague sua multa pendente</button>`;
       } else if (disponiveis > 0) {
         action = `<button class="primary-btn book-more-btn" type="button" data-loan-book="${livro.idLivro}">Fazer empréstimo</button>`;
       } else {
@@ -929,7 +935,7 @@
       return;
     }
 
-    const exemplares = copiesForBook(Number(livroId));
+    const exemplares = sortByNewestId(copiesForBook(Number(livroId)), "idExemplar", "id_exemplar");
     list.innerHTML = exemplares.length
       ? exemplares.map((exemplar) => `
         <span>
