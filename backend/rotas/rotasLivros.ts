@@ -24,18 +24,49 @@ rotasLivros.get("/:id", async (req, res) => {
   responderResultado(res, resultado);
 });
 
+rotasLivros
+  .route("/:id/capa")
+  .post(
+    autenticarJwt,
+    autorizarAdmin,
+    upload.single("capa"),
+    async (req, res) => {
+      if (!req.file) {
+        res.status(400).json({
+          sucesso: false,
+          erro: { mensagem: "Arquivo de capa nao enviado", tipo: "ErroValidacao" },
+        });
+        return;
+      }
+
+      const livroId = Number(req.params.id);
+      const capa = await servicoMinio.enviarCapaLivro(livroId, req.file);
+      const resultado = await controladorLivros.atualizarCapa(
+        livroId,
+        capa.objeto,
+        capa.url
+      );
+      responderResultado(res, resultado);
+    }
+  )
+  .delete(autenticarJwt, autorizarAdmin, async (req, res) => {
+    const resultado = await controladorLivros.removerCapa(Number(req.params.id));
+    responderResultado(res, resultado);
+  });
+
 rotasLivros.post(
   "/",
   autenticarJwt,
   autorizarAdmin,
-  validarCamposBody(["titulo", "autor", "genero", "anoPublicacao", "sinopse"]),
+  validarCamposBody(["titulo", "autor", "genero", "anoPublicacao", "sinopse", "status"]),
   async (req, res) => {
   const resultado = await controladorLivros.criarLivro(
     req.body.titulo,
     req.body.autor,
     req.body.genero,
     Number(req.body.anoPublicacao),
-    req.body.sinopse
+    req.body.sinopse,
+    req.body.status
   );
   responderResultado(res, resultado, 201);
 });
@@ -54,28 +85,3 @@ rotasLivros.delete("/:id", autenticarJwt, autorizarAdmin, async (req, res) => {
   const resultado = await controladorLivros.excluirLivro(Number(req.params.id));
   responderResultado(res, resultado);
 });
-
-rotasLivros.post(
-  "/:id/capa",
-  autenticarJwt,
-  autorizarAdmin,
-  upload.single("capa"),
-  async (req, res) => {
-    if (!req.file) {
-      res.status(400).json({
-        sucesso: false,
-        erro: { mensagem: "Arquivo de capa nao enviado", tipo: "ErroValidacao" },
-      });
-      return;
-    }
-
-    const livroId = Number(req.params.id);
-    const capa = await servicoMinio.enviarCapaLivro(livroId, req.file);
-    const resultado = await controladorLivros.atualizarCapa(
-      livroId,
-      capa.objeto,
-      capa.url
-    );
-    responderResultado(res, resultado);
-  }
-);

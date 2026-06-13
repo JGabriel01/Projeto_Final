@@ -220,6 +220,21 @@ export class RepositorioLivros {
     }
   }
 
+  async removerCapa(id: number): Promise<Livro | null> {
+    try {
+      const livroDb = await prisma.livro.update({
+        where: { id_livro: id },
+        data: {
+          capa_objeto: null,
+          capa_url: null,
+        },
+      });
+      return this.criarLivroDoDb(livroDb);
+    } catch {
+      return null;
+    }
+  }
+
   async contar(): Promise<number> {
     return await prisma.livro.count();
   }

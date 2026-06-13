@@ -932,6 +932,8 @@ textarea {
   border-radius: 14px;
   padding: 26px 26px 30px;
   margin-bottom: 24px;
+  max-width: 100%;
+  overflow: hidden;
   box-shadow: 0 12px 34px rgba(12, 50, 111, 0.10);
 }
 
@@ -958,6 +960,8 @@ textarea {
 }
 
 .book-showcase {
+  width: 100%;
+  min-width: 0;
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
@@ -968,6 +972,11 @@ textarea {
 .genre-sections {
   display: grid;
   gap: 24px;
+  min-width: 0;
+}
+
+.genre-section {
+  min-width: 0;
 }
 
 .genre-section h4 {
@@ -978,17 +987,22 @@ textarea {
 
 .compact-book-grid {
   padding: 0 8px 8px;
-  overflow-x: auto;
 }
 
 .book-grid {
   display: flex;
   align-items: stretch;
   gap: 28px;
-  min-width: max-content;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 8px;
+  scroll-behavior: smooth;
 }
-
 .book-card {
+  position: relative;
   width: 250px;
   flex: 0 0 250px;
   overflow: hidden;
@@ -1001,6 +1015,23 @@ textarea {
 
 .book-card.selected {
   transform: translateY(-6px);
+}
+
+.book-rank {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  min-width: 48px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--primary-color);
+  color: var(--lighter-color);
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.22);
+  font-size: 18px;
+  font-weight: 900;
+  text-align: center;
+  pointer-events: none;
 }
 
 .book-cover {
@@ -1314,6 +1345,24 @@ textarea {
   margin-bottom: 8px;
 }
 
+.user-reservation-card {
+  align-items: start;
+}
+
+.user-reservation-card .reservation-queue.compact {
+  margin-top: 8px;
+}
+
+.reservation-card-actions {
+  margin-top: 12px;
+}
+
+.reservation-card-actions .reserved-btn,
+.reservation-card-actions .danger-btn {
+  min-height: 44px;
+  padding: 10px 16px;
+}
+
 .fine-warning {
   padding: 10px 12px;
   border-radius: 8px;
@@ -1334,15 +1383,32 @@ textarea {
 }
 
 .existing-copy-block {
-  margin-bottom: 22px;
+  margin-top: 18px;
 }
 
-.copy-list span {
+.copy-list > span {
   padding: 10px;
   border-radius: 8px;
   background: var(--lighter-color);
   border: 1px solid var(--border-color);
   color: var(--accent-color);
+}
+
+.copy-list .copy-list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.copy-list-info {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.copy-remove-btn {
+  flex: 0 0 auto;
+  padding: 8px 12px;
 }
 
 .admin-user-card {
@@ -1419,6 +1485,10 @@ textarea {
   gap: 12px;
   margin-top: 18px;
   margin-bottom: 24px;
+}
+
+.image-remove-row {
+  margin-top: -8px;
 }
 
 .table-wrap {

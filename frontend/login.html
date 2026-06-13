@@ -45,7 +45,7 @@
         </label>
         <label class="check-row">
           <input id="rememberLogin" type="checkbox">
-          <span>Lembrar e-mail neste computador</span>
+          <span>Lembrar e-mail e senha neste computador</span>
         </label>
         <button class="primary-btn" type="submit">Entrar</button>
         <button id="forgotPasswordBtn" class="link-btn" type="button">Esqueceu sua senha?</button>
@@ -178,9 +178,12 @@
               <label class="wide">Sinopse<textarea id="bookSynopsis" required></textarea></label>
               <label class="check-row wide">
                 <input id="bookAvailable" type="checkbox" checked>
-                <span>Livro disponível para consulta/empréstimo</span>
+                <span>Livro ativo no acervo para consulta, reserva e empréstimo</span>
               </label>
               <label class="wide">Capa do livro<input id="bookCover" type="file" accept="image/*"></label>
+              <div class="wide image-remove-row">
+                <button id="removeBookCoverBtn" class="danger-btn" type="button">Remover capa</button>
+              </div>
             </div>
             <div class="form-actions">
               <button class="primary-btn" type="submit">Salvar</button>
@@ -190,7 +193,7 @@
         </div>
         <div class="book-shelf home-shelf">
           <div class="book-showcase">
-            <div id="homeBooksGrid" class="book-grid"></div>
+            <div id="gradeLivrosEmAlta" class="book-grid"></div>
           </div>
         </div>
         <div class="book-shelf">
@@ -200,7 +203,7 @@
               <p>Explore os livros por categoria</p>
             </div>
           </div>
-          <div id="genreSections" class="genre-sections"></div>
+          <div id="secoesGeneros" class="genre-sections"></div>
         </div>
         <div class="book-shelf">
           <div class="shelf-header">
@@ -209,7 +212,7 @@
               <p>Entre na fila reservando o livro</p>
             </div>
           </div>
-          <div id="unavailableBooksGrid" class="book-grid"></div>
+          <div id="gradeLivrosIndisponiveis" class="book-grid"></div>
         </div>
       </section>
 
@@ -339,6 +342,8 @@
           <form id="profileImageForm" class="upload-form">
             <label>Foto de perfil<input id="profilePhotoInput" name="fotoPerfil" type="file" accept="image/*"></label>
             <label>Imagem de fundo<input id="profileCoverInput" name="fundoPerfil" type="file" accept="image/*"></label>
+            <button id="removeProfilePhotoBtn" class="danger-btn" type="button">Remover foto</button>
+            <button id="removeProfileCoverBtn" class="danger-btn" type="button">Remover fundo</button>
             <button class="primary-btn" type="submit">Enviar imagens</button>
           </form>
         </div>

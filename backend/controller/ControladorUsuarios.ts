@@ -228,7 +228,15 @@ export class ControladorUsuarios {
 
   async atualizarUsuario(
     id: number,
-    dados: { nome?: string; email?: string; senha?: string; cargo?: string }
+    dados: {
+      nome?: string;
+      email?: string;
+      senha?: string;
+      cargo?: string;
+      anoIngresso?: number;
+      curso?: string;
+      departamento?: string;
+    }
   ): Promise<ResultadoOperacao<Usuario>> {
     try {
       if (typeof id !== "number" || id <= 0) {
@@ -251,6 +259,44 @@ export class ControladorUsuarios {
 
       if (dados.cargo !== undefined && usuarioExistente.nivelAcesso !== "admin") {
         throw new ErroValidacao("Cargo so pode ser alterado para administradores");
+      }
+
+      if (
+        (dados.anoIngresso !== undefined || dados.curso !== undefined) &&
+        usuarioExistente.nivelAcesso !== "aluno"
+      ) {
+        throw new ErroValidacao("Curso e ano de ingresso so podem ser alterados para alunos");
+      }
+
+      if (dados.departamento !== undefined && usuarioExistente.nivelAcesso !== "professor") {
+        throw new ErroValidacao("Departamento so pode ser alterado para professores");
+      }
+
+      if (
+        dados.anoIngresso !== undefined &&
+        (!Number.isInteger(dados.anoIngresso) ||
+          dados.anoIngresso < 1900 ||
+          dados.anoIngresso > new Date().getFullYear())
+      ) {
+        throw new ErroValidacao("Ano de ingresso invalido");
+      }
+
+      if (
+        dados.curso !== undefined &&
+        (typeof dados.curso !== "string" ||
+          dados.curso.trim().length < 3 ||
+          dados.curso.trim().length > 100)
+      ) {
+        throw new ErroValidacao("Curso deve ter entre 3 e 100 caracteres");
+      }
+
+      if (
+        dados.departamento !== undefined &&
+        (typeof dados.departamento !== "string" ||
+          dados.departamento.trim().length < 3 ||
+          dados.departamento.trim().length > 100)
+      ) {
+        throw new ErroValidacao("Departamento deve ter entre 3 e 100 caracteres");
       }
 
       const usuarioAtualizado = await this.repositorioUsuarios.atualizar(id, dados);
@@ -291,6 +337,44 @@ export class ControladorUsuarios {
       return { sucesso: true, dados: usuarioAtualizado };
     } catch (erro: any) {
       return this.tratarErro(erro, "Erro ao atualizar imagens de perfil");
+    }
+  }
+
+  async removerImagemPerfil(
+    id: number,
+    tipo: "foto" | "fundo" | "todas"
+  ): Promise<ResultadoOperacao<Usuario>> {
+    try {
+      if (typeof id !== "number" || id <= 0) {
+        throw new ErroValidacao("ID deve ser um numero positivo");
+      }
+
+      const imagens: {
+        fotoPerfilUrl?: string | null;
+        fotoPerfilObjeto?: string | null;
+        fundoPerfilUrl?: string | null;
+        fundoPerfilObjeto?: string | null;
+      } = {};
+
+      if (tipo === "foto" || tipo === "todas") {
+        imagens.fotoPerfilUrl = null;
+        imagens.fotoPerfilObjeto = null;
+      }
+
+      if (tipo === "fundo" || tipo === "todas") {
+        imagens.fundoPerfilUrl = null;
+        imagens.fundoPerfilObjeto = null;
+      }
+
+      const usuarioAtualizado =
+        await this.repositorioUsuarios.atualizarImagensPerfil(id, imagens);
+      if (!usuarioAtualizado) {
+        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+      }
+
+      return { sucesso: true, dados: usuarioAtualizado };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao remover imagem de perfil");
     }
   }
 

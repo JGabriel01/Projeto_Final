@@ -76,7 +76,7 @@ rotasUsuarios.put(
   "/:id",
   autenticarJwt,
   autorizarProprioUsuario(),
-  validarCamposBody(["nome", "email", "senha", "cargo"]),
+  validarCamposBody(["nome", "email", "senha", "cargo", "anoIngresso", "curso", "departamento"]),
   async (req, res) => {
   const resultado = await controladorUsuarios.atualizarUsuario(
     Number(req.params.id),
@@ -145,6 +145,31 @@ rotasUsuarios.post(
     const resultado = await controladorUsuarios.atualizarImagensPerfil(
       usuarioId,
       imagens
+    );
+    responderResultado(res, resultado);
+  }
+);
+
+rotasUsuarios.delete(
+  "/:id/imagens-perfil/:tipo",
+  autenticarJwt,
+  autorizarProprioUsuario(),
+  async (req, res) => {
+    const tipo = String(req.params.tipo);
+    if (!["foto", "fundo", "todas"].includes(tipo)) {
+      res.status(400).json({
+        sucesso: false,
+        erro: {
+          mensagem: "Tipo de imagem deve ser foto, fundo ou todas",
+          tipo: "ErroValidacao",
+        },
+      });
+      return;
+    }
+
+    const resultado = await controladorUsuarios.removerImagemPerfil(
+      Number(req.params.id),
+      tipo as "foto" | "fundo" | "todas"
     );
     responderResultado(res, resultado);
   }

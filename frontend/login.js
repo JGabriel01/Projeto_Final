@@ -14,7 +14,7 @@ const state = {
   multas: [],
   curtidasUsuario: [],
   selectedBookId: null,
-  selectedHomeBookId: null,
+  livroInicioSelecionadoId: null,
 };
 
 const qs = (selector) => document.querySelector(selector);
@@ -33,8 +33,8 @@ const appMenu = qs("#appMenu");
 const profileShortcut = qs("#profileShortcut");
 let verifiedRecoveryEmail = "";
 
-function setCookie(name, value) {
-  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=7200`;
+function setCookie(name, value, maxAge = 7200) {
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAge}`;
 }
 
 function getCookie(name) {
@@ -134,11 +134,12 @@ function restoreRememberedLogin() {
   if (!remember || !email || !password) return;
 
   const rememberedEmail = decodeURIComponent(getCookie("bibliotecaUsuario"));
-  remember.checked = Boolean(rememberedEmail);
+  const rememberedPassword = decodeURIComponent(getCookie("bibliotecaSenha"));
+  remember.checked = Boolean(rememberedEmail || rememberedPassword);
   email.value = rememberedEmail;
-  password.value = "";
+  password.value = rememberedPassword;
 
-  if (!rememberedEmail) {
+  if (!rememberedEmail && !rememberedPassword) {
     const clearAutofill = () => {
       if (!remember.checked) {
         email.value = "";
@@ -185,6 +186,8 @@ function resetForgotPasswordForm() {
 function showApp() {
   authScreen.classList.add("hidden");
   appScreen.classList.remove("hidden");
+  resetSessionInterface();
+  setActiveView("homeView");
   renderCurrentUser();
   loadAll();
 }
@@ -195,16 +198,32 @@ function saveSession(dados) {
   localStorage.setItem("token", state.token);
   localStorage.setItem("usuario", JSON.stringify(state.usuario));
   setCookie("bibliotecaLogado", "true");
-  setCookie("bibliotecaUsuario", state.usuario.email || state.usuario.nome);
 }
 
 function clearSession() {
   state.token = null;
   state.usuario = null;
+  resetSessionInterface();
   localStorage.removeItem("token");
   localStorage.removeItem("usuario");
   clearCookie("bibliotecaLogado");
-  clearCookie("bibliotecaUsuario");
+}
+
+function resetSessionInterface() {
+  state.selectedBookId = null;
+  state.livroInicioSelecionadoId = null;
+  state.selectedProfileBookId = null;
+
+  qs("#bookFormPanel")?.classList.add("hidden");
+  if (qs("#bookForm")) resetBookForm();
+  qs("#profileImageForm")?.reset();
+  qs("#reservationForm")?.reset();
+  qs("#loanForm")?.reset();
+  qs("#copyForm")?.reset();
+  qsa(".view").forEach((view) => view.classList.toggle("active", view.id === "homeView"));
+  qsa(".nav-btn").forEach((btn) => btn.classList.toggle("active", btn.dataset.view === "homeView"));
+  profileShortcut?.classList.remove("active");
+  closeAppMenu();
 }
 
 function renderCurrentUser() {
@@ -382,43 +401,50 @@ function renderMetrics() {
 }
 
 function renderHomeInsights() {
-  renderHomeBooks();
-  renderGenreSections();
-  renderUnavailableBooks();
+  renderizarLivrosEmAlta();
+  renderizarSecoesGeneros();
+  renderizarLivrosIndisponiveis();
   renderInsightList("#mostReservedBooks", mostReservedBooks(), "Ainda não há reservas.");
   renderInsightList("#bestConditionBooks", bestConditionBooks(), "Ainda não há exemplares cadastrados.");
   renderInsightList("#soldOutBooks", soldOutBooks(), "Nenhum livro está esgotado.");
 }
 
-function renderHomeBooks() {
-  const target = qs("#homeBooksGrid");
+function renderizarLivrosEmAlta() {
+  const target = qs("#gradeLivrosEmAlta");
   if (!target) return;
-  const livros = highlightedBooks();
-  target.innerHTML = livros.map((livro) => `
-    ${bookCardHtml(livro, state.selectedHomeBookId)}
-    ${state.selectedHomeBookId === livro.idLivro ? bookInlineDetailsHtml(livro) : ""}
+  const livros = livrosEmAlta();
+  if (!livros.length) {
+    target.innerHTML = `<p class="empty-state">Nenhum livro curtido ainda.</p>`;
+    return;
+  }
+
+  target.innerHTML = livros.map((livro, index) => `
+    ${bookCardHtml(livro, state.livroInicioSelecionadoId, { rank: index + 1 })}
+    ${state.livroInicioSelecionadoId === livro.idLivro ? bookInlineDetailsHtml(livro) : ""}
   `).join("");
 }
 
-function highlightedBooks() {
-  const livros = [...activeCatalogBooks()]
-    .sort((a, b) => bookLikes(b) - bookLikes(a) || Number(b.idLivro || 0) - Number(a.idLivro || 0));
+function livrosEmAlta() {
+  const livros = [...livrosDoAcervo()]
+    .filter((livro) => curtidasDoLivro(livro) > 0)
+    .sort((a, b) => curtidasDoLivro(b) - curtidasDoLivro(a) || Number(b.idLivro || 0) - Number(a.idLivro || 0));
   const term = searchTerm();
 
-  return term
+  return (term
     ? livros.filter((livro) => bookMatchesSearch(livro, term))
-    : livros.slice(0, 12);
+    : livros
+  ).slice(0, 5);
 }
 
-function bookLikes(livro) {
+function curtidasDoLivro(livro) {
   return Number(livro.curtidasTotal ?? livro._count?.curtidas ?? 0);
 }
 
-function renderGenreSections() {
-  const target = qs("#genreSections");
+function renderizarSecoesGeneros() {
+  const target = qs("#secoesGeneros");
   if (!target) return;
   const term = searchTerm();
-  const livros = activeCatalogBooks().filter((livro) => !term || bookMatchesSearch(livro, term));
+  const livros = livrosDoAcervo().filter((livro) => !term || bookMatchesSearch(livro, term));
   const generos = [...new Set(livros.map((livro) => livro.genero || "Sem gênero"))].sort((a, b) => a.localeCompare(b));
 
   if (!generos.length) {
@@ -433,8 +459,8 @@ function renderGenreSections() {
         <h4>${genero}</h4>
         <div class="book-grid compact-book-grid">
           ${livrosGenero.map((livro) => `
-            ${bookCardHtml(livro, state.selectedHomeBookId)}
-            ${state.selectedHomeBookId === livro.idLivro ? bookInlineDetailsHtml(livro) : ""}
+            ${bookCardHtml(livro, state.livroInicioSelecionadoId)}
+            ${state.livroInicioSelecionadoId === livro.idLivro ? bookInlineDetailsHtml(livro) : ""}
           `).join("")}
         </div>
       </section>
@@ -442,25 +468,24 @@ function renderGenreSections() {
   }).join("");
 }
 
-function renderUnavailableBooks() {
-  const target = qs("#unavailableBooksGrid");
+function renderizarLivrosIndisponiveis() {
+  const target = qs("#gradeLivrosIndisponiveis");
   if (!target) return;
   const term = searchTerm();
-  const livros = activeCatalogBooks()
-    .filter((livro) => !isBookInactive(livro))
-    .filter((livro) => availableCopiesCount(livro.idLivro) === 0)
+  const livros = state.livros
+    .filter((livro) => isBookInactive(livro) || availableCopiesCount(livro.idLivro) === 0)
     .filter((livro) => !term || bookMatchesSearch(livro, term));
 
   target.innerHTML = livros.length
     ? livros.map((livro) => `
-      ${bookCardHtml(livro, state.selectedHomeBookId)}
-      ${state.selectedHomeBookId === livro.idLivro ? bookInlineDetailsHtml(livro, { forceReservationOnly: true }) : ""}
+      ${bookCardHtml(livro, state.livroInicioSelecionadoId)}
+      ${state.livroInicioSelecionadoId === livro.idLivro ? bookInlineDetailsHtml(livro, { forceReservationOnly: true }) : ""}
     `).join("")
     : `<p class="empty-state">Nenhum livro indisponível para empréstimo no momento.</p>`;
 }
 
 function mostReservedBooks() {
-  return activeCatalogBooks()
+  return livrosDoAcervo()
     .map((livro) => {
       const total = state.reservas.filter((reserva) => reserva.livroId === livro.idLivro).length;
       return {
@@ -476,7 +501,7 @@ function mostReservedBooks() {
 }
 
 function bestConditionBooks() {
-  return activeCatalogBooks()
+  return livrosDoAcervo()
     .map((livro) => {
       const exemplares = copiesByBookId(livro.idLivro);
       const bons = exemplares.filter((exemplar) =>
@@ -495,7 +520,7 @@ function bestConditionBooks() {
 }
 
 function soldOutBooks() {
-  return activeCatalogBooks()
+  return livrosDoAcervo()
     .map((livro) => {
       const exemplares = copiesByBookId(livro.idLivro);
       const emprestados = exemplares.filter((exemplar) =>
@@ -618,7 +643,7 @@ function formatDate(value) {
 
 function filteredBooks() {
   const term = searchTerm();
-  const livros = activeCatalogBooks();
+  const livros = livrosDoAcervo();
   if (!term) return livros;
   return livros.filter((livro) => bookMatchesSearch(livro, term));
 }
@@ -643,8 +668,8 @@ function visibleBooks() {
     : state.livros.filter((livro) => !isBookInactive(livro));
 }
 
-function activeCatalogBooks() {
-  return state.livros;
+function livrosDoAcervo() {
+  return visibleBooks();
 }
 
 function userHasBlockingFines(userId = state.usuario?.idUsuario) {
@@ -664,9 +689,10 @@ function renderBooks() {
 
 }
 
-function bookCardHtml(livro, selectedId = state.selectedBookId) {
+function bookCardHtml(livro, selectedId = state.selectedBookId, options = {}) {
   return `
     <article class="book-card ${selectedId === livro.idLivro ? "selected" : ""}">
+      ${options.rank ? `<span class="book-rank">${options.rank}º</span>` : ""}
       <button class="book-cover" type="button" data-select-book="${livro.idLivro}" aria-label="Ver detalhes de ${livro.titulo}">
         ${bookCoverHtml(livro)}
       </button>
@@ -929,6 +955,7 @@ function resetBookForm() {
   qs("#bookForm").reset();
   qs("#bookId").value = "";
   qs("#bookAvailable").checked = true;
+  qs("#removeBookCoverBtn") && (qs("#removeBookCoverBtn").disabled = true);
   qs("#pendingCopiesList") && (qs("#pendingCopiesList").innerHTML = "");
   qs("#newCopyCode") && (qs("#newCopyCode").value = "");
   qs("#newCopyLocation") && (qs("#newCopyLocation").value = "");
@@ -959,6 +986,7 @@ function openBookForm(livro = null) {
   qs("#bookYear").value = livro.anoPublicacao;
   qs("#bookSynopsis").value = livro.sinopse;
   qs("#bookAvailable").checked = ["disponivel", "disponível"].includes(livro.status);
+  qs("#removeBookCoverBtn") && (qs("#removeBookCoverBtn").disabled = !livro.capaUrl);
 }
 
 function closeBookForm() {
@@ -972,7 +1000,7 @@ function bookPayload() {
   const genero = qs("#bookGenre").value;
   const anoPublicacao = Number(qs("#bookYear").value);
   const sinopse = qs("#bookSynopsis").value.trim();
-  const status = qs("#bookAvailable").checked ? "disponivel" : "reservado";
+  const status = qs("#bookAvailable").checked ? "disponivel" : "inativo";
 
   if (titulo.length < 3 || autor.length < 3 || !genero || !anoPublicacao || sinopse.length < 10) {
     throw new Error("Preencha os campos do livro corretamente");
@@ -1001,9 +1029,12 @@ loginForm.addEventListener("submit", async (event) => {
     });
     saveSession(dados);
     if (qs("#rememberLogin").checked) {
-      setCookie("bibliotecaUsuario", qs("#loginEmail").value.trim());
+      const thirtyDays = 60 * 60 * 24 * 30;
+      setCookie("bibliotecaUsuario", qs("#loginEmail").value.trim(), thirtyDays);
+      setCookie("bibliotecaSenha", qs("#loginPassword").value, thirtyDays);
     } else {
       clearCookie("bibliotecaUsuario");
+      clearCookie("bibliotecaSenha");
     }
     notify("Login realizado com sucesso");
     showApp();
@@ -1015,7 +1046,7 @@ loginForm.addEventListener("submit", async (event) => {
 qs("#rememberLogin").addEventListener("change", () => {
   if (!qs("#rememberLogin").checked) {
     clearCookie("bibliotecaUsuario");
-    qs("#loginPassword").value = "";
+    clearCookie("bibliotecaSenha");
   }
 });
 
@@ -1095,10 +1126,9 @@ qs("#bookForm").addEventListener("submit", async (event) => {
   try {
     const id = qs("#bookId").value;
     const payload = bookPayload();
-    const { status, ...createPayload } = payload;
     const saved = id
       ? await api(`/livros/${id}`, { method: "PUT", body: JSON.stringify(payload) })
-      : await api("/livros", { method: "POST", body: JSON.stringify(createPayload) });
+      : await api("/livros", { method: "POST", body: JSON.stringify(payload) });
     await uploadBookCover(saved.idLivro);
     notify("Livro salvo com sucesso");
     closeBookForm();
@@ -1111,10 +1141,9 @@ qs("#bookForm").addEventListener("submit", async (event) => {
 qs("#reservationForm").addEventListener("submit", async (event) => {
   event.preventDefault();
   try {
-    await api("/reservas", {
+    await api("/biblioteca/reservas", {
       method: "POST",
       body: JSON.stringify({
-        usuarioId: state.usuario.idUsuario,
         livroId: Number(qs("#reservationBookId").value),
       }),
     });
@@ -1185,6 +1214,51 @@ qs("#profileImageForm").addEventListener("submit", async (event) => {
   }
 });
 
+qs("#removeBookCoverBtn")?.addEventListener("click", async () => {
+  const bookId = qs("#bookId").value;
+  if (!bookId) {
+    notify("Salve ou selecione um livro antes de remover a capa");
+    return;
+  }
+  if (!confirm("Remover a capa deste livro?")) return;
+
+  try {
+    await api(`/livros/${bookId}/capa`, { method: "DELETE" });
+    qs("#bookCover").value = "";
+    qs("#removeBookCoverBtn").disabled = true;
+    notify("Capa removida");
+    await loadAll();
+  } catch (error) {
+    notify(error.message);
+  }
+});
+
+async function removeProfileImage(tipo, mensagemConfirmacao, mensagemSucesso) {
+  if (!confirm(mensagemConfirmacao)) return;
+
+  try {
+    const usuario = await api(`/usuarios/${state.usuario.idUsuario}/imagens-perfil/${tipo}`, {
+      method: "DELETE",
+    });
+    state.usuario = usuario;
+    localStorage.setItem("usuario", JSON.stringify(usuario));
+    qs("#profilePhotoInput").value = "";
+    qs("#profileCoverInput").value = "";
+    renderCurrentUser();
+    notify(mensagemSucesso);
+  } catch (error) {
+    notify(error.message);
+  }
+}
+
+qs("#removeProfilePhotoBtn")?.addEventListener("click", () => {
+  removeProfileImage("foto", "Remover sua foto de perfil?", "Foto de perfil removida");
+});
+
+qs("#removeProfileCoverBtn")?.addEventListener("click", () => {
+  removeProfileImage("fundo", "Remover a imagem de fundo do perfil?", "Imagem de fundo removida");
+});
+
 qs("#logoutBtn").addEventListener("click", async () => {
   try {
     if (state.token) await api("/auth/logout", { method: "POST", body: JSON.stringify({}) });
@@ -1193,7 +1267,7 @@ qs("#logoutBtn").addEventListener("click", async () => {
   }
   clearSession();
   showAuth();
-  notify("Voc\u00ea saiu do sistema");
+  notify("Você saiu do sistema");
 });
 
 qs("#loginTab").addEventListener("click", () => {
@@ -1282,8 +1356,10 @@ document.addEventListener("click", async (event) => {
   const deleteId = event.target.dataset?.deleteBook;
   if (selectBookId) {
     if (qs("#homeView")?.classList.contains("active")) {
-      state.selectedHomeBookId = Number(selectBookId);
-      renderHomeBooks();
+      state.livroInicioSelecionadoId = Number(selectBookId);
+      renderizarLivrosEmAlta();
+      renderizarSecoesGeneros();
+      renderizarLivrosIndisponiveis();
     } else {
       state.selectedBookId = Number(selectBookId);
       renderBooks();

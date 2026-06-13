@@ -260,7 +260,15 @@ export class RepositorioUsuarios {
 
   async atualizar(
     id: number,
-    dados: { nome?: string; email?: string; senha?: string; cargo?: string }
+    dados: {
+      nome?: string;
+      email?: string;
+      senha?: string;
+      cargo?: string;
+      anoIngresso?: number;
+      curso?: string;
+      departamento?: string;
+    }
   ): Promise<Usuario | null> {
     try {
       const senhaHash = dados.senha
@@ -280,6 +288,25 @@ export class RepositorioUsuarios {
               },
             },
           }),
+          ...((dados.anoIngresso !== undefined || dados.curso !== undefined) && {
+            aluno: {
+              update: {
+                ...(dados.anoIngresso !== undefined && {
+                  ano_ingresso: dados.anoIngresso,
+                }),
+                ...(dados.curso !== undefined && {
+                  curso: dados.curso,
+                }),
+              },
+            },
+          }),
+          ...(dados.departamento !== undefined && {
+            professor: {
+              update: {
+                departamento: dados.departamento,
+              },
+            },
+          }),
         },
         include: { aluno: true, professor: true, admin: true },
       });
@@ -296,10 +323,10 @@ export class RepositorioUsuarios {
   async atualizarImagensPerfil(
     id: number,
     imagens: {
-      fotoPerfilUrl?: string;
-      fotoPerfilObjeto?: string;
-      fundoPerfilUrl?: string;
-      fundoPerfilObjeto?: string;
+      fotoPerfilUrl?: string | null;
+      fotoPerfilObjeto?: string | null;
+      fundoPerfilUrl?: string | null;
+      fundoPerfilObjeto?: string | null;
     }
   ): Promise<Usuario | null> {
     try {

@@ -11,7 +11,8 @@ export class ControladorLivros {
     autor: string,
     genero: string,
     anoPublicacao: number,
-    sinopse: string
+    sinopse: string,
+    status: string = "disponivel"
   ): Promise<ResultadoOperacao<Livro>> {
     try {
       if (!titulo || !autor || !genero || !sinopse) {
@@ -24,7 +25,8 @@ export class ControladorLivros {
         autor,
         genero,
         anoPublicacao,
-        sinopse
+        sinopse,
+        status
       );
 
       const livroCriado = await this.repositorioLivros.adicionarLivro(livro);
@@ -151,6 +153,23 @@ export class ControladorLivros {
       return { sucesso: true, dados: livroAtualizado };
     } catch (erro: any) {
       return this.tratarErro(erro, "Erro ao atualizar capa do livro");
+    }
+  }
+
+  async removerCapa(id: number): Promise<ResultadoOperacao<Livro>> {
+    try {
+      if (typeof id !== "number" || id <= 0) {
+        throw new ErroValidacao("ID deve ser um numero positivo");
+      }
+
+      const livroAtualizado = await this.repositorioLivros.removerCapa(id);
+      if (!livroAtualizado) {
+        throw new ErroNaoEncontrado(`Livro com ID ${id} nao encontrado`);
+      }
+
+      return { sucesso: true, dados: livroAtualizado };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao remover capa do livro");
     }
   }
 

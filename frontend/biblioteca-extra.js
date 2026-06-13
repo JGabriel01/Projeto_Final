@@ -259,7 +259,7 @@
     const menu = byId("appMenu");
     if (menu) {
       menu.innerHTML = `
-        <button class="nav-btn active" data-view="homeView" type="button">Inicio</button>
+        <button class="nav-btn active" data-view="homeView" type="button">Início</button>
         <button class="nav-btn" data-view="usersView" type="button">Usuários</button>
       `;
       menu.querySelectorAll(".nav-btn").forEach((btn) => {
@@ -268,11 +268,17 @@
       });
     }
     byId("newBookBtn")?.classList.toggle("hidden", !isAdmin());
+    if (!isAdmin()) {
+      byId("bookFormPanel")?.classList.add("hidden");
+      byId("bookForm")?.reset();
+    }
   };
 
   renderAll = function () {
     renderBooks();
-    renderHomeBooks();
+    renderizarLivrosEmAlta();
+    renderizarSecoesGeneros();
+    renderizarLivrosIndisponiveis();
     renderUsers();
     renderProfileSummary();
     renderNotifications();
@@ -424,15 +430,26 @@
 
   function myReservationsHtml() {
     const minhas = state.reservas.filter((r) => r.usuarioId === ownId() && ["ativa", "pronta"].includes(r.statusReserva));
+    if (!minhas.length) return `<p class="empty-state">Você ainda não fez reservas.</p>`;
     return `
       <div class="section-heading compact-heading"><div><h2>Livros reservados</h2><p>Aguarde novos exemplares para um novo empréstimo.</p></div></div>
-      ${booksRowHtml(minhas.map((reserva) => {
+      <div class="loan-list">${minhas.map((reserva) => {
         const livro = state.livros.find((l) => l.idLivro === reserva.livroId) || reserva.livro;
-        return {
-          livro,
-          extra: `<div class="book-detail-content"><h3>${livro.titulo}</h3><p>${livro.autor}</p><p>Status: ${formatStatus(reserva.statusReserva)}</p>${queueMiniHtml(livro.idLivro)}<div class="row-actions"><button class="reserved-btn" disabled>Reservado</button><button class="danger-btn" type="button" data-cancel-reservation="${reserva.idReserva}">Cancelar reserva</button></div></div>`,
-        };
-      }), "Você ainda não fez reservas.")}
+        return `
+          <article class="loan-card user-reservation-card">
+            <div class="loan-cover">${bookCoverHtml(livro)}</div>
+            <div>
+              <h3>${livro.titulo}</h3>
+              <p>${livro.autor} | Status: ${formatStatus(reserva.statusReserva)}</p>
+              ${queueMiniHtml(livro.idLivro)}
+              <div class="row-actions reservation-card-actions">
+                <button class="reserved-btn" disabled>Reservado</button>
+                <button class="danger-btn" type="button" data-cancel-reservation="${reserva.idReserva}">Cancelar reserva</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("")}</div>
     `;
   }
 
@@ -455,7 +472,7 @@
             <p>Data de expiração: ${formatDate(emprestimo.dataVencimento)}</p>
             ${concluido
               ? `<p>Devolvido em ${formatDate(emprestimo.dataDevolucaoReal)}.</p>`
-              : `<p>${falta >= 0 ? `Faltam ${falta} dia(s) para devolução.` : `${Math.abs(falta)} dia(s) em atraso.`}</p>`}
+              : `<p>${falta >= 0 ? `Faltam ${falta} ${falta === 1 ? "dia" : "dias"} para devolução.` : `${Math.abs(falta)} ${Math.abs(falta) === 1 ? "dia" : "dias"} em atraso.`}</p>`}
             ${multa ? `<p class="fine-warning">Este empréstimo tem multa pendente. Resolva em Gerenciar multas.</p>` : ""}
             ${concluido ? "" : `<div class="row-actions">
               <button class="primary-btn" type="button" data-return-loan="${emprestimo.idEmprestimo}">Devolver empréstimo</button>
@@ -486,7 +503,7 @@
             <p>Autor: ${livro.autor || "-"} | Condição: ${exemplar.estado || "-"}</p>
             <p class="fine-warning">Se não pagar no dia gerado, cada dia de atraso soma R$ 1,00 ao valor base.</p>
             ${aguardandoConfirmacao
-              ? `<p>Status: aguardando confirmação do admin.</p>`
+              ? `<p>Status: aguardando confirmação do administrador.</p>`
               : `<button class="primary-btn" type="button" data-pay-fine="${multa.idMulta}">Pagamento</button>`}
           </div>
         </article>
@@ -495,6 +512,14 @@
   }
 
   function editAccountHtml() {
+    const camposAluno = isAluno() ? `
+        <label>Ano de ingresso<input id="editYear" type="number" min="1900" value="${escapeAttr(state.usuario.anoIngresso || "")}"></label>
+        <label>Curso<input id="editCourse" value="${escapeAttr(state.usuario.curso || "")}"></label>
+      ` : "";
+    const camposProfessor = isProfessor() ? `
+        <label>Departamento<input id="editDepartment" value="${escapeAttr(state.usuario.departamento || "")}"></label>
+      ` : "";
+
     return `
       <form id="editAccountForm" class="form-panel stack-form">
         <label>Nome<input id="editName" value="${escapeAttr(state.usuario.nome || "")}"></label>
@@ -507,6 +532,8 @@
         </label>
         <div id="editPasswordStrength" class="password-strength" aria-label="Força da senha"></div>
         <small id="editPasswordStrengthText" class="password-strength-text">Digite uma senha com letras e números.</small>
+        ${camposAluno}
+        ${camposProfessor}
         ${isAdmin() ? `<label>Cargo<input id="editRole" value="${escapeAttr(state.usuario.cargo || "")}"></label>` : ""}
         <button class="primary-btn" type="submit">Salvar alterações</button>
       </form>
@@ -534,7 +561,7 @@
     return `<div class="loan-list">${livros.map(({ livro, total }) => `
       <article class="loan-card">
         <div class="loan-cover">${bookCoverHtml(livro)}</div>
-        <div><h3>${livro.titulo}</h3><p>${total} reserva(s) na fila.</p>${queueMiniHtml(livro.idLivro)}</div>
+        <div><h3>${livro.titulo}</h3><p>${total} ${total === 1 ? "reserva" : "reservas"} na fila.</p>${queueMiniHtml(livro.idLivro)}</div>
       </article>
     `).join("")}</div>`;
   }
@@ -565,7 +592,7 @@
     return `
       <div class="split-grid">
         <article>
-          <h3>Cadastrar novo admin</h3>
+          <h3>Cadastrar novo administrador</h3>
           <form id="newAdminForm" class="stack-form">
             <label>Nome<input id="newAdminName" required></label>
             <label>E-mail<input id="newAdminEmail" type="email" required></label>
@@ -578,12 +605,12 @@
             <div id="newAdminPasswordStrength" class="password-strength" aria-label="Força da senha"></div>
             <small id="newAdminPasswordStrengthText" class="password-strength-text">Digite uma senha com letras e números.</small>
             <label>Cargo<input id="newAdminRole" required></label>
-            <button class="primary-btn" type="submit">Cadastrar admin</button>
+            <button class="primary-btn" type="submit">Cadastrar administrador</button>
           </form>
         </article>
         <article>
           <h3>Admins</h3>
-          <div class="insight-list">${admins.map((admin) => `<div class="insight-item"><div class="user-avatar">${admin.nome.slice(0, 1)}</div><div><strong>${admin.nome}</strong><span>${admin.cargo || "Admin"}</span></div></div>`).join("")}</div>
+          <div class="insight-list">${admins.map((admin) => `<div class="insight-item"><div class="user-avatar">${admin.nome.slice(0, 1)}</div><div><strong>${admin.nome}</strong><span>${admin.cargo || "Administrador"}</span></div></div>`).join("")}</div>
         </article>
       </div>
       <div class="table-wrap"><table><thead><tr><th>Admin</th><th>Status</th><th>Ação</th></tr></thead><tbody>${solicitacoes.map((s) => `<tr><td>${s.admin?.nome || userNameById(s.admin_id)}</td><td>${formatStatus(s.status)}</td><td>${s.admin_id === ownId() && s.status === "aprovada" ? `<button class="danger-btn" data-execute-admin-delete="${s.id_solicitacao}">Excluir conta</button>` : s.admin_id !== ownId() && s.status === "pendente" ? `<button class="primary-btn" data-decide-admin-delete="${s.id_solicitacao}" data-approve="true">Confirmar</button> <button class="danger-btn" data-decide-admin-delete="${s.id_solicitacao}" data-approve="false">Negar</button>` : "-"}</td></tr>`).join("")}</tbody></table></div>
@@ -594,7 +621,8 @@
     return `<div class="loan-list">${state.livros.map((livro) => {
       const exemplares = copiesForBook(livro.idLivro);
       const emprestados = loansForBook(livro.idLivro);
-      return `<article class="loan-card"><div class="loan-cover">${bookCoverHtml(livro)}</div><div><h3>${livro.titulo}</h3><p>Status: ${formatStatus(livro.status)} | ${isBookInactive(livro) ? 0 : availableCount(livro.idLivro)} disponível(is) | ${emprestados.length} emprestado(s)</p><div class="copy-list">${exemplares.map((e) => `<span>${e.codigo_tombo} | ${e.estado} | ${e.localizacao} | ${emprestados.some((loan) => loan.exemplarId === e.id_exemplar) ? "emprestado" : "disponível"}</span>`).join("")}</div></div></article>`;
+      const disponiveis = isBookInactive(livro) ? 0 : availableCount(livro.idLivro);
+      return `<article class="loan-card"><div class="loan-cover">${bookCoverHtml(livro)}</div><div><h3>${livro.titulo}</h3><p>Status: ${formatStatus(livro.status)} | ${disponiveis} ${disponiveis === 1 ? "disponível" : "disponíveis"} | ${emprestados.length} ${emprestados.length === 1 ? "emprestado" : "emprestados"}</p><div class="copy-list">${exemplares.map((e) => `<span>${e.codigo_tombo} | ${e.estado} | ${e.localizacao} | ${emprestados.some((loan) => loan.exemplarId === e.id_exemplar) ? "emprestado" : "disponível"}</span>`).join("")}</div></div></article>`;
     }).join("")}</div>`;
   }
 
@@ -650,8 +678,10 @@
       event.stopImmediatePropagation();
       const id = Number(select.dataset.selectBook);
       if (byId("homeView")?.classList.contains("active")) {
-        state.selectedHomeBookId = state.selectedHomeBookId === id ? null : id;
-        renderHomeBooks();
+        state.livroInicioSelecionadoId = state.livroInicioSelecionadoId === id ? null : id;
+        renderizarLivrosEmAlta();
+        renderizarSecoesGeneros();
+        renderizarLivrosIndisponiveis();
       } else {
         state.selectedBookId = state.selectedBookId === id ? null : id;
         state.selectedProfileBookId = state.selectedProfileBookId === id ? null : id;
@@ -706,11 +736,11 @@
       }
       if (actionButton.dataset.extendLoan && await confirmDialog("Estender prazo", "Deseja solicitar ao admin mais 15 dias de prazo?")) {
         await apiExtra(`/biblioteca/emprestimos/${actionButton.dataset.extendLoan}/extensoes`, { method: "POST", body: JSON.stringify({}) });
-        notify("Solicitação enviada. Aguarde confirmação de um admin.");
+        notify("Solicitação enviada. Aguarde a confirmação de um administrador.");
       }
       if (actionButton.dataset.payFine && await confirmDialog("Confirmar pagamento", "Confirma que realizou o pagamento desta multa?")) {
         await apiExtra(`/biblioteca/multas/${actionButton.dataset.payFine}/pagamentos`, { method: "POST", body: JSON.stringify({}) });
-        notify("Aguarde a confirmação do pagamento por qualquer admin da biblioteca para o mesmo ser aprovado.");
+        notify("Aguarde a confirmação do pagamento por um administrador da biblioteca.");
       }
       if (actionButton.dataset.confirmFine) {
         const aprovar = actionButton.dataset.approve === "true";
@@ -753,6 +783,9 @@
           email: byId("editEmail").value.trim() || undefined,
           senha: byId("editPassword").value || undefined,
           cargo: byId("editRole")?.value.trim() || undefined,
+          anoIngresso: byId("editYear")?.value ? Number(byId("editYear").value) : undefined,
+          curso: byId("editCourse")?.value.trim() || undefined,
+          departamento: byId("editDepartment")?.value.trim() || undefined,
         };
         Object.keys(body).forEach((key) => body[key] === undefined && delete body[key]);
         const usuario = await apiExtra(`/usuarios/${ownId()}`, { method: "PUT", body: JSON.stringify(body) });
@@ -772,7 +805,7 @@
           body: JSON.stringify({ email: byId("deleteEmail").value.trim(), senha: byId("deletePassword").value }),
         });
         if (isAdmin()) {
-          notify("Solicitação enviada para outro admin.");
+        notify("Solicitação enviada para outro administrador.");
           await loadAll();
           return;
         }
@@ -791,7 +824,7 @@
             cargo: byId("newAdminRole").value.trim(),
           }),
         });
-        notify("Admin cadastrado");
+        notify("Administrador cadastrado");
         await loadAll();
       }
     } catch (error) {
@@ -897,10 +930,6 @@
     if (!form || byId("bookCopiesBuilder")) return;
     form.insertAdjacentHTML("beforeend", `
       <div id="bookCopiesBuilder" class="form-panel wide">
-        <div id="existingBookCopiesBlock" class="existing-copy-block hidden">
-          <h3>Exemplares já cadastrados</h3>
-          <div id="existingBookCopiesList" class="copy-list"></div>
-        </div>
         <h3>Criar novo exemplar</h3>
         <div class="form-grid">
           <label>Código tombo<input id="newCopyCode" type="text"></label>
@@ -909,6 +938,10 @@
         </div>
         <button id="addPendingCopyBtn" class="secondary-btn copy-builder-btn" type="button">Criar exemplar</button>
         <div id="pendingCopiesList" class="copy-list"></div>
+        <div id="existingBookCopiesBlock" class="existing-copy-block hidden">
+          <h3>Exemplares cadastrados</h3>
+          <div id="existingBookCopiesList" class="copy-list"></div>
+        </div>
       </div>
     `);
     byId("addPendingCopyBtn").addEventListener("click", () => {
@@ -919,7 +952,14 @@
         notify("Informe tombo e localização do exemplar");
         return;
       }
-      byId("pendingCopiesList").insertAdjacentHTML("afterbegin", `<span class="pending-copy-row"><b data-copy-code>${code}</b> | <em data-copy-state>${stateValue}</em> | <small data-copy-location>${location}</small></span>`);
+      byId("pendingCopiesList").insertAdjacentHTML("afterbegin", `
+        <span class="pending-copy-row copy-list-row">
+          <span class="copy-list-info">
+            <b data-copy-code>${code}</b> | <em data-copy-state>${stateValue}</em> | <small data-copy-location>${location}</small>
+          </span>
+          <button class="danger-btn copy-remove-btn" type="button" data-remove-pending-copy>Remover</button>
+        </span>
+      `);
       byId("newCopyCode").value = "";
       byId("newCopyLocation").value = "";
     });
@@ -938,12 +978,38 @@
     const exemplares = sortByNewestId(copiesForBook(Number(livroId)), "idExemplar", "id_exemplar");
     list.innerHTML = exemplares.length
       ? exemplares.map((exemplar) => `
-        <span>
-          <b>${exemplar.codigo_tombo}</b> | ${exemplar.estado || "-"} | ${exemplar.localizacao || "-"}
+        <span class="copy-list-row">
+          <span class="copy-list-info">
+            <b>${exemplar.codigo_tombo}</b> | ${exemplar.estado || "-"} | ${exemplar.localizacao || "-"}
+          </span>
+          <button class="danger-btn copy-remove-btn" type="button" data-delete-copy="${exemplar.id_exemplar}">Remover</button>
         </span>
       `).join("")
       : `<span>Nenhum exemplar cadastrado para este livro.</span>`;
   }
+
+  document.addEventListener("click", async (event) => {
+    const pendingButton = event.target.closest("[data-remove-pending-copy]");
+    const deleteButton = event.target.closest("[data-delete-copy]");
+
+    if (pendingButton) {
+      pendingButton.closest(".pending-copy-row")?.remove();
+      return;
+    }
+
+    if (!deleteButton) return;
+    const copyId = deleteButton.dataset.deleteCopy;
+    if (!copyId || !await confirmDialog("Remover exemplar", "Deseja remover este exemplar cadastrado?")) return;
+
+    try {
+      await apiExtra(`/exemplares/${copyId}`, { method: "DELETE" });
+      notify("Exemplar removido");
+      await loadAll();
+      renderExistingBookCopies(byId("bookId")?.value || null);
+    } catch (error) {
+      notify(error.message);
+    }
+  });
 
   const originalOpenBookForm = openBookForm;
   openBookForm = function (livro = null) {
