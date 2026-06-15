@@ -7,16 +7,27 @@ export class RepositorioExemplares {
     estado: string,
     localizacao: string
   ) {
-    return await prisma.exemplar.create({
-      data: {
-        codigo_tombo: codigoTombo,
-        estado,
-        localizacao,
-        livro_id: livroId,
-      },
-      include: {
-        livro: true,
-      },
+    return await prisma.$transaction(async (tx) => {
+      const exemplar = await tx.exemplar.create({
+        data: {
+          codigo_tombo: codigoTombo,
+          estado,
+          localizacao,
+          livro_id: livroId,
+        },
+      });
+
+      await tx.livro.updateMany({
+        where: { id_livro: livroId, status: "inativo" },
+        data: { status: "disponivel" },
+      });
+
+      return await tx.exemplar.findUnique({
+        where: { id_exemplar: exemplar.id_exemplar },
+        include: {
+          livro: true,
+        },
+      });
     });
   }
 

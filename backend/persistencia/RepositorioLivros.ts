@@ -146,8 +146,8 @@ export class RepositorioLivros {
   }
 
   async removerOuInativar(id: number): Promise<
-    | { acao: "excluido"; livro: null }
-    | { acao: "inativado"; livro: Livro }
+    | { acao: "excluido"; livro: null; reservasCanceladas: number }
+    | { acao: "inativado"; livro: Livro; reservasCanceladas: number }
     | null
   > {
     try {
@@ -155,7 +155,13 @@ export class RepositorioLivros {
         const livro = await tx.livro.findUnique({
           where: { id_livro: id },
           include: {
-            reservas: { select: { id_reserva: true } },
+            reservas: {
+              select: {
+                id_reserva: true,
+                usuario_id: true,
+                status_reserva: true,
+              },
+            },
             exemplares: {
               select: {
                 id_exemplar: true,
@@ -169,6 +175,9 @@ export class RepositorioLivros {
 
         if (!livro) return null;
 
+        const reservasParaCancelar = livro.reservas.filter((reserva) =>
+          ["ativa", "pronta"].includes(reserva.status_reserva)
+        );
         const possuiHistorico =
           livro.reservas.length > 0 ||
           livro.exemplares.some(
@@ -177,6 +186,22 @@ export class RepositorioLivros {
           );
 
         if (possuiHistorico) {
+          await Promise.all(
+            reservasParaCancelar.map((reserva) =>
+              (tx as any).notificacao.create({
+                data: {
+                  usuario_id: reserva.usuario_id,
+                  tipo: "reserva",
+                  mensagem: `Sua reserva de "${livro.titulo}" foi cancelada porque o livro saiu do acervo.`,
+                  data_envio: new Date(),
+                  lido: false,
+                  acao: "gerenciar_reservas",
+                  referencia_id: reserva.id_reserva,
+                },
+              })
+            )
+          );
+
           await tx.reserva.updateMany({
             where: {
               livro_id: id,
@@ -190,11 +215,15 @@ export class RepositorioLivros {
             data: { status: "inativo" },
             include: { _count: { select: { curtidas: true } } },
           });
-          return { acao: "inativado", livro: this.criarLivroDoDb(livroDb) };
+          return {
+            acao: "inativado",
+            livro: this.criarLivroDoDb(livroDb),
+            reservasCanceladas: reservasParaCancelar.length,
+          };
         }
 
         await tx.livro.delete({ where: { id_livro: id } });
-        return { acao: "excluido", livro: null };
+        return { acao: "excluido", livro: null, reservasCanceladas: 0 };
       });
     } catch {
       return null;

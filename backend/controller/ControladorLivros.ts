@@ -26,7 +26,7 @@ export class ControladorLivros {
         genero,
         anoPublicacao,
         sinopse,
-        status
+        this.normalizarStatus(status)
       );
 
       const livroCriado = await this.repositorioLivros.adicionarLivro(livro);
@@ -71,7 +71,12 @@ export class ControladorLivros {
         throw new ErroValidacao("ID deve ser um numero positivo");
       }
 
-      const livroAtualizado = await this.repositorioLivros.atualizar(id, dados);
+      const dadosAtualizados = {
+        ...dados,
+        ...(dados.status && { status: this.normalizarStatus(dados.status) }),
+      };
+
+      const livroAtualizado = await this.repositorioLivros.atualizar(id, dadosAtualizados);
       if (!livroAtualizado) {
         throw new ErroNaoEncontrado(`Livro com ID ${id} nao encontrado`);
       }
@@ -90,6 +95,7 @@ export class ControladorLivros {
       acao: "excluido" | "inativado";
       mensagem: string;
       livro?: Livro;
+      reservasCanceladas?: number;
     }>
   > {
     try {
@@ -109,8 +115,11 @@ export class ControladorLivros {
             id,
             acao: "inativado",
             mensagem:
-              "Livro possui historico vinculado, foi marcado como inativo e teve reservas pendentes canceladas.",
+              resultado.reservasCanceladas > 0
+                ? "Livro possui historico vinculado, foi marcado como inativo e as reservas pendentes foram canceladas com notificacao aos usuarios."
+                : "Livro possui historico vinculado e foi marcado como inativo.",
             livro: resultado.livro,
+            reservasCanceladas: resultado.reservasCanceladas,
           },
         };
       }
@@ -121,6 +130,7 @@ export class ControladorLivros {
           id,
           acao: "excluido",
           mensagem: "Livro excluido do acervo.",
+          reservasCanceladas: resultado.reservasCanceladas,
         },
       };
     } catch (erro: any) {
@@ -212,5 +222,17 @@ export class ControladorLivros {
         detalhes: erro?.message || "Erro desconhecido",
       },
     };
+  }
+
+  private normalizarStatus(status: string): string {
+    const texto = String(status || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+
+    if (texto.includes("dispon")) return "disponivel";
+    if (texto.includes("inativo")) return "inativo";
+    return texto;
   }
 }

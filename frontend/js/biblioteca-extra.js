@@ -25,6 +25,7 @@
       ...livro,
       idLivro: rawId(livro, "idLivro", "id_livro"),
       anoPublicacao: rawId(livro, "anoPublicacao", "ano_publicacao"),
+      status: normalizarStatusLivro(rawId(livro, "status", "status")),
       capaUrl: arquivoApiUrl(
         rawId(livro, "capaObjeto", "capa_objeto"),
         rawId(livro, "capaUrl", "capa_url")
@@ -110,7 +111,7 @@
     };
   }
 
-  function sortByNewestId(items, camelKey, snakeKey) {
+  function ordenarPorIdMaisNovo(items, camelKey, snakeKey) {
     return [...(items || [])].sort((a, b) =>
       Number(b?.[camelKey] ?? b?.[snakeKey] ?? 0) - Number(a?.[camelKey] ?? a?.[snakeKey] ?? 0)
     );
@@ -129,15 +130,15 @@
   }
 
   function ownId() {
-    return state.usuario?.idUsuario;
+    return estado.usuario?.idUsuario;
   }
 
   function activeLoans() {
-    return state.emprestimos.filter((emprestimo) => !emprestimo.dataDevolucaoReal);
+    return estado.emprestimos.filter((emprestimo) => !emprestimo.dataDevolucaoReal);
   }
 
   function copiesForBook(livroId) {
-    return state.exemplares.filter((exemplar) => exemplar.livro_id === livroId);
+    return estado.exemplares.filter((exemplar) => exemplar.livro_id === livroId);
   }
 
   function loansForBook(livroId) {
@@ -150,19 +151,19 @@
   }
 
   function hasBlockingFine(userId = ownId()) {
-    const userLoanIds = new Set(state.emprestimos.filter((e) => e.usuarioId === userId).map((e) => e.idEmprestimo));
-    return state.multas.some((multa) =>
+    const userLoanIds = new Set(estado.emprestimos.filter((e) => e.usuarioId === userId).map((e) => e.idEmprestimo));
+    return estado.multas.some((multa) =>
       userLoanIds.has(multa.idEmprestimo) &&
       ["pendente", "aguardando_confirmacao"].includes(multa.statusPagamento)
     );
   }
 
   function userLikedBook(livroId) {
-    return (state.curtidasUsuario || []).some((curtida) => curtida.livroId === livroId);
+    return (estado.curtidasUsuario || []).some((curtida) => curtida.livroId === livroId);
   }
 
   function reservationQueue(livroId) {
-    return state.reservas
+    return estado.reservas
       .filter((reserva) => reserva.livroId === livroId && ["ativa", "pronta"].includes(reserva.statusReserva))
       .sort((a, b) => new Date(a.dataReserva) - new Date(b.dataReserva));
   }
@@ -172,12 +173,12 @@
   }
 
   function bookForLoan(emprestimo) {
-    const exemplar = state.exemplares.find((item) => item.id_exemplar === emprestimo.exemplarId) || emprestimo.exemplar;
-    return state.livros.find((livro) => livro.idLivro === exemplar?.livro_id) || normalizeLivro(exemplar?.livro || {});
+    const exemplar = estado.exemplares.find((item) => item.id_exemplar === emprestimo.exemplarId) || emprestimo.exemplar;
+    return estado.livros.find((livro) => livro.idLivro === exemplar?.livro_id) || normalizeLivro(exemplar?.livro || {});
   }
 
   function fineBook(multa) {
-    const loan = state.emprestimos.find((emprestimo) => emprestimo.idEmprestimo === multa.idEmprestimo) || multa.emprestimo;
+    const loan = estado.emprestimos.find((emprestimo) => emprestimo.idEmprestimo === multa.idEmprestimo) || multa.emprestimo;
     return loan ? bookForLoan(loan) : {};
   }
 
@@ -227,35 +228,35 @@
   }
 
   async function apiExtra(path, options = {}) {
-    return api(path, options);
+    return chamarApi(path, options);
   }
 
-  loadAll = async function () {
+  carregarTudo = async function () {
     try {
       const dados = await apiExtra("/biblioteca/estado");
-      state.livros = sortByNewestId((dados.livros || []).map(normalizeLivro), "idLivro", "id_livro");
-      state.exemplares = sortByNewestId(dados.exemplares || [], "idExemplar", "id_exemplar");
-      state.reservas = (dados.reservas || []).map(normalizeReserva);
-      state.emprestimos = (dados.emprestimos || []).map(normalizeEmprestimo);
-      state.multas = (dados.multas || []).map(normalizeMulta);
-      state.notificacoes = (dados.notificacoes || []).map(normalizeNotificacao);
-      state.usuarios = (dados.usuarios || []).map(normalizeUsuario);
-      state.curtidasUsuario = (dados.curtidasUsuario || []).map(normalizeCurtida);
-      state.solicitacoesExclusaoAdmin = dados.solicitacoesExclusaoAdmin || [];
-      const usuarioAtual = state.usuarios.find((usuario) => usuario.idUsuario === ownId());
+      estado.livros = ordenarPorIdMaisNovo((dados.livros || []).map(normalizeLivro), "idLivro", "id_livro");
+      estado.exemplares = ordenarPorIdMaisNovo(dados.exemplares || [], "idExemplar", "id_exemplar");
+      estado.reservas = (dados.reservas || []).map(normalizeReserva);
+      estado.emprestimos = (dados.emprestimos || []).map(normalizeEmprestimo);
+      estado.multas = (dados.multas || []).map(normalizeMulta);
+      estado.notificacoes = (dados.notificacoes || []).map(normalizeNotificacao);
+      estado.usuarios = (dados.usuarios || []).map(normalizeUsuario);
+      estado.curtidasUsuario = (dados.curtidasUsuario || []).map(normalizeCurtida);
+      estado.solicitacoesExclusaoAdmin = dados.solicitacoesExclusaoAdmin || [];
+      const usuarioAtual = estado.usuarios.find((usuario) => usuario.idUsuario === ownId());
       if (usuarioAtual) {
-        state.usuario = { ...state.usuario, ...usuarioAtual };
-        localStorage.setItem("usuario", JSON.stringify(state.usuario));
+        estado.usuario = { ...estado.usuario, ...usuarioAtual };
+        localStorage.setItem("usuario", JSON.stringify(estado.usuario));
       }
-      renderAll();
-      renderCurrentUser();
+      renderizarTudo();
+      renderizarUsuarioAtual();
       renderNotifications();
     } catch (error) {
-      notify(error.message);
+      notificar(error.message);
     }
   };
 
-  applyRoleInterface = function () {
+  aplicarInterfacePorPerfil = function () {
     const menu = byId("appMenu");
     if (menu) {
       menu.innerHTML = `
@@ -264,35 +265,35 @@
       `;
       menu.querySelectorAll(".nav-btn").forEach((btn) => {
         btn.classList.toggle("active", document.querySelector(".view.active")?.id === btn.dataset.view);
-        btn.addEventListener("click", () => setActiveView(btn.dataset.view));
+        btn.addEventListener("click", () => definirVisaoAtiva(btn.dataset.view));
       });
     }
-    byId("newBookBtn")?.classList.toggle("hidden", !isAdmin());
-    if (!isAdmin()) {
+    byId("newBookBtn")?.classList.toggle("hidden", !ehAdmin());
+    if (!ehAdmin()) {
       byId("bookFormPanel")?.classList.add("hidden");
       byId("bookForm")?.reset();
     }
   };
 
-  renderAll = function () {
-    renderBooks();
+  renderizarTudo = function () {
+    renderizarLivros();
     renderizarLivrosEmAlta();
     renderizarSecoesGeneros();
     renderizarLivrosIndisponiveis();
-    renderUsers();
-    renderProfileSummary();
+    renderizarUsuarios();
+    renderizarResumoPerfil();
     renderNotifications();
   };
 
-  renderUsers = function () {
+  renderizarUsuarios = function () {
     const target = byId("usersGrid");
     if (!target) return;
-    const admins = state.usuarios.filter((u) => u.nivelAcesso === "admin");
-    const comuns = state.usuarios.filter((u) => u.nivelAcesso !== "admin");
-    const usuarios = isAdmin() ? [...admins, ...comuns] : comuns;
+    const admins = estado.usuarios.filter((u) => u.nivelAcesso === "admin");
+    const comuns = estado.usuarios.filter((u) => u.nivelAcesso !== "admin");
+    const usuarios = ehAdmin() ? [...admins, ...comuns] : comuns;
     target.innerHTML = usuarios.map((usuario) => {
       const detalhe = usuario.curso || usuario.departamento || usuario.cargo || "Usuário da biblioteca";
-      const fotoPerfilUrl = normalizeImageUrl(usuario.fotoPerfilUrl);
+      const fotoPerfilUrl = normalizarUrlImagem(usuario.fotoPerfilUrl);
       return `
         <article class="user-card ${usuario.nivelAcesso === "admin" ? "admin-user-card" : ""}">
           <div class="user-avatar" ${fotoPerfilUrl ? `style="background-image:url('${fotoPerfilUrl}');background-size:cover;background-position:center"` : ""}>
@@ -306,19 +307,19 @@
     }).join("");
   };
 
-  bookInlineDetailsHtml = function (livro) {
+  htmlDetalhesLivroInline = function (livro) {
     const exemplares = copiesForBook(livro.idLivro);
     const emprestados = loansForBook(livro.idLivro).length;
-    const inativo = isBookInactive(livro);
+    const inativo = livroEstaInativo(livro);
     const disponiveis = inativo ? 0 : availableCount(livro.idLivro);
     const fila = reservationQueue(livro.idLivro);
     const reserva = ownActiveReservation(livro.idLivro);
-    const bloqueado = !isAdmin() && hasBlockingFine();
+    const bloqueado = !ehAdmin() && hasBlockingFine();
     let action = `<button class="secondary-btn book-more-btn" type="button" disabled>Somente consulta</button>`;
 
     if (inativo) {
       action = `<button class="secondary-btn book-more-btn" type="button" disabled>Livro inativo</button>`;
-    } else if (!isAdmin()) {
+    } else if (!ehAdmin()) {
       if (reserva) {
         action = reserva.statusReserva === "pronta"
           ? `<button class="primary-btn book-more-btn" type="button" data-reservation-loan="${reserva.idReserva}">Fazer empréstimo da reserva</button>`
@@ -334,7 +335,7 @@
 
     return `
       <aside class="book-detail-panel open" aria-live="polite">
-        <div class="book-detail-cover">${bookCoverHtml(livro)}</div>
+        <div class="book-detail-cover">${htmlCapaLivro(livro)}</div>
         <div class="book-detail-content">
           <span class="system-tag">Sobre a obra</span>
           <h3>${livro.titulo}</h3>
@@ -342,7 +343,7 @@
           <div class="book-detail-tags">
             <span>${livro.genero || "Livro"}</span>
             <span>${livro.anoPublicacao || "-"}</span>
-            <span>${formatStatus(livro.status)}</span>
+            <span>${formatarStatus(livro.status)}</span>
           </div>
           <p class="book-detail-synopsis">${livro.sinopse || "Sinopse não cadastrada."}</p>
           <div class="book-detail-stats">
@@ -355,13 +356,13 @@
             <div class="reservation-queue">
               <strong>Fila de reservas</strong>
               ${fila.map((item, index) => {
-                const usuario = item.usuario || state.usuarios.find((u) => u.idUsuario === item.usuarioId) || {};
-                const foto = normalizeImageUrl(usuario.fotoPerfilUrl);
-                return `<span><b>${index + 1}</b>${foto ? `<img src="${foto}" alt="">` : ""}${usuario.nome || userNameById(item.usuarioId)} ${item.statusReserva === "pronta" ? "(pronto)" : ""}</span>`;
+                const usuario = item.usuario || estado.usuarios.find((u) => u.idUsuario === item.usuarioId) || {};
+                const foto = normalizarUrlImagem(usuario.fotoPerfilUrl);
+                return `<span><b>${index + 1}</b>${foto ? `<img src="${foto}" alt="">` : ""}${usuario.nome || nomeUsuarioPorId(item.usuarioId)} ${item.statusReserva === "pronta" ? "(pronto)" : ""}</span>`;
               }).join("")}
             </div>
           ` : ""}
-          ${isAdmin() ? `
+          ${ehAdmin() ? `
             <div class="row-actions">
               <button class="secondary-btn" type="button" data-edit-book="${livro.idLivro}">Atualizar</button>
               <button class="danger-btn" type="button" data-delete-book="${livro.idLivro}">Remover</button>
@@ -372,10 +373,10 @@
     `;
   };
 
-  renderProfileSummary = function () {
+  renderizarResumoPerfil = function () {
     const container = document.querySelector(".profile-private");
-    if (!container || !state.usuario) return;
-    const tabs = isAdmin()
+    if (!container || !estado.usuario) return;
+    const tabs = ehAdmin()
       ? [
         ["reservas-admin", "Reservas por livro"],
         ["emprestimos-admin", "Gerenciamento de Empréstimos"],
@@ -402,7 +403,7 @@
     container.querySelectorAll("[data-profile-tab]").forEach((button) => {
       button.addEventListener("click", () => {
         profileTab = button.dataset.profileTab;
-        renderProfileSummary();
+        renderizarResumoPerfil();
       });
     });
   };
@@ -420,27 +421,27 @@
     return "";
   }
 
-  function booksRowHtml(items, emptyText, selectedId = state.selectedProfileBookId) {
+  function booksRowHtml(items, emptyText, selectedId = estado.idLivroPerfilSelecionado) {
     if (!items.length) return `<p class="empty-state">${emptyText}</p>`;
     return `<div class="book-grid profile-book-grid">${items.map(({ livro, extra }) => `
-      ${bookCardHtml(livro, selectedId)}
+      ${htmlCardLivro(livro, selectedId)}
       ${selectedId === livro.idLivro ? `<aside class="book-detail-panel open">${extra}</aside>` : ""}
     `).join("")}</div>`;
   }
 
   function myReservationsHtml() {
-    const minhas = state.reservas.filter((r) => r.usuarioId === ownId() && ["ativa", "pronta"].includes(r.statusReserva));
+    const minhas = estado.reservas.filter((r) => r.usuarioId === ownId() && ["ativa", "pronta"].includes(r.statusReserva));
     if (!minhas.length) return `<p class="empty-state">Você ainda não fez reservas.</p>`;
     return `
       <div class="section-heading compact-heading"><div><h2>Livros reservados</h2><p>Aguarde novos exemplares para um novo empréstimo.</p></div></div>
       <div class="loan-list">${minhas.map((reserva) => {
-        const livro = state.livros.find((l) => l.idLivro === reserva.livroId) || reserva.livro;
+        const livro = estado.livros.find((l) => l.idLivro === reserva.livroId) || reserva.livro;
         return `
           <article class="loan-card user-reservation-card">
-            <div class="loan-cover">${bookCoverHtml(livro)}</div>
+            <div class="loan-cover">${htmlCapaLivro(livro)}</div>
             <div>
               <h3>${livro.titulo}</h3>
-              <p>${livro.autor} | Status: ${formatStatus(reserva.statusReserva)}</p>
+              <p>${livro.autor} | Status: ${formatarStatus(reserva.statusReserva)}</p>
               ${queueMiniHtml(livro.idLivro)}
               <div class="row-actions reservation-card-actions">
                 <button class="reserved-btn" disabled>Reservado</button>
@@ -454,7 +455,7 @@
   }
 
   function myLoansHtml() {
-    const meus = state.emprestimos
+    const meus = estado.emprestimos
       .filter((e) => e.usuarioId === ownId())
       .sort((a, b) => Number(Boolean(a.dataDevolucaoReal)) - Number(Boolean(b.dataDevolucaoReal)));
     if (!meus.length) return `<p class="empty-state">Você ainda não tem empréstimos.</p>`;
@@ -462,16 +463,16 @@
       const livro = bookForLoan(emprestimo);
       const concluido = Boolean(emprestimo.dataDevolucaoReal);
       const falta = daysLeft(emprestimo.dataVencimento);
-      const multa = state.multas.find((m) => m.idEmprestimo === emprestimo.idEmprestimo && m.statusPagamento !== "paga");
+      const multa = estado.multas.find((m) => m.idEmprestimo === emprestimo.idEmprestimo && m.statusPagamento !== "paga");
       return `
         <article class="loan-card">
-          <div class="loan-cover">${bookCoverHtml(livro)}</div>
+          <div class="loan-cover">${htmlCapaLivro(livro)}</div>
           <div>
             <h3>${livro.titulo}</h3>
             <p>Status: ${concluido ? "concluído" : "em andamento"}</p>
-            <p>Data de expiração: ${formatDate(emprestimo.dataVencimento)}</p>
+            <p>Data de expiração: ${formatarData(emprestimo.dataVencimento)}</p>
             ${concluido
-              ? `<p>Devolvido em ${formatDate(emprestimo.dataDevolucaoReal)}.</p>`
+              ? `<p>Devolvido em ${formatarData(emprestimo.dataDevolucaoReal)}.</p>`
               : `<p>${falta >= 0 ? `Faltam ${falta} ${falta === 1 ? "dia" : "dias"} para devolução.` : `${Math.abs(falta)} ${Math.abs(falta) === 1 ? "dia" : "dias"} em atraso.`}</p>`}
             ${multa ? `<p class="fine-warning">Este empréstimo tem multa pendente. Resolva em Gerenciar multas.</p>` : ""}
             ${concluido ? "" : `<div class="row-actions">
@@ -485,21 +486,21 @@
   }
 
   function myFinesHtml() {
-    const userLoanIds = new Set(state.emprestimos.filter((e) => e.usuarioId === ownId()).map((e) => e.idEmprestimo));
-    const minhas = state.multas.filter((m) => userLoanIds.has(m.idEmprestimo) && m.statusPagamento !== "paga");
+    const userLoanIds = new Set(estado.emprestimos.filter((e) => e.usuarioId === ownId()).map((e) => e.idEmprestimo));
+    const minhas = estado.multas.filter((m) => userLoanIds.has(m.idEmprestimo) && m.statusPagamento !== "paga");
     if (!minhas.length) return `<h2>Gerenciamento de Multas</h2><p class="empty-state">Você não tem multas pendentes.</p>`;
     return `<h2>Gerenciamento de Multas</h2><div class="loan-list">${minhas.map((multa) => {
       const livro = fineBook(multa);
-      const emprestimo = state.emprestimos.find((e) => e.idEmprestimo === multa.idEmprestimo) || multa.emprestimo || {};
-      const exemplar = state.exemplares.find((e) => e.id_exemplar === multa.idExemplar) || emprestimo.exemplar || {};
+      const emprestimo = estado.emprestimos.find((e) => e.idEmprestimo === multa.idEmprestimo) || multa.emprestimo || {};
+      const exemplar = estado.exemplares.find((e) => e.id_exemplar === multa.idExemplar) || emprestimo.exemplar || {};
       const aguardandoConfirmacao = multa.statusPagamento === "aguardando_confirmacao";
       return `
         <article class="loan-card">
-          <div class="loan-cover">${bookCoverHtml(livro)}</div>
+          <div class="loan-cover">${htmlCapaLivro(livro)}</div>
           <div>
             <h3>${livro.titulo || "Livro"}</h3>
             <p>Valor da multa: R$ ${Number(multa.valor || 0).toFixed(2)}</p>
-            <p>Data do empréstimo: ${formatDate(emprestimo.dataSaida)}</p>
+            <p>Data do empréstimo: ${formatarData(emprestimo.dataSaida)}</p>
             <p>Autor: ${livro.autor || "-"} | Condição: ${exemplar.estado || "-"}</p>
             <p class="fine-warning">Se não pagar no dia gerado, cada dia de atraso soma R$ 1,00 ao valor base.</p>
             ${aguardandoConfirmacao
@@ -512,18 +513,18 @@
   }
 
   function editAccountHtml() {
-    const camposAluno = isAluno() ? `
-        <label>Ano de ingresso<input id="editYear" type="number" min="1900" value="${escapeAttr(state.usuario.anoIngresso || "")}"></label>
-        <label>Curso<input id="editCourse" value="${escapeAttr(state.usuario.curso || "")}"></label>
+    const camposAluno = ehAluno() ? `
+        <label>Ano de ingresso<input id="editYear" type="number" min="1900" value="${escapeAttr(estado.usuario.anoIngresso || "")}"></label>
+        <label>Curso<input id="editCourse" value="${escapeAttr(estado.usuario.curso || "")}"></label>
       ` : "";
-    const camposProfessor = isProfessor() ? `
-        <label>Departamento<input id="editDepartment" value="${escapeAttr(state.usuario.departamento || "")}"></label>
+    const camposProfessor = ehProfessor() ? `
+        <label>Departamento<input id="editDepartment" value="${escapeAttr(estado.usuario.departamento || "")}"></label>
       ` : "";
 
     return `
       <form id="editAccountForm" class="form-panel stack-form">
-        <label>Nome<input id="editName" value="${escapeAttr(state.usuario.nome || "")}"></label>
-        <label>E-mail<input id="editEmail" type="email" value="${escapeAttr(state.usuario.email || "")}"></label>
+        <label>Nome<input id="editName" value="${escapeAttr(estado.usuario.nome || "")}"></label>
+        <label>E-mail<input id="editEmail" type="email" value="${escapeAttr(estado.usuario.email || "")}"></label>
         <label>Nova senha
           <span class="password-field">
             <input id="editPassword" type="password" placeholder="Deixe vazio para manter">
@@ -534,7 +535,7 @@
         <small id="editPasswordStrengthText" class="password-strength-text">Digite uma senha com letras e números.</small>
         ${camposAluno}
         ${camposProfessor}
-        ${isAdmin() ? `<label>Cargo<input id="editRole" value="${escapeAttr(state.usuario.cargo || "")}"></label>` : ""}
+        ${ehAdmin() ? `<label>Cargo<input id="editRole" value="${escapeAttr(estado.usuario.cargo || "")}"></label>` : ""}
         <button class="primary-btn" type="submit">Salvar alterações</button>
       </form>
     `;
@@ -542,8 +543,8 @@
 
   function deleteAccountHtml() {
     return `
-      <form id="deleteAccountForm" class="form-panel stack-form">
-        <label>E-mail<input id="deleteEmail" type="email" required></label>
+      <form id="deleteAccountForm" class="form-panel stack-form" novalidate>
+        <label>E-mail<input id="deleteEmail" type="text" inputmode="email" autocomplete="email" required></label>
         <label>Senha
           <span class="password-field">
             <input id="deletePassword" type="password" required>
@@ -556,39 +557,39 @@
   }
 
   function adminReservationsHtml() {
-    const livros = state.livros.map((livro) => ({ livro, total: reservationQueue(livro.idLivro).length })).filter((item) => item.total);
+    const livros = estado.livros.map((livro) => ({ livro, total: reservationQueue(livro.idLivro).length })).filter((item) => item.total);
     if (!livros.length) return `<p class="empty-state">Nenhum livro possui fila de reservas.</p>`;
     return `<div class="loan-list">${livros.map(({ livro, total }) => `
       <article class="loan-card">
-        <div class="loan-cover">${bookCoverHtml(livro)}</div>
+        <div class="loan-cover">${htmlCapaLivro(livro)}</div>
         <div><h3>${livro.titulo}</h3><p>${total} ${total === 1 ? "reserva" : "reservas"} na fila.</p>${queueMiniHtml(livro.idLivro)}</div>
       </article>
     `).join("")}</div>`;
   }
 
   function adminLoansHtml() {
-    const pendentes = state.emprestimos.filter((e) => e.statusExtensao === "pendente");
+    const pendentes = estado.emprestimos.filter((e) => e.statusExtensao === "pendente");
     if (!pendentes.length) return `<p class="empty-state">Nenhuma solicitação de extensão pendente.</p>`;
     return `<div class="loan-list">${pendentes.map((e) => {
       const livro = bookForLoan(e);
-      return `<article class="loan-card"><div class="loan-cover">${bookCoverHtml(livro)}</div><div><h3>${livro.titulo}</h3><p>${userNameById(e.usuarioId)} quer estender o prazo.</p><div class="row-actions"><button class="primary-btn" data-decide-extension="${e.idEmprestimo}" data-approve="true">Aceitar</button><button class="danger-btn" data-decide-extension="${e.idEmprestimo}" data-approve="false">Negar</button></div></div></article>`;
+      return `<article class="loan-card"><div class="loan-cover">${htmlCapaLivro(livro)}</div><div><h3>${livro.titulo}</h3><p>${nomeUsuarioPorId(e.usuarioId)} quer estender o prazo.</p><div class="row-actions"><button class="primary-btn" data-decide-extension="${e.idEmprestimo}" data-approve="true">Aceitar</button><button class="danger-btn" data-decide-extension="${e.idEmprestimo}" data-approve="false">Negar</button></div></div></article>`;
     }).join("")}</div>`;
   }
 
   function adminFinesHtml() {
-    const pendentes = state.multas.filter((m) => m.statusPagamento === "aguardando_confirmacao");
+    const pendentes = estado.multas.filter((m) => m.statusPagamento === "aguardando_confirmacao");
     if (!pendentes.length) return `<p class="empty-state">Nenhum pagamento de multa aguardando confirmação.</p>`;
     return `<div class="table-wrap"><table><thead><tr><th>Usuário</th><th>Empréstimo</th><th>Valor</th><th>Ação</th></tr></thead><tbody>${pendentes.map((m) => {
-      const usuario = m.emprestimo?.usuario || state.usuarios.find((u) => u.idUsuario === m.emprestimo?.usuarioId) || {};
+      const usuario = m.emprestimo?.usuario || estado.usuarios.find((u) => u.idUsuario === m.emprestimo?.usuarioId) || {};
       const livro = fineBook(m);
-      const foto = normalizeImageUrl(usuario.fotoPerfilUrl);
+      const foto = normalizarUrlImagem(usuario.fotoPerfilUrl);
       return `<tr><td><span class="admin-user-line">${foto ? `<img src="${foto}" alt="">` : ""}${usuario.nome || "-"}</span></td><td>${livro.titulo || "-"} | Exemplar ${m.idExemplar}</td><td>R$ ${Number(m.valor || 0).toFixed(2)}</td><td><div class="row-actions"><button class="primary-btn" data-confirm-fine="${m.idMulta}" data-approve="true">Confirmar pagamento</button><button class="danger-btn" data-confirm-fine="${m.idMulta}" data-approve="false">Negar pagamento</button></div></td></tr>`;
     }).join("")}</tbody></table></div>`;
   }
 
   function adminPanelHtml() {
-    const admins = state.usuarios.filter((u) => u.nivelAcesso === "admin");
-    const solicitacoes = (state.solicitacoesExclusaoAdmin || []).filter((s) => s.status === "pendente" || s.admin_id === ownId());
+    const admins = estado.usuarios.filter((u) => u.nivelAcesso === "admin");
+    const solicitacoes = (estado.solicitacoesExclusaoAdmin || []).filter((s) => s.status === "pendente" || s.admin_id === ownId());
     return `
       <div class="split-grid">
         <article>
@@ -613,23 +614,23 @@
           <div class="insight-list">${admins.map((admin) => `<div class="insight-item"><div class="user-avatar">${admin.nome.slice(0, 1)}</div><div><strong>${admin.nome}</strong><span>${admin.cargo || "Administrador"}</span></div></div>`).join("")}</div>
         </article>
       </div>
-      <div class="table-wrap"><table><thead><tr><th>Admin</th><th>Status</th><th>Ação</th></tr></thead><tbody>${solicitacoes.map((s) => `<tr><td>${s.admin?.nome || userNameById(s.admin_id)}</td><td>${formatStatus(s.status)}</td><td>${s.admin_id === ownId() && s.status === "aprovada" ? `<button class="danger-btn" data-execute-admin-delete="${s.id_solicitacao}">Excluir conta</button>` : s.admin_id !== ownId() && s.status === "pendente" ? `<button class="primary-btn" data-decide-admin-delete="${s.id_solicitacao}" data-approve="true">Confirmar</button> <button class="danger-btn" data-decide-admin-delete="${s.id_solicitacao}" data-approve="false">Negar</button>` : "-"}</td></tr>`).join("")}</tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Admin</th><th>Status</th><th>Ação</th></tr></thead><tbody>${solicitacoes.map((s) => `<tr><td>${s.admin?.nome || nomeUsuarioPorId(s.admin_id)}</td><td>${formatarStatus(s.status)}</td><td>${s.admin_id === ownId() && s.status === "aprovada" ? `<button class="danger-btn" data-execute-admin-delete="${s.id_solicitacao}">Excluir conta</button>` : s.admin_id !== ownId() && s.status === "pendente" ? `<button class="primary-btn" data-decide-admin-delete="${s.id_solicitacao}" data-approve="true">Confirmar</button> <button class="danger-btn" data-decide-admin-delete="${s.id_solicitacao}" data-approve="false">Negar</button>` : "-"}</td></tr>`).join("")}</tbody></table></div>
     `;
   }
 
   function adminBooksHtml() {
-    return `<div class="loan-list">${state.livros.map((livro) => {
+    return `<div class="loan-list">${estado.livros.map((livro) => {
       const exemplares = copiesForBook(livro.idLivro);
       const emprestados = loansForBook(livro.idLivro);
-      const disponiveis = isBookInactive(livro) ? 0 : availableCount(livro.idLivro);
-      return `<article class="loan-card"><div class="loan-cover">${bookCoverHtml(livro)}</div><div><h3>${livro.titulo}</h3><p>Status: ${formatStatus(livro.status)} | ${disponiveis} ${disponiveis === 1 ? "disponível" : "disponíveis"} | ${emprestados.length} ${emprestados.length === 1 ? "emprestado" : "emprestados"}</p><div class="copy-list">${exemplares.map((e) => `<span>${e.codigo_tombo} | ${e.estado} | ${e.localizacao} | ${emprestados.some((loan) => loan.exemplarId === e.id_exemplar) ? "emprestado" : "disponível"}</span>`).join("")}</div></div></article>`;
+      const disponiveis = livroEstaInativo(livro) ? 0 : availableCount(livro.idLivro);
+      return `<article class="loan-card"><div class="loan-cover">${htmlCapaLivro(livro)}</div><div><h3>${livro.titulo}</h3><p>Status: ${formatarStatus(livro.status)} | ${disponiveis} ${disponiveis === 1 ? "disponível" : "disponíveis"} | ${emprestados.length} ${emprestados.length === 1 ? "emprestado" : "emprestados"}</p><div class="copy-list">${exemplares.map((e) => `<span>${e.codigo_tombo} | ${e.estado} | ${e.localizacao} | ${emprestados.some((loan) => loan.exemplarId === e.id_exemplar) ? "emprestado" : "disponível"}</span>`).join("")}</div></div></article>`;
     }).join("")}</div>`;
   }
 
   function queueMiniHtml(livroId) {
     const fila = reservationQueue(livroId);
     if (!fila.length) return `<p class="empty-state">Sem fila de reservas.</p>`;
-    return `<div class="reservation-queue compact">${fila.map((reserva, index) => `<span><b>${index + 1}</b>${reserva.usuario?.nome || userNameById(reserva.usuarioId)} ${reserva.statusReserva === "pronta" ? "(pronto)" : ""}</span>`).join("")}</div>`;
+    return `<div class="reservation-queue compact">${fila.map((reserva, index) => `<span><b>${index + 1}</b>${reserva.usuario?.nome || nomeUsuarioPorId(reserva.usuarioId)} ${reserva.statusReserva === "pronta" ? "(pronto)" : ""}</span>`).join("")}</div>`;
   }
 
   function renderNotifications() {
@@ -640,19 +641,19 @@
       document.querySelector(".sidebar").insertAdjacentHTML("beforeend", `<section id="notificationsPanel" class="notifications-panel hidden"></section>`);
       panel = byId("notificationsPanel");
     }
-    const unread = (state.notificacoes || []).filter((n) => !n.lida).length;
+    const unread = (estado.notificacoes || []).filter((n) => !n.lida).length;
     const badge = byId("notificationsBadge");
     badge.textContent = unread;
     badge.classList.toggle("hidden", unread === 0);
     panel.classList.toggle("hidden", !notificationsOpen);
     panel.innerHTML = `
       <h3>Notificações</h3>
-      ${(state.notificacoes || []).length ? state.notificacoes.map((n) => `
+      ${(estado.notificacoes || []).length ? estado.notificacoes.map((n) => `
         <article class="notification-item ${n.lida ? "" : "unread"}">
           <button class="notification-content" type="button" data-notification="${n.idNotificacao}" data-action="${n.acao || ""}" data-reference="${n.referenciaId || n.idEmprestimo || ""}">
             <strong>${n.tipo}</strong>
             <span>${n.mensagem}</span>
-            <small>${formatDate(n.dataCriacao)}</small>
+            <small>${formatarData(n.dataCriacao)}</small>
           </button>
           <button class="notification-dismiss" type="button" data-dismiss-notification="${n.idNotificacao}">Dispensar</button>
         </article>
@@ -678,15 +679,21 @@
       event.stopImmediatePropagation();
       const id = Number(select.dataset.selectBook);
       if (byId("homeView")?.classList.contains("active")) {
-        state.livroInicioSelecionadoId = state.livroInicioSelecionadoId === id ? null : id;
+        const origem = select.dataset.bookOrigin || "alta";
+        const chaveSelecao = {
+          alta: "livroEmAltaSelecionadoId",
+          genero: "livroGeneroSelecionadoId",
+          indisponivel: "livroIndisponivelSelecionadoId",
+        }[origem] || "livroEmAltaSelecionadoId";
+        estado[chaveSelecao] = estado[chaveSelecao] === id ? null : id;
         renderizarLivrosEmAlta();
         renderizarSecoesGeneros();
         renderizarLivrosIndisponiveis();
       } else {
-        state.selectedBookId = state.selectedBookId === id ? null : id;
-        state.selectedProfileBookId = state.selectedProfileBookId === id ? null : id;
-        renderBooks();
-        renderProfileSummary();
+        estado.idLivroSelecionado = estado.idLivroSelecionado === id ? null : id;
+        estado.idLivroPerfilSelecionado = estado.idLivroPerfilSelecionado === id ? null : id;
+        renderizarLivros();
+        renderizarResumoPerfil();
       }
       return;
     }
@@ -697,29 +704,29 @@
 
     try {
       if (actionButton.dataset.openFines) {
-        setActiveView("profileView");
+        definirVisaoAtiva("profileView");
         profileTab = "multas";
-        renderProfileSummary();
+        renderizarResumoPerfil();
         return;
       }
       if (actionButton.dataset.loanBook && await confirmDialog("Confirmar empréstimo", "Tem certeza que quer fazer o empréstimo deste livro?")) {
         await apiExtra("/biblioteca/emprestimos", { method: "POST", body: JSON.stringify({ livroId: Number(actionButton.dataset.loanBook) }) });
-        notify("Empréstimo criado com prazo máximo de 15 dias");
+        notificar("Empréstimo criado com prazo máximo de 15 dias");
       }
       if (actionButton.dataset.reserveBook) {
         await apiExtra("/biblioteca/reservas", { method: "POST", body: JSON.stringify({ livroId: Number(actionButton.dataset.reserveBook) }) });
-        notify("Reserva criada. Acompanhe sua posição na fila.");
+        notificar("Reserva criada. Acompanhe sua posição na fila.");
       }
       if (actionButton.dataset.reservationLoan && await confirmDialog("Reserva pronta", "Tem certeza que quer fazer o empréstimo desse livro?")) {
         await apiExtra(`/biblioteca/reservas/${actionButton.dataset.reservationLoan}/emprestimos`, { method: "POST", body: JSON.stringify({}) });
-        notify("Empréstimo criado com prazo máximo de 15 dias");
+        notificar("Empréstimo criado com prazo máximo de 15 dias");
       }
       if (actionButton.dataset.cancelReservation && await confirmDialog("Cancelar reserva", "Deseja sair da lista de espera deste livro?")) {
         await apiExtra(`/biblioteca/reservas/${actionButton.dataset.cancelReservation}`, { method: "PATCH", body: JSON.stringify({ statusReserva: "cancelada" }) });
-        notify("Reserva cancelada");
+        notificar("Reserva cancelada");
       }
       if (actionButton.dataset.returnLoan && await confirmDialog("Confirmar devolução", "Deseja confirmar a devolução deste empréstimo?")) {
-        const emprestimo = state.emprestimos.find((item) => item.idEmprestimo === Number(actionButton.dataset.returnLoan));
+        const emprestimo = estado.emprestimos.find((item) => item.idEmprestimo === Number(actionButton.dataset.returnLoan));
         const livro = emprestimo ? bookForLoan(emprestimo) : {};
         const curtirLivro = livro.idLivro && !userLikedBook(livro.idLivro)
           ? await confirmDialog(
@@ -732,15 +739,15 @@
           method: "PATCH",
           body: JSON.stringify({ curtirLivro }),
         });
-        notify("Devolução registrada");
+        notificar("Devolução registrada");
       }
       if (actionButton.dataset.extendLoan && await confirmDialog("Estender prazo", "Deseja solicitar ao admin mais 15 dias de prazo?")) {
         await apiExtra(`/biblioteca/emprestimos/${actionButton.dataset.extendLoan}/extensoes`, { method: "POST", body: JSON.stringify({}) });
-        notify("Solicitação enviada. Aguarde a confirmação de um administrador.");
+        notificar("Solicitação enviada. Aguarde a confirmação de um administrador.");
       }
       if (actionButton.dataset.payFine && await confirmDialog("Confirmar pagamento", "Confirma que realizou o pagamento desta multa?")) {
         await apiExtra(`/biblioteca/multas/${actionButton.dataset.payFine}/pagamentos`, { method: "POST", body: JSON.stringify({}) });
-        notify("Aguarde a confirmação do pagamento por um administrador da biblioteca.");
+        notificar("Aguarde a confirmação do pagamento por um administrador da biblioteca.");
       }
       if (actionButton.dataset.confirmFine) {
         const aprovar = actionButton.dataset.approve === "true";
@@ -750,27 +757,27 @@
         );
         if (confirmado) {
           await apiExtra(`/biblioteca/multas/${actionButton.dataset.confirmFine}/pagamentos`, { method: "PATCH", body: JSON.stringify({ aprovar }) });
-          notify(aprovar ? "Pagamento confirmado" : "Pagamento negado. O usuário poderá informar o pagamento novamente.");
+          notificar(aprovar ? "Pagamento confirmado" : "Pagamento negado. O usuário poderá informar o pagamento novamente.");
         }
       }
       if (actionButton.dataset.decideExtension) {
         await apiExtra(`/biblioteca/emprestimos/${actionButton.dataset.decideExtension}/extensoes`, { method: "PATCH", body: JSON.stringify({ aprovar: actionButton.dataset.approve === "true" }) });
-        notify("Solicitação atualizada");
+        notificar("Solicitação atualizada");
       }
       if (actionButton.dataset.decideAdminDelete) {
         await apiExtra(`/biblioteca/admins/exclusoes/${actionButton.dataset.decideAdminDelete}`, { method: "PATCH", body: JSON.stringify({ aprovar: actionButton.dataset.approve === "true" }) });
-        notify("Solicitação de admin atualizada");
+        notificar("Solicitação de admin atualizada");
       }
       if (actionButton.dataset.executeAdminDelete && await confirmDialog("Excluir conta", "Sua exclusão foi aprovada. Deseja excluir sua conta agora?")) {
         await apiExtra(`/biblioteca/admins/exclusoes/${actionButton.dataset.executeAdminDelete}`, { method: "DELETE", body: JSON.stringify({}) });
-        clearSession();
-        showAuth();
-        notify("Conta excluída");
+        limparSessao();
+        mostrarAutenticacao();
+        notificar("Conta excluída");
         return;
       }
-      await loadAll();
+      await carregarTudo();
     } catch (error) {
-      notify(error.message);
+      notificar(error.message);
     }
   }, true);
 
@@ -789,14 +796,14 @@
         };
         Object.keys(body).forEach((key) => body[key] === undefined && delete body[key]);
         const usuario = await apiExtra(`/usuarios/${ownId()}`, { method: "PUT", body: JSON.stringify(body) });
-        state.usuario = { ...state.usuario, ...usuario };
-        localStorage.setItem("usuario", JSON.stringify(state.usuario));
-        notify("Dados atualizados");
-        await loadAll();
+        estado.usuario = { ...estado.usuario, ...usuario };
+        localStorage.setItem("usuario", JSON.stringify(estado.usuario));
+        notificar("Dados atualizados");
+        await carregarTudo();
       }
       if (event.target.id === "deleteAccountForm") {
         event.preventDefault();
-        const mensagemExclusao = isAdmin()
+        const mensagemExclusao = ehAdmin()
           ? "Esta ação vai remover sua conta. Confirmar?"
           : "Esta ação remove reservas, empréstimos e multas vinculadas. Confirmar?";
         if (!await confirmDialog("Excluir conta", mensagemExclusao)) return;
@@ -804,14 +811,14 @@
           method: "DELETE",
           body: JSON.stringify({ email: byId("deleteEmail").value.trim(), senha: byId("deletePassword").value }),
         });
-        if (isAdmin()) {
-        notify("Solicitação enviada para outro administrador.");
-          await loadAll();
+        if (ehAdmin()) {
+        notificar("Solicitação enviada para outro administrador.");
+          await carregarTudo();
           return;
         }
-        clearSession();
-        showAuth();
-        notify("Conta excluída");
+        limparSessao();
+        mostrarAutenticacao();
+        notificar("Conta excluída");
       }
       if (event.target.id === "newAdminForm") {
         event.preventDefault();
@@ -824,24 +831,24 @@
             cargo: byId("newAdminRole").value.trim(),
           }),
         });
-        notify("Administrador cadastrado");
-        await loadAll();
+        notificar("Administrador cadastrado");
+        await carregarTudo();
       }
     } catch (error) {
-      notify(error.message);
+      notificar(error.message);
     }
   });
 
   document.addEventListener("input", (event) => {
     if (event.target.id === "newAdminPassword") {
-      updatePasswordStrength(
+      atualizarForcaSenha(
         event.target.value,
         "#newAdminPasswordStrength",
         "#newAdminPasswordStrengthText"
       );
     }
     if (event.target.id === "editPassword") {
-      updatePasswordStrength(
+      atualizarForcaSenha(
         event.target.value,
         "#editPasswordStrength",
         "#editPasswordStrengthText"
@@ -861,10 +868,10 @@
       event.stopPropagation();
       try {
         await apiExtra(`/notificacoes/${dismiss.dataset.dismissNotification}`, { method: "DELETE" });
-        notify("Notificação dispensada");
-        await loadAll();
+        notificar("Notificação dispensada");
+        await carregarTudo();
       } catch (error) {
-        notify(error.message);
+        notificar(error.message);
       }
       return;
     }
@@ -882,10 +889,10 @@
     if (action === "reserva_pronta" && reference) {
       if (await confirmDialog("Reserva pronta para empréstimo", "Tem certeza que quer fazer o empréstimo desse livro?")) {
         await apiExtra(`/biblioteca/reservas/${reference}/emprestimos`, { method: "POST", body: JSON.stringify({}) });
-        notify("Empréstimo criado com prazo máximo de 15 dias");
+        notificar("Empréstimo criado com prazo máximo de 15 dias");
       }
     } else {
-      setActiveView("profileView");
+      definirVisaoAtiva("profileView");
       const map = {
         gerenciar_reservas: "reservas",
         consultar_emprestimos: "emprestimos",
@@ -895,7 +902,7 @@
         gerenciar_pagamento_multas: "multas-admin",
         gerenciar_admins: "admins",
       };
-      profileTab = map[action] || (isAdmin() ? "reservas-admin" : "reservas");
+      profileTab = map[action] || (ehAdmin() ? "reservas-admin" : "reservas");
     }
     try {
       await apiExtra(`/notificacoes/${item.dataset.notification}`, { method: "DELETE" });
@@ -903,16 +910,16 @@
       // Se a exclusão falhar, ao menos a navegação já foi feita.
     }
     notificationsOpen = false;
-    await loadAll();
+    await carregarTudo();
   });
 
-  const originalBookPayload = bookPayload;
-  bookPayload = function () {
+  const originalBookPayload = dadosLivro;
+  dadosLivro = function () {
     return originalBookPayload();
   };
 
-  const originalUploadBookCover = uploadBookCover;
-  uploadBookCover = async function (bookId) {
+  const originalUploadBookCover = enviarCapaLivro;
+  enviarCapaLivro = async function (bookId) {
     await originalUploadBookCover(bookId);
     const pendingCopies = [...document.querySelectorAll(".pending-copy-row")].map((row) => ({
       livroId: Number(bookId),
@@ -949,7 +956,7 @@
       const stateValue = byId("newCopyState").value;
       const location = byId("newCopyLocation").value.trim();
       if (!code || !location) {
-        notify("Informe tombo e localização do exemplar");
+        notificar("Informe tombo e localização do exemplar");
         return;
       }
       byId("pendingCopiesList").insertAdjacentHTML("afterbegin", `
@@ -960,6 +967,7 @@
           <button class="danger-btn copy-remove-btn" type="button" data-remove-pending-copy>Remover</button>
         </span>
       `);
+      if (byId("bookAvailable")) byId("bookAvailable").checked = true;
       byId("newCopyCode").value = "";
       byId("newCopyLocation").value = "";
     });
@@ -975,7 +983,7 @@
       return;
     }
 
-    const exemplares = sortByNewestId(copiesForBook(Number(livroId)), "idExemplar", "id_exemplar");
+    const exemplares = ordenarPorIdMaisNovo(copiesForBook(Number(livroId)), "idExemplar", "id_exemplar");
     list.innerHTML = exemplares.length
       ? exemplares.map((exemplar) => `
         <span class="copy-list-row">
@@ -1003,16 +1011,16 @@
 
     try {
       await apiExtra(`/exemplares/${copyId}`, { method: "DELETE" });
-      notify("Exemplar removido");
-      await loadAll();
+      notificar("Exemplar removido");
+      await carregarTudo();
       renderExistingBookCopies(byId("bookId")?.value || null);
     } catch (error) {
-      notify(error.message);
+      notificar(error.message);
     }
   });
 
-  const originalOpenBookForm = openBookForm;
-  openBookForm = function (livro = null) {
+  const originalOpenBookForm = abrirFormularioLivro;
+  abrirFormularioLivro = function (livro = null) {
     originalOpenBookForm(livro);
     enhanceBookForm();
     renderExistingBookCopies(livro?.idLivro || null);
@@ -1023,8 +1031,8 @@
   });
 
   setTimeout(() => {
-    applyRoleInterface();
-    if (state.token && state.usuario) loadAll();
+    aplicarInterfacePorPerfil();
+    if (estado.token && estado.usuario) carregarTudo();
   }, 0);
 })();
 
