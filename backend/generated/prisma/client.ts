@@ -72,6 +72,11 @@ export type Admin = Prisma.AdminModel
  */
 export type Livro = Prisma.LivroModel
 /**
+ * Model CurtidaLivro
+ * 
+ */
+export type CurtidaLivro = Prisma.CurtidaLivroModel
+/**
  * Model Exemplar
  * 
  */
@@ -92,7 +97,7 @@ export type Emprestimo = Prisma.EmprestimoModel
  */
 export type Multa = Prisma.MultaModel
 /**
- * Model Pertence
+ * Model SolicitacaoExclusaoAdmin
  * 
  */
-export type Pertence = Prisma.PertenceModel
+export type SolicitacaoExclusaoAdmin = Prisma.SolicitacaoExclusaoAdminModel

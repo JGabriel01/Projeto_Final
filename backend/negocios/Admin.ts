@@ -3,29 +3,23 @@ import { Usuario } from "./Usuario.js";
 import { ErroUsuario, ErroValidacao } from "../excecoes/index.js";
 
 export class Admin extends Usuario {
-  #idAdmin: number;
   #cargo: string;
 
   constructor(
-    idAdmin: number,
     idUsuario: number,
     nome: string,
     email: string,
     senha: string,
-    cargo: string
+    cargo: string,
+    fotoPerfilUrl?: string,
+    fundoPerfilUrl?: string
   ) {
-    super(idUsuario, nome, email, senha, "admin");
+    super(idUsuario, nome, email, senha, "admin", fotoPerfilUrl, fundoPerfilUrl);
     
     // Validações específicas do Admin
     this.validarCargo(cargo);
     
-    this.#idAdmin = idAdmin;
     this.#cargo = cargo;
-  }
-
-  // Getters
-  get idAdmin(): number {
-    return this.#idAdmin;
   }
 
   get cargo(): string {
@@ -54,7 +48,6 @@ export class Admin extends Usuario {
   toJSON() {
     return {
       ...super.toJSON(),
-      idAdmin: this.#idAdmin,
       cargo: this.#cargo,
     };
   }

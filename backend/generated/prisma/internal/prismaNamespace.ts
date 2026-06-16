@@ -390,11 +390,12 @@ export const ModelName = {
   Professor: 'Professor',
   Admin: 'Admin',
   Livro: 'Livro',
+  CurtidaLivro: 'CurtidaLivro',
   Exemplar: 'Exemplar',
   Reserva: 'Reserva',
   Emprestimo: 'Emprestimo',
   Multa: 'Multa',
-  Pertence: 'Pertence'
+  SolicitacaoExclusaoAdmin: 'SolicitacaoExclusaoAdmin'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -410,7 +411,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "notificacao" | "usuario" | "aluno" | "professor" | "admin" | "livro" | "exemplar" | "reserva" | "emprestimo" | "multa" | "pertence"
+    modelProps: "notificacao" | "usuario" | "aluno" | "professor" | "admin" | "livro" | "curtidaLivro" | "exemplar" | "reserva" | "emprestimo" | "multa" | "solicitacaoExclusaoAdmin"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -858,6 +859,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CurtidaLivro: {
+      payload: Prisma.$CurtidaLivroPayload<ExtArgs>
+      fields: Prisma.CurtidaLivroFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CurtidaLivroFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CurtidaLivroFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>
+        }
+        findFirst: {
+          args: Prisma.CurtidaLivroFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CurtidaLivroFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>
+        }
+        findMany: {
+          args: Prisma.CurtidaLivroFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>[]
+        }
+        create: {
+          args: Prisma.CurtidaLivroCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>
+        }
+        createMany: {
+          args: Prisma.CurtidaLivroCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CurtidaLivroCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>[]
+        }
+        delete: {
+          args: Prisma.CurtidaLivroDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>
+        }
+        update: {
+          args: Prisma.CurtidaLivroUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>
+        }
+        deleteMany: {
+          args: Prisma.CurtidaLivroDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CurtidaLivroUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CurtidaLivroUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>[]
+        }
+        upsert: {
+          args: Prisma.CurtidaLivroUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurtidaLivroPayload>
+        }
+        aggregate: {
+          args: Prisma.CurtidaLivroAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCurtidaLivro>
+        }
+        groupBy: {
+          args: Prisma.CurtidaLivroGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CurtidaLivroGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CurtidaLivroCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CurtidaLivroCountAggregateOutputType> | number
+        }
+      }
+    }
     Exemplar: {
       payload: Prisma.$ExemplarPayload<ExtArgs>
       fields: Prisma.ExemplarFieldRefs
@@ -1154,77 +1229,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Pertence: {
-      payload: Prisma.$PertencePayload<ExtArgs>
-      fields: Prisma.PertenceFieldRefs
+    SolicitacaoExclusaoAdmin: {
+      payload: Prisma.$SolicitacaoExclusaoAdminPayload<ExtArgs>
+      fields: Prisma.SolicitacaoExclusaoAdminFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.PertenceFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PertencePayload> | null
+          args: Prisma.SolicitacaoExclusaoAdminFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.PertenceFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PertencePayload>
+          args: Prisma.SolicitacaoExclusaoAdminFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>
         }
         findFirst: {
-          args: Prisma.PertenceFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PertencePayload> | null
+          args: Prisma.SolicitacaoExclusaoAdminFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.PertenceFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PertencePayload>
+          args: Prisma.SolicitacaoExclusaoAdminFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>
         }
         findMany: {
-          args: Prisma.PertenceFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PertencePayload>[]
+          args: Prisma.SolicitacaoExclusaoAdminFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>[]
         }
         create: {
-          args: Prisma.PertenceCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PertencePayload>
+          args: Prisma.SolicitacaoExclusaoAdminCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>
         }
         createMany: {
-          args: Prisma.PertenceCreateManyArgs<ExtArgs>
+          args: Prisma.SolicitacaoExclusaoAdminCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.PertenceCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PertencePayload>[]
+          args: Prisma.SolicitacaoExclusaoAdminCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>[]
         }
         delete: {
-          args: Prisma.PertenceDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PertencePayload>
+          args: Prisma.SolicitacaoExclusaoAdminDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>
         }
         update: {
-          args: Prisma.PertenceUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PertencePayload>
+          args: Prisma.SolicitacaoExclusaoAdminUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>
         }
         deleteMany: {
-          args: Prisma.PertenceDeleteManyArgs<ExtArgs>
+          args: Prisma.SolicitacaoExclusaoAdminDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.PertenceUpdateManyArgs<ExtArgs>
+          args: Prisma.SolicitacaoExclusaoAdminUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.PertenceUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PertencePayload>[]
+          args: Prisma.SolicitacaoExclusaoAdminUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>[]
         }
         upsert: {
-          args: Prisma.PertenceUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PertencePayload>
+          args: Prisma.SolicitacaoExclusaoAdminUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SolicitacaoExclusaoAdminPayload>
         }
         aggregate: {
-          args: Prisma.PertenceAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregatePertence>
+          args: Prisma.SolicitacaoExclusaoAdminAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSolicitacaoExclusaoAdmin>
         }
         groupBy: {
-          args: Prisma.PertenceGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PertenceGroupByOutputType>[]
+          args: Prisma.SolicitacaoExclusaoAdminGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SolicitacaoExclusaoAdminGroupByOutputType>[]
         }
         count: {
-          args: Prisma.PertenceCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PertenceCountAggregateOutputType> | number
+          args: Prisma.SolicitacaoExclusaoAdminCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SolicitacaoExclusaoAdminCountAggregateOutputType> | number
         }
       }
     }
@@ -1270,6 +1345,8 @@ export const NotificacaoScalarFieldEnum = {
   mensagem: 'mensagem',
   data_envio: 'data_envio',
   lido: 'lido',
+  acao: 'acao',
+  referencia_id: 'referencia_id',
   usuario_id: 'usuario_id',
   id_emprestimo: 'id_emprestimo'
 } as const
@@ -1282,37 +1359,38 @@ export const UsuarioScalarFieldEnum = {
   nome: 'nome',
   email: 'email',
   senha: 'senha',
-  nivel_acesso: 'nivel_acesso'
+  nivel_acesso: 'nivel_acesso',
+  foto_perfil_url: 'foto_perfil_url',
+  foto_perfil_objeto: 'foto_perfil_objeto',
+  fundo_perfil_url: 'fundo_perfil_url',
+  fundo_perfil_objeto: 'fundo_perfil_objeto'
 } as const
 
 export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]
 
 
 export const AlunoScalarFieldEnum = {
-  id_aluno: 'id_aluno',
+  usuario_id: 'usuario_id',
   ano_ingresso: 'ano_ingresso',
   curso: 'curso',
-  matricula_aluno: 'matricula_aluno',
-  usuario_id: 'usuario_id'
+  matricula_aluno: 'matricula_aluno'
 } as const
 
 export type AlunoScalarFieldEnum = (typeof AlunoScalarFieldEnum)[keyof typeof AlunoScalarFieldEnum]
 
 
 export const ProfessorScalarFieldEnum = {
-  id_professor: 'id_professor',
+  usuario_id: 'usuario_id',
   departamento: 'departamento',
-  matricula_professor: 'matricula_professor',
-  usuario_id: 'usuario_id'
+  matricula_professor: 'matricula_professor'
 } as const
 
 export type ProfessorScalarFieldEnum = (typeof ProfessorScalarFieldEnum)[keyof typeof ProfessorScalarFieldEnum]
 
 
 export const AdminScalarFieldEnum = {
-  id_admin: 'id_admin',
-  cargo: 'cargo',
-  usuario_id: 'usuario_id'
+  usuario_id: 'usuario_id',
+  cargo: 'cargo'
 } as const
 
 export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
@@ -1325,17 +1403,30 @@ export const LivroScalarFieldEnum = {
   genero: 'genero',
   ano_publicacao: 'ano_publicacao',
   sinopse: 'sinopse',
-  status: 'status'
+  status: 'status',
+  capa_url: 'capa_url',
+  capa_objeto: 'capa_objeto'
 } as const
 
 export type LivroScalarFieldEnum = (typeof LivroScalarFieldEnum)[keyof typeof LivroScalarFieldEnum]
+
+
+export const CurtidaLivroScalarFieldEnum = {
+  id_curtida: 'id_curtida',
+  data_curtida: 'data_curtida',
+  usuario_id: 'usuario_id',
+  livro_id: 'livro_id'
+} as const
+
+export type CurtidaLivroScalarFieldEnum = (typeof CurtidaLivroScalarFieldEnum)[keyof typeof CurtidaLivroScalarFieldEnum]
 
 
 export const ExemplarScalarFieldEnum = {
   id_exemplar: 'id_exemplar',
   codigo_tombo: 'codigo_tombo',
   estado: 'estado',
-  localizacao: 'localizacao'
+  localizacao: 'localizacao',
+  livro_id: 'livro_id'
 } as const
 
 export type ExemplarScalarFieldEnum = (typeof ExemplarScalarFieldEnum)[keyof typeof ExemplarScalarFieldEnum]
@@ -1346,6 +1437,7 @@ export const ReservaScalarFieldEnum = {
   data_reserva: 'data_reserva',
   data_expiracao: 'data_expiracao',
   status_reserva: 'status_reserva',
+  notificado_em: 'notificado_em',
   usuario_id: 'usuario_id',
   livro_id: 'livro_id'
 } as const
@@ -1358,6 +1450,8 @@ export const EmprestimoScalarFieldEnum = {
   data_saida: 'data_saida',
   data_vencimento: 'data_vencimento',
   data_devolucao_real: 'data_devolucao_real',
+  renovacoes: 'renovacoes',
+  status_extensao: 'status_extensao',
   usuario_id: 'usuario_id',
   exemplar_id: 'exemplar_id'
 } as const
@@ -1378,13 +1472,16 @@ export const MultaScalarFieldEnum = {
 export type MultaScalarFieldEnum = (typeof MultaScalarFieldEnum)[keyof typeof MultaScalarFieldEnum]
 
 
-export const PertenceScalarFieldEnum = {
-  id_pertence: 'id_pertence',
-  livro_id: 'livro_id',
-  exemplar_id: 'exemplar_id'
+export const SolicitacaoExclusaoAdminScalarFieldEnum = {
+  id_solicitacao: 'id_solicitacao',
+  admin_id: 'admin_id',
+  status: 'status',
+  data_criacao: 'data_criacao',
+  data_decisao: 'data_decisao',
+  decidido_por: 'decidido_por'
 } as const
 
-export type PertenceScalarFieldEnum = (typeof PertenceScalarFieldEnum)[keyof typeof PertenceScalarFieldEnum]
+export type SolicitacaoExclusaoAdminScalarFieldEnum = (typeof SolicitacaoExclusaoAdminScalarFieldEnum)[keyof typeof SolicitacaoExclusaoAdminScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1559,11 +1656,12 @@ export type GlobalOmitConfig = {
   professor?: Prisma.ProfessorOmit
   admin?: Prisma.AdminOmit
   livro?: Prisma.LivroOmit
+  curtidaLivro?: Prisma.CurtidaLivroOmit
   exemplar?: Prisma.ExemplarOmit
   reserva?: Prisma.ReservaOmit
   emprestimo?: Prisma.EmprestimoOmit
   multa?: Prisma.MultaOmit
-  pertence?: Prisma.PertenceOmit
+  solicitacaoExclusaoAdmin?: Prisma.SolicitacaoExclusaoAdminOmit
 }
 
 /* Types for Logging */

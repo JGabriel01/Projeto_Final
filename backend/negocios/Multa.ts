@@ -7,7 +7,7 @@ export class Multa {
   #idEmprestimo: number;
   #idExemplar: number;
   #dataCriacao: Date;
-  #statusPagamento: string; // "pendente", "paga", "cancelada"
+  #statusPagamento: string; // "pendente", "aguardando_confirmacao", "paga", "cancelada"
 
   constructor(
     idMulta: number,
@@ -91,9 +91,9 @@ export class Multa {
   }
 
   private validarStatusPagamento(status: string): void {
-    const statusValidos = ["pendente", "paga", "cancelada"];
+    const statusValidos = ["pendente", "aguardando_confirmacao", "paga", "cancelada"];
     if (!statusValidos.includes(status)) {
-      throw new ErroMulta("Status de pagamento inválido. Valores permitidos: pendente, paga, cancelada");
+      throw new ErroMulta("Status de pagamento inválido. Valores permitidos: pendente, aguardando_confirmacao, paga, cancelada");
     }
   }
 

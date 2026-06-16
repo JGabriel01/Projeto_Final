@@ -27,67 +27,57 @@ export type AggregateProfessor = {
 }
 
 export type ProfessorAvgAggregateOutputType = {
-  id_professor: number | null
   usuario_id: number | null
 }
 
 export type ProfessorSumAggregateOutputType = {
-  id_professor: number | null
   usuario_id: number | null
 }
 
 export type ProfessorMinAggregateOutputType = {
-  id_professor: number | null
+  usuario_id: number | null
   departamento: string | null
   matricula_professor: string | null
-  usuario_id: number | null
 }
 
 export type ProfessorMaxAggregateOutputType = {
-  id_professor: number | null
+  usuario_id: number | null
   departamento: string | null
   matricula_professor: string | null
-  usuario_id: number | null
 }
 
 export type ProfessorCountAggregateOutputType = {
-  id_professor: number
+  usuario_id: number
   departamento: number
   matricula_professor: number
-  usuario_id: number
   _all: number
 }
 
 
 export type ProfessorAvgAggregateInputType = {
-  id_professor?: true
   usuario_id?: true
 }
 
 export type ProfessorSumAggregateInputType = {
-  id_professor?: true
   usuario_id?: true
 }
 
 export type ProfessorMinAggregateInputType = {
-  id_professor?: true
+  usuario_id?: true
   departamento?: true
   matricula_professor?: true
-  usuario_id?: true
 }
 
 export type ProfessorMaxAggregateInputType = {
-  id_professor?: true
+  usuario_id?: true
   departamento?: true
   matricula_professor?: true
-  usuario_id?: true
 }
 
 export type ProfessorCountAggregateInputType = {
-  id_professor?: true
+  usuario_id?: true
   departamento?: true
   matricula_professor?: true
-  usuario_id?: true
   _all?: true
 }
 
@@ -178,10 +168,9 @@ export type ProfessorGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 export type ProfessorGroupByOutputType = {
-  id_professor: number
+  usuario_id: number
   departamento: string
   matricula_professor: string
-  usuario_id: number
   _count: ProfessorCountAggregateOutputType | null
   _avg: ProfessorAvgAggregateOutputType | null
   _sum: ProfessorSumAggregateOutputType | null
@@ -208,37 +197,33 @@ export type ProfessorWhereInput = {
   AND?: Prisma.ProfessorWhereInput | Prisma.ProfessorWhereInput[]
   OR?: Prisma.ProfessorWhereInput[]
   NOT?: Prisma.ProfessorWhereInput | Prisma.ProfessorWhereInput[]
-  id_professor?: Prisma.IntFilter<"Professor"> | number
+  usuario_id?: Prisma.IntFilter<"Professor"> | number
   departamento?: Prisma.StringFilter<"Professor"> | string
   matricula_professor?: Prisma.StringFilter<"Professor"> | string
-  usuario_id?: Prisma.IntFilter<"Professor"> | number
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
 }
 
 export type ProfessorOrderByWithRelationInput = {
-  id_professor?: Prisma.SortOrder
+  usuario_id?: Prisma.SortOrder
   departamento?: Prisma.SortOrder
   matricula_professor?: Prisma.SortOrder
-  usuario_id?: Prisma.SortOrder
   usuario?: Prisma.UsuarioOrderByWithRelationInput
 }
 
 export type ProfessorWhereUniqueInput = Prisma.AtLeast<{
-  id_professor?: number
-  matricula_professor?: string
   usuario_id?: number
+  matricula_professor?: string
   AND?: Prisma.ProfessorWhereInput | Prisma.ProfessorWhereInput[]
   OR?: Prisma.ProfessorWhereInput[]
   NOT?: Prisma.ProfessorWhereInput | Prisma.ProfessorWhereInput[]
   departamento?: Prisma.StringFilter<"Professor"> | string
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
-}, "id_professor" | "matricula_professor" | "usuario_id">
+}, "usuario_id" | "matricula_professor">
 
 export type ProfessorOrderByWithAggregationInput = {
-  id_professor?: Prisma.SortOrder
+  usuario_id?: Prisma.SortOrder
   departamento?: Prisma.SortOrder
   matricula_professor?: Prisma.SortOrder
-  usuario_id?: Prisma.SortOrder
   _count?: Prisma.ProfessorCountOrderByAggregateInput
   _avg?: Prisma.ProfessorAvgOrderByAggregateInput
   _max?: Prisma.ProfessorMaxOrderByAggregateInput
@@ -250,10 +235,9 @@ export type ProfessorScalarWhereWithAggregatesInput = {
   AND?: Prisma.ProfessorScalarWhereWithAggregatesInput | Prisma.ProfessorScalarWhereWithAggregatesInput[]
   OR?: Prisma.ProfessorScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ProfessorScalarWhereWithAggregatesInput | Prisma.ProfessorScalarWhereWithAggregatesInput[]
-  id_professor?: Prisma.IntWithAggregatesFilter<"Professor"> | number
+  usuario_id?: Prisma.IntWithAggregatesFilter<"Professor"> | number
   departamento?: Prisma.StringWithAggregatesFilter<"Professor"> | string
   matricula_professor?: Prisma.StringWithAggregatesFilter<"Professor"> | string
-  usuario_id?: Prisma.IntWithAggregatesFilter<"Professor"> | number
 }
 
 export type ProfessorCreateInput = {
@@ -263,10 +247,9 @@ export type ProfessorCreateInput = {
 }
 
 export type ProfessorUncheckedCreateInput = {
-  id_professor?: number
+  usuario_id: number
   departamento: string
   matricula_professor: string
-  usuario_id: number
 }
 
 export type ProfessorUpdateInput = {
@@ -276,17 +259,15 @@ export type ProfessorUpdateInput = {
 }
 
 export type ProfessorUncheckedUpdateInput = {
-  id_professor?: Prisma.IntFieldUpdateOperationsInput | number
+  usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
   departamento?: Prisma.StringFieldUpdateOperationsInput | string
   matricula_professor?: Prisma.StringFieldUpdateOperationsInput | string
-  usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ProfessorCreateManyInput = {
-  id_professor?: number
+  usuario_id: number
   departamento: string
   matricula_professor: string
-  usuario_id: number
 }
 
 export type ProfessorUpdateManyMutationInput = {
@@ -295,10 +276,9 @@ export type ProfessorUpdateManyMutationInput = {
 }
 
 export type ProfessorUncheckedUpdateManyInput = {
-  id_professor?: Prisma.IntFieldUpdateOperationsInput | number
+  usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
   departamento?: Prisma.StringFieldUpdateOperationsInput | string
   matricula_professor?: Prisma.StringFieldUpdateOperationsInput | string
-  usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ProfessorNullableScalarRelationFilter = {
@@ -307,33 +287,28 @@ export type ProfessorNullableScalarRelationFilter = {
 }
 
 export type ProfessorCountOrderByAggregateInput = {
-  id_professor?: Prisma.SortOrder
+  usuario_id?: Prisma.SortOrder
   departamento?: Prisma.SortOrder
   matricula_professor?: Prisma.SortOrder
-  usuario_id?: Prisma.SortOrder
 }
 
 export type ProfessorAvgOrderByAggregateInput = {
-  id_professor?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
 }
 
 export type ProfessorMaxOrderByAggregateInput = {
-  id_professor?: Prisma.SortOrder
+  usuario_id?: Prisma.SortOrder
   departamento?: Prisma.SortOrder
   matricula_professor?: Prisma.SortOrder
-  usuario_id?: Prisma.SortOrder
 }
 
 export type ProfessorMinOrderByAggregateInput = {
-  id_professor?: Prisma.SortOrder
+  usuario_id?: Prisma.SortOrder
   departamento?: Prisma.SortOrder
   matricula_professor?: Prisma.SortOrder
-  usuario_id?: Prisma.SortOrder
 }
 
 export type ProfessorSumOrderByAggregateInput = {
-  id_professor?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
 }
 
@@ -375,7 +350,6 @@ export type ProfessorCreateWithoutUsuarioInput = {
 }
 
 export type ProfessorUncheckedCreateWithoutUsuarioInput = {
-  id_professor?: number
   departamento: string
   matricula_professor: string
 }
@@ -402,7 +376,6 @@ export type ProfessorUpdateWithoutUsuarioInput = {
 }
 
 export type ProfessorUncheckedUpdateWithoutUsuarioInput = {
-  id_professor?: Prisma.IntFieldUpdateOperationsInput | number
   departamento?: Prisma.StringFieldUpdateOperationsInput | string
   matricula_professor?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -410,37 +383,33 @@ export type ProfessorUncheckedUpdateWithoutUsuarioInput = {
 
 
 export type ProfessorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id_professor?: boolean
+  usuario_id?: boolean
   departamento?: boolean
   matricula_professor?: boolean
-  usuario_id?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["professor"]>
 
 export type ProfessorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id_professor?: boolean
+  usuario_id?: boolean
   departamento?: boolean
   matricula_professor?: boolean
-  usuario_id?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["professor"]>
 
 export type ProfessorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id_professor?: boolean
+  usuario_id?: boolean
   departamento?: boolean
   matricula_professor?: boolean
-  usuario_id?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["professor"]>
 
 export type ProfessorSelectScalar = {
-  id_professor?: boolean
+  usuario_id?: boolean
   departamento?: boolean
   matricula_professor?: boolean
-  usuario_id?: boolean
 }
 
-export type ProfessorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_professor" | "departamento" | "matricula_professor" | "usuario_id", ExtArgs["result"]["professor"]>
+export type ProfessorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"usuario_id" | "departamento" | "matricula_professor", ExtArgs["result"]["professor"]>
 export type ProfessorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }
@@ -457,10 +426,9 @@ export type $ProfessorPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     usuario: Prisma.$UsuarioPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id_professor: number
+    usuario_id: number
     departamento: string
     matricula_professor: string
-    usuario_id: number
   }, ExtArgs["result"]["professor"]>
   composites: {}
 }
@@ -544,8 +512,8 @@ export interface ProfessorDelegate<ExtArgs extends runtime.Types.Extensions.Inte
    * // Get first 10 Professors
    * const professors = await prisma.professor.findMany({ take: 10 })
    * 
-   * // Only select the `id_professor`
-   * const professorWithId_professorOnly = await prisma.professor.findMany({ select: { id_professor: true } })
+   * // Only select the `usuario_id`
+   * const professorWithUsuario_idOnly = await prisma.professor.findMany({ select: { usuario_id: true } })
    * 
    */
   findMany<T extends ProfessorFindManyArgs>(args?: Prisma.SelectSubset<T, ProfessorFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfessorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -589,9 +557,9 @@ export interface ProfessorDelegate<ExtArgs extends runtime.Types.Extensions.Inte
    *   ]
    * })
    * 
-   * // Create many Professors and only return the `id_professor`
-   * const professorWithId_professorOnly = await prisma.professor.createManyAndReturn({
-   *   select: { id_professor: true },
+   * // Create many Professors and only return the `usuario_id`
+   * const professorWithUsuario_idOnly = await prisma.professor.createManyAndReturn({
+   *   select: { usuario_id: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -680,9 +648,9 @@ export interface ProfessorDelegate<ExtArgs extends runtime.Types.Extensions.Inte
    *   ]
    * })
    * 
-   * // Update zero or more Professors and only return the `id_professor`
-   * const professorWithId_professorOnly = await prisma.professor.updateManyAndReturn({
-   *   select: { id_professor: true },
+   * // Update zero or more Professors and only return the `usuario_id`
+   * const professorWithUsuario_idOnly = await prisma.professor.updateManyAndReturn({
+   *   select: { usuario_id: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -885,10 +853,9 @@ export interface Prisma__ProfessorClient<T, Null = never, ExtArgs extends runtim
  * Fields of the Professor model
  */
 export interface ProfessorFieldRefs {
-  readonly id_professor: Prisma.FieldRef<"Professor", 'Int'>
+  readonly usuario_id: Prisma.FieldRef<"Professor", 'Int'>
   readonly departamento: Prisma.FieldRef<"Professor", 'String'>
   readonly matricula_professor: Prisma.FieldRef<"Professor", 'String'>
-  readonly usuario_id: Prisma.FieldRef<"Professor", 'Int'>
 }
     
 

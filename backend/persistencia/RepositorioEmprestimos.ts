@@ -10,7 +10,8 @@ export class RepositorioEmprestimos {
       data.usuario_id,
       data.exemplar_id,
       data.data_saida,
-      data.data_vencimento
+      data.data_vencimento,
+      data.data_devolucao_real
     );
   }
 
@@ -82,16 +83,32 @@ export class RepositorioEmprestimos {
 
   async atualizar(
     id: number,
-    emprestimoAtualizado: Partial<Emprestimo>
+    dados: { dataVencimento?: Date; exemplarId?: number | null }
   ): Promise<Emprestimo | null> {
     try {
       const emprestimoDb = await prisma.emprestimo.update({
         where: { id_emprestimo: id },
         data: {
-          ...(emprestimoAtualizado.dataVencimento && {
-            data_vencimento: emprestimoAtualizado.dataVencimento,
+          ...(dados.dataVencimento && {
+            data_vencimento: dados.dataVencimento,
           }),
+          ...(dados.exemplarId !== undefined && { exemplar_id: dados.exemplarId }),
         },
+      });
+      return this.criarEmprestimoDoDb(emprestimoDb);
+    } catch {
+      return null;
+    }
+  }
+
+  async registrarDevolucao(
+    id: number,
+    dataDevolucaoReal: Date = new Date()
+  ): Promise<Emprestimo | null> {
+    try {
+      const emprestimoDb = await prisma.emprestimo.update({
+        where: { id_emprestimo: id },
+        data: { data_devolucao_real: dataDevolucaoReal },
       });
       return this.criarEmprestimoDoDb(emprestimoDb);
     } catch {

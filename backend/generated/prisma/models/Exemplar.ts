@@ -28,10 +28,12 @@ export type AggregateExemplar = {
 
 export type ExemplarAvgAggregateOutputType = {
   id_exemplar: number | null
+  livro_id: number | null
 }
 
 export type ExemplarSumAggregateOutputType = {
   id_exemplar: number | null
+  livro_id: number | null
 }
 
 export type ExemplarMinAggregateOutputType = {
@@ -39,6 +41,7 @@ export type ExemplarMinAggregateOutputType = {
   codigo_tombo: string | null
   estado: string | null
   localizacao: string | null
+  livro_id: number | null
 }
 
 export type ExemplarMaxAggregateOutputType = {
@@ -46,6 +49,7 @@ export type ExemplarMaxAggregateOutputType = {
   codigo_tombo: string | null
   estado: string | null
   localizacao: string | null
+  livro_id: number | null
 }
 
 export type ExemplarCountAggregateOutputType = {
@@ -53,16 +57,19 @@ export type ExemplarCountAggregateOutputType = {
   codigo_tombo: number
   estado: number
   localizacao: number
+  livro_id: number
   _all: number
 }
 
 
 export type ExemplarAvgAggregateInputType = {
   id_exemplar?: true
+  livro_id?: true
 }
 
 export type ExemplarSumAggregateInputType = {
   id_exemplar?: true
+  livro_id?: true
 }
 
 export type ExemplarMinAggregateInputType = {
@@ -70,6 +77,7 @@ export type ExemplarMinAggregateInputType = {
   codigo_tombo?: true
   estado?: true
   localizacao?: true
+  livro_id?: true
 }
 
 export type ExemplarMaxAggregateInputType = {
@@ -77,6 +85,7 @@ export type ExemplarMaxAggregateInputType = {
   codigo_tombo?: true
   estado?: true
   localizacao?: true
+  livro_id?: true
 }
 
 export type ExemplarCountAggregateInputType = {
@@ -84,6 +93,7 @@ export type ExemplarCountAggregateInputType = {
   codigo_tombo?: true
   estado?: true
   localizacao?: true
+  livro_id?: true
   _all?: true
 }
 
@@ -178,6 +188,7 @@ export type ExemplarGroupByOutputType = {
   codigo_tombo: string
   estado: string
   localizacao: string
+  livro_id: number
   _count: ExemplarCountAggregateOutputType | null
   _avg: ExemplarAvgAggregateOutputType | null
   _sum: ExemplarSumAggregateOutputType | null
@@ -208,8 +219,9 @@ export type ExemplarWhereInput = {
   codigo_tombo?: Prisma.StringFilter<"Exemplar"> | string
   estado?: Prisma.StringFilter<"Exemplar"> | string
   localizacao?: Prisma.StringFilter<"Exemplar"> | string
+  livro_id?: Prisma.IntFilter<"Exemplar"> | number
+  livro?: Prisma.XOR<Prisma.LivroScalarRelationFilter, Prisma.LivroWhereInput>
   multas?: Prisma.MultaListRelationFilter
-  pertences?: Prisma.PertenceListRelationFilter
   emprestimos?: Prisma.EmprestimoListRelationFilter
 }
 
@@ -218,8 +230,9 @@ export type ExemplarOrderByWithRelationInput = {
   codigo_tombo?: Prisma.SortOrder
   estado?: Prisma.SortOrder
   localizacao?: Prisma.SortOrder
+  livro_id?: Prisma.SortOrder
+  livro?: Prisma.LivroOrderByWithRelationInput
   multas?: Prisma.MultaOrderByRelationAggregateInput
-  pertences?: Prisma.PertenceOrderByRelationAggregateInput
   emprestimos?: Prisma.EmprestimoOrderByRelationAggregateInput
 }
 
@@ -231,8 +244,9 @@ export type ExemplarWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ExemplarWhereInput | Prisma.ExemplarWhereInput[]
   estado?: Prisma.StringFilter<"Exemplar"> | string
   localizacao?: Prisma.StringFilter<"Exemplar"> | string
+  livro_id?: Prisma.IntFilter<"Exemplar"> | number
+  livro?: Prisma.XOR<Prisma.LivroScalarRelationFilter, Prisma.LivroWhereInput>
   multas?: Prisma.MultaListRelationFilter
-  pertences?: Prisma.PertenceListRelationFilter
   emprestimos?: Prisma.EmprestimoListRelationFilter
 }, "id_exemplar" | "codigo_tombo">
 
@@ -241,6 +255,7 @@ export type ExemplarOrderByWithAggregationInput = {
   codigo_tombo?: Prisma.SortOrder
   estado?: Prisma.SortOrder
   localizacao?: Prisma.SortOrder
+  livro_id?: Prisma.SortOrder
   _count?: Prisma.ExemplarCountOrderByAggregateInput
   _avg?: Prisma.ExemplarAvgOrderByAggregateInput
   _max?: Prisma.ExemplarMaxOrderByAggregateInput
@@ -256,14 +271,15 @@ export type ExemplarScalarWhereWithAggregatesInput = {
   codigo_tombo?: Prisma.StringWithAggregatesFilter<"Exemplar"> | string
   estado?: Prisma.StringWithAggregatesFilter<"Exemplar"> | string
   localizacao?: Prisma.StringWithAggregatesFilter<"Exemplar"> | string
+  livro_id?: Prisma.IntWithAggregatesFilter<"Exemplar"> | number
 }
 
 export type ExemplarCreateInput = {
   codigo_tombo: string
   estado: string
   localizacao: string
+  livro: Prisma.LivroCreateNestedOneWithoutExemplaresInput
   multas?: Prisma.MultaCreateNestedManyWithoutExemplarInput
-  pertences?: Prisma.PertenceCreateNestedManyWithoutExemplarInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutExemplarInput
 }
 
@@ -272,8 +288,8 @@ export type ExemplarUncheckedCreateInput = {
   codigo_tombo: string
   estado: string
   localizacao: string
+  livro_id: number
   multas?: Prisma.MultaUncheckedCreateNestedManyWithoutExemplarInput
-  pertences?: Prisma.PertenceUncheckedCreateNestedManyWithoutExemplarInput
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutExemplarInput
 }
 
@@ -281,8 +297,8 @@ export type ExemplarUpdateInput = {
   codigo_tombo?: Prisma.StringFieldUpdateOperationsInput | string
   estado?: Prisma.StringFieldUpdateOperationsInput | string
   localizacao?: Prisma.StringFieldUpdateOperationsInput | string
+  livro?: Prisma.LivroUpdateOneRequiredWithoutExemplaresNestedInput
   multas?: Prisma.MultaUpdateManyWithoutExemplarNestedInput
-  pertences?: Prisma.PertenceUpdateManyWithoutExemplarNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutExemplarNestedInput
 }
 
@@ -291,8 +307,8 @@ export type ExemplarUncheckedUpdateInput = {
   codigo_tombo?: Prisma.StringFieldUpdateOperationsInput | string
   estado?: Prisma.StringFieldUpdateOperationsInput | string
   localizacao?: Prisma.StringFieldUpdateOperationsInput | string
+  livro_id?: Prisma.IntFieldUpdateOperationsInput | number
   multas?: Prisma.MultaUncheckedUpdateManyWithoutExemplarNestedInput
-  pertences?: Prisma.PertenceUncheckedUpdateManyWithoutExemplarNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutExemplarNestedInput
 }
 
@@ -301,6 +317,7 @@ export type ExemplarCreateManyInput = {
   codigo_tombo: string
   estado: string
   localizacao: string
+  livro_id: number
 }
 
 export type ExemplarUpdateManyMutationInput = {
@@ -314,6 +331,17 @@ export type ExemplarUncheckedUpdateManyInput = {
   codigo_tombo?: Prisma.StringFieldUpdateOperationsInput | string
   estado?: Prisma.StringFieldUpdateOperationsInput | string
   localizacao?: Prisma.StringFieldUpdateOperationsInput | string
+  livro_id?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type ExemplarListRelationFilter = {
+  every?: Prisma.ExemplarWhereInput
+  some?: Prisma.ExemplarWhereInput
+  none?: Prisma.ExemplarWhereInput
+}
+
+export type ExemplarOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type ExemplarCountOrderByAggregateInput = {
@@ -321,10 +349,12 @@ export type ExemplarCountOrderByAggregateInput = {
   codigo_tombo?: Prisma.SortOrder
   estado?: Prisma.SortOrder
   localizacao?: Prisma.SortOrder
+  livro_id?: Prisma.SortOrder
 }
 
 export type ExemplarAvgOrderByAggregateInput = {
   id_exemplar?: Prisma.SortOrder
+  livro_id?: Prisma.SortOrder
 }
 
 export type ExemplarMaxOrderByAggregateInput = {
@@ -332,6 +362,7 @@ export type ExemplarMaxOrderByAggregateInput = {
   codigo_tombo?: Prisma.SortOrder
   estado?: Prisma.SortOrder
   localizacao?: Prisma.SortOrder
+  livro_id?: Prisma.SortOrder
 }
 
 export type ExemplarMinOrderByAggregateInput = {
@@ -339,10 +370,12 @@ export type ExemplarMinOrderByAggregateInput = {
   codigo_tombo?: Prisma.SortOrder
   estado?: Prisma.SortOrder
   localizacao?: Prisma.SortOrder
+  livro_id?: Prisma.SortOrder
 }
 
 export type ExemplarSumOrderByAggregateInput = {
   id_exemplar?: Prisma.SortOrder
+  livro_id?: Prisma.SortOrder
 }
 
 export type ExemplarNullableScalarRelationFilter = {
@@ -353,6 +386,48 @@ export type ExemplarNullableScalarRelationFilter = {
 export type ExemplarScalarRelationFilter = {
   is?: Prisma.ExemplarWhereInput
   isNot?: Prisma.ExemplarWhereInput
+}
+
+export type ExemplarCreateNestedManyWithoutLivroInput = {
+  create?: Prisma.XOR<Prisma.ExemplarCreateWithoutLivroInput, Prisma.ExemplarUncheckedCreateWithoutLivroInput> | Prisma.ExemplarCreateWithoutLivroInput[] | Prisma.ExemplarUncheckedCreateWithoutLivroInput[]
+  connectOrCreate?: Prisma.ExemplarCreateOrConnectWithoutLivroInput | Prisma.ExemplarCreateOrConnectWithoutLivroInput[]
+  createMany?: Prisma.ExemplarCreateManyLivroInputEnvelope
+  connect?: Prisma.ExemplarWhereUniqueInput | Prisma.ExemplarWhereUniqueInput[]
+}
+
+export type ExemplarUncheckedCreateNestedManyWithoutLivroInput = {
+  create?: Prisma.XOR<Prisma.ExemplarCreateWithoutLivroInput, Prisma.ExemplarUncheckedCreateWithoutLivroInput> | Prisma.ExemplarCreateWithoutLivroInput[] | Prisma.ExemplarUncheckedCreateWithoutLivroInput[]
+  connectOrCreate?: Prisma.ExemplarCreateOrConnectWithoutLivroInput | Prisma.ExemplarCreateOrConnectWithoutLivroInput[]
+  createMany?: Prisma.ExemplarCreateManyLivroInputEnvelope
+  connect?: Prisma.ExemplarWhereUniqueInput | Prisma.ExemplarWhereUniqueInput[]
+}
+
+export type ExemplarUpdateManyWithoutLivroNestedInput = {
+  create?: Prisma.XOR<Prisma.ExemplarCreateWithoutLivroInput, Prisma.ExemplarUncheckedCreateWithoutLivroInput> | Prisma.ExemplarCreateWithoutLivroInput[] | Prisma.ExemplarUncheckedCreateWithoutLivroInput[]
+  connectOrCreate?: Prisma.ExemplarCreateOrConnectWithoutLivroInput | Prisma.ExemplarCreateOrConnectWithoutLivroInput[]
+  upsert?: Prisma.ExemplarUpsertWithWhereUniqueWithoutLivroInput | Prisma.ExemplarUpsertWithWhereUniqueWithoutLivroInput[]
+  createMany?: Prisma.ExemplarCreateManyLivroInputEnvelope
+  set?: Prisma.ExemplarWhereUniqueInput | Prisma.ExemplarWhereUniqueInput[]
+  disconnect?: Prisma.ExemplarWhereUniqueInput | Prisma.ExemplarWhereUniqueInput[]
+  delete?: Prisma.ExemplarWhereUniqueInput | Prisma.ExemplarWhereUniqueInput[]
+  connect?: Prisma.ExemplarWhereUniqueInput | Prisma.ExemplarWhereUniqueInput[]
+  update?: Prisma.ExemplarUpdateWithWhereUniqueWithoutLivroInput | Prisma.ExemplarUpdateWithWhereUniqueWithoutLivroInput[]
+  updateMany?: Prisma.ExemplarUpdateManyWithWhereWithoutLivroInput | Prisma.ExemplarUpdateManyWithWhereWithoutLivroInput[]
+  deleteMany?: Prisma.ExemplarScalarWhereInput | Prisma.ExemplarScalarWhereInput[]
+}
+
+export type ExemplarUncheckedUpdateManyWithoutLivroNestedInput = {
+  create?: Prisma.XOR<Prisma.ExemplarCreateWithoutLivroInput, Prisma.ExemplarUncheckedCreateWithoutLivroInput> | Prisma.ExemplarCreateWithoutLivroInput[] | Prisma.ExemplarUncheckedCreateWithoutLivroInput[]
+  connectOrCreate?: Prisma.ExemplarCreateOrConnectWithoutLivroInput | Prisma.ExemplarCreateOrConnectWithoutLivroInput[]
+  upsert?: Prisma.ExemplarUpsertWithWhereUniqueWithoutLivroInput | Prisma.ExemplarUpsertWithWhereUniqueWithoutLivroInput[]
+  createMany?: Prisma.ExemplarCreateManyLivroInputEnvelope
+  set?: Prisma.ExemplarWhereUniqueInput | Prisma.ExemplarWhereUniqueInput[]
+  disconnect?: Prisma.ExemplarWhereUniqueInput | Prisma.ExemplarWhereUniqueInput[]
+  delete?: Prisma.ExemplarWhereUniqueInput | Prisma.ExemplarWhereUniqueInput[]
+  connect?: Prisma.ExemplarWhereUniqueInput | Prisma.ExemplarWhereUniqueInput[]
+  update?: Prisma.ExemplarUpdateWithWhereUniqueWithoutLivroInput | Prisma.ExemplarUpdateWithWhereUniqueWithoutLivroInput[]
+  updateMany?: Prisma.ExemplarUpdateManyWithWhereWithoutLivroInput | Prisma.ExemplarUpdateManyWithWhereWithoutLivroInput[]
+  deleteMany?: Prisma.ExemplarScalarWhereInput | Prisma.ExemplarScalarWhereInput[]
 }
 
 export type ExemplarCreateNestedOneWithoutEmprestimosInput = {
@@ -385,26 +460,65 @@ export type ExemplarUpdateOneRequiredWithoutMultasNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ExemplarUpdateToOneWithWhereWithoutMultasInput, Prisma.ExemplarUpdateWithoutMultasInput>, Prisma.ExemplarUncheckedUpdateWithoutMultasInput>
 }
 
-export type ExemplarCreateNestedOneWithoutPertencesInput = {
-  create?: Prisma.XOR<Prisma.ExemplarCreateWithoutPertencesInput, Prisma.ExemplarUncheckedCreateWithoutPertencesInput>
-  connectOrCreate?: Prisma.ExemplarCreateOrConnectWithoutPertencesInput
-  connect?: Prisma.ExemplarWhereUniqueInput
+export type ExemplarCreateWithoutLivroInput = {
+  codigo_tombo: string
+  estado: string
+  localizacao: string
+  multas?: Prisma.MultaCreateNestedManyWithoutExemplarInput
+  emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutExemplarInput
 }
 
-export type ExemplarUpdateOneRequiredWithoutPertencesNestedInput = {
-  create?: Prisma.XOR<Prisma.ExemplarCreateWithoutPertencesInput, Prisma.ExemplarUncheckedCreateWithoutPertencesInput>
-  connectOrCreate?: Prisma.ExemplarCreateOrConnectWithoutPertencesInput
-  upsert?: Prisma.ExemplarUpsertWithoutPertencesInput
-  connect?: Prisma.ExemplarWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ExemplarUpdateToOneWithWhereWithoutPertencesInput, Prisma.ExemplarUpdateWithoutPertencesInput>, Prisma.ExemplarUncheckedUpdateWithoutPertencesInput>
+export type ExemplarUncheckedCreateWithoutLivroInput = {
+  id_exemplar?: number
+  codigo_tombo: string
+  estado: string
+  localizacao: string
+  multas?: Prisma.MultaUncheckedCreateNestedManyWithoutExemplarInput
+  emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutExemplarInput
+}
+
+export type ExemplarCreateOrConnectWithoutLivroInput = {
+  where: Prisma.ExemplarWhereUniqueInput
+  create: Prisma.XOR<Prisma.ExemplarCreateWithoutLivroInput, Prisma.ExemplarUncheckedCreateWithoutLivroInput>
+}
+
+export type ExemplarCreateManyLivroInputEnvelope = {
+  data: Prisma.ExemplarCreateManyLivroInput | Prisma.ExemplarCreateManyLivroInput[]
+}
+
+export type ExemplarUpsertWithWhereUniqueWithoutLivroInput = {
+  where: Prisma.ExemplarWhereUniqueInput
+  update: Prisma.XOR<Prisma.ExemplarUpdateWithoutLivroInput, Prisma.ExemplarUncheckedUpdateWithoutLivroInput>
+  create: Prisma.XOR<Prisma.ExemplarCreateWithoutLivroInput, Prisma.ExemplarUncheckedCreateWithoutLivroInput>
+}
+
+export type ExemplarUpdateWithWhereUniqueWithoutLivroInput = {
+  where: Prisma.ExemplarWhereUniqueInput
+  data: Prisma.XOR<Prisma.ExemplarUpdateWithoutLivroInput, Prisma.ExemplarUncheckedUpdateWithoutLivroInput>
+}
+
+export type ExemplarUpdateManyWithWhereWithoutLivroInput = {
+  where: Prisma.ExemplarScalarWhereInput
+  data: Prisma.XOR<Prisma.ExemplarUpdateManyMutationInput, Prisma.ExemplarUncheckedUpdateManyWithoutLivroInput>
+}
+
+export type ExemplarScalarWhereInput = {
+  AND?: Prisma.ExemplarScalarWhereInput | Prisma.ExemplarScalarWhereInput[]
+  OR?: Prisma.ExemplarScalarWhereInput[]
+  NOT?: Prisma.ExemplarScalarWhereInput | Prisma.ExemplarScalarWhereInput[]
+  id_exemplar?: Prisma.IntFilter<"Exemplar"> | number
+  codigo_tombo?: Prisma.StringFilter<"Exemplar"> | string
+  estado?: Prisma.StringFilter<"Exemplar"> | string
+  localizacao?: Prisma.StringFilter<"Exemplar"> | string
+  livro_id?: Prisma.IntFilter<"Exemplar"> | number
 }
 
 export type ExemplarCreateWithoutEmprestimosInput = {
   codigo_tombo: string
   estado: string
   localizacao: string
+  livro: Prisma.LivroCreateNestedOneWithoutExemplaresInput
   multas?: Prisma.MultaCreateNestedManyWithoutExemplarInput
-  pertences?: Prisma.PertenceCreateNestedManyWithoutExemplarInput
 }
 
 export type ExemplarUncheckedCreateWithoutEmprestimosInput = {
@@ -412,8 +526,8 @@ export type ExemplarUncheckedCreateWithoutEmprestimosInput = {
   codigo_tombo: string
   estado: string
   localizacao: string
+  livro_id: number
   multas?: Prisma.MultaUncheckedCreateNestedManyWithoutExemplarInput
-  pertences?: Prisma.PertenceUncheckedCreateNestedManyWithoutExemplarInput
 }
 
 export type ExemplarCreateOrConnectWithoutEmprestimosInput = {
@@ -436,8 +550,8 @@ export type ExemplarUpdateWithoutEmprestimosInput = {
   codigo_tombo?: Prisma.StringFieldUpdateOperationsInput | string
   estado?: Prisma.StringFieldUpdateOperationsInput | string
   localizacao?: Prisma.StringFieldUpdateOperationsInput | string
+  livro?: Prisma.LivroUpdateOneRequiredWithoutExemplaresNestedInput
   multas?: Prisma.MultaUpdateManyWithoutExemplarNestedInput
-  pertences?: Prisma.PertenceUpdateManyWithoutExemplarNestedInput
 }
 
 export type ExemplarUncheckedUpdateWithoutEmprestimosInput = {
@@ -445,15 +559,15 @@ export type ExemplarUncheckedUpdateWithoutEmprestimosInput = {
   codigo_tombo?: Prisma.StringFieldUpdateOperationsInput | string
   estado?: Prisma.StringFieldUpdateOperationsInput | string
   localizacao?: Prisma.StringFieldUpdateOperationsInput | string
+  livro_id?: Prisma.IntFieldUpdateOperationsInput | number
   multas?: Prisma.MultaUncheckedUpdateManyWithoutExemplarNestedInput
-  pertences?: Prisma.PertenceUncheckedUpdateManyWithoutExemplarNestedInput
 }
 
 export type ExemplarCreateWithoutMultasInput = {
   codigo_tombo: string
   estado: string
   localizacao: string
-  pertences?: Prisma.PertenceCreateNestedManyWithoutExemplarInput
+  livro: Prisma.LivroCreateNestedOneWithoutExemplaresInput
   emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutExemplarInput
 }
 
@@ -462,7 +576,7 @@ export type ExemplarUncheckedCreateWithoutMultasInput = {
   codigo_tombo: string
   estado: string
   localizacao: string
-  pertences?: Prisma.PertenceUncheckedCreateNestedManyWithoutExemplarInput
+  livro_id: number
   emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutExemplarInput
 }
 
@@ -486,7 +600,7 @@ export type ExemplarUpdateWithoutMultasInput = {
   codigo_tombo?: Prisma.StringFieldUpdateOperationsInput | string
   estado?: Prisma.StringFieldUpdateOperationsInput | string
   localizacao?: Prisma.StringFieldUpdateOperationsInput | string
-  pertences?: Prisma.PertenceUpdateManyWithoutExemplarNestedInput
+  livro?: Prisma.LivroUpdateOneRequiredWithoutExemplaresNestedInput
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutExemplarNestedInput
 }
 
@@ -495,44 +609,18 @@ export type ExemplarUncheckedUpdateWithoutMultasInput = {
   codigo_tombo?: Prisma.StringFieldUpdateOperationsInput | string
   estado?: Prisma.StringFieldUpdateOperationsInput | string
   localizacao?: Prisma.StringFieldUpdateOperationsInput | string
-  pertences?: Prisma.PertenceUncheckedUpdateManyWithoutExemplarNestedInput
+  livro_id?: Prisma.IntFieldUpdateOperationsInput | number
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutExemplarNestedInput
 }
 
-export type ExemplarCreateWithoutPertencesInput = {
-  codigo_tombo: string
-  estado: string
-  localizacao: string
-  multas?: Prisma.MultaCreateNestedManyWithoutExemplarInput
-  emprestimos?: Prisma.EmprestimoCreateNestedManyWithoutExemplarInput
-}
-
-export type ExemplarUncheckedCreateWithoutPertencesInput = {
+export type ExemplarCreateManyLivroInput = {
   id_exemplar?: number
   codigo_tombo: string
   estado: string
   localizacao: string
-  multas?: Prisma.MultaUncheckedCreateNestedManyWithoutExemplarInput
-  emprestimos?: Prisma.EmprestimoUncheckedCreateNestedManyWithoutExemplarInput
 }
 
-export type ExemplarCreateOrConnectWithoutPertencesInput = {
-  where: Prisma.ExemplarWhereUniqueInput
-  create: Prisma.XOR<Prisma.ExemplarCreateWithoutPertencesInput, Prisma.ExemplarUncheckedCreateWithoutPertencesInput>
-}
-
-export type ExemplarUpsertWithoutPertencesInput = {
-  update: Prisma.XOR<Prisma.ExemplarUpdateWithoutPertencesInput, Prisma.ExemplarUncheckedUpdateWithoutPertencesInput>
-  create: Prisma.XOR<Prisma.ExemplarCreateWithoutPertencesInput, Prisma.ExemplarUncheckedCreateWithoutPertencesInput>
-  where?: Prisma.ExemplarWhereInput
-}
-
-export type ExemplarUpdateToOneWithWhereWithoutPertencesInput = {
-  where?: Prisma.ExemplarWhereInput
-  data: Prisma.XOR<Prisma.ExemplarUpdateWithoutPertencesInput, Prisma.ExemplarUncheckedUpdateWithoutPertencesInput>
-}
-
-export type ExemplarUpdateWithoutPertencesInput = {
+export type ExemplarUpdateWithoutLivroInput = {
   codigo_tombo?: Prisma.StringFieldUpdateOperationsInput | string
   estado?: Prisma.StringFieldUpdateOperationsInput | string
   localizacao?: Prisma.StringFieldUpdateOperationsInput | string
@@ -540,13 +628,20 @@ export type ExemplarUpdateWithoutPertencesInput = {
   emprestimos?: Prisma.EmprestimoUpdateManyWithoutExemplarNestedInput
 }
 
-export type ExemplarUncheckedUpdateWithoutPertencesInput = {
+export type ExemplarUncheckedUpdateWithoutLivroInput = {
   id_exemplar?: Prisma.IntFieldUpdateOperationsInput | number
   codigo_tombo?: Prisma.StringFieldUpdateOperationsInput | string
   estado?: Prisma.StringFieldUpdateOperationsInput | string
   localizacao?: Prisma.StringFieldUpdateOperationsInput | string
   multas?: Prisma.MultaUncheckedUpdateManyWithoutExemplarNestedInput
   emprestimos?: Prisma.EmprestimoUncheckedUpdateManyWithoutExemplarNestedInput
+}
+
+export type ExemplarUncheckedUpdateManyWithoutLivroInput = {
+  id_exemplar?: Prisma.IntFieldUpdateOperationsInput | number
+  codigo_tombo?: Prisma.StringFieldUpdateOperationsInput | string
+  estado?: Prisma.StringFieldUpdateOperationsInput | string
+  localizacao?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -556,13 +651,11 @@ export type ExemplarUncheckedUpdateWithoutPertencesInput = {
 
 export type ExemplarCountOutputType = {
   multas: number
-  pertences: number
   emprestimos: number
 }
 
 export type ExemplarCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   multas?: boolean | ExemplarCountOutputTypeCountMultasArgs
-  pertences?: boolean | ExemplarCountOutputTypeCountPertencesArgs
   emprestimos?: boolean | ExemplarCountOutputTypeCountEmprestimosArgs
 }
 
@@ -586,13 +679,6 @@ export type ExemplarCountOutputTypeCountMultasArgs<ExtArgs extends runtime.Types
 /**
  * ExemplarCountOutputType without action
  */
-export type ExemplarCountOutputTypeCountPertencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PertenceWhereInput
-}
-
-/**
- * ExemplarCountOutputType without action
- */
 export type ExemplarCountOutputTypeCountEmprestimosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.EmprestimoWhereInput
 }
@@ -603,8 +689,9 @@ export type ExemplarSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   codigo_tombo?: boolean
   estado?: boolean
   localizacao?: boolean
+  livro_id?: boolean
+  livro?: boolean | Prisma.LivroDefaultArgs<ExtArgs>
   multas?: boolean | Prisma.Exemplar$multasArgs<ExtArgs>
-  pertences?: boolean | Prisma.Exemplar$pertencesArgs<ExtArgs>
   emprestimos?: boolean | Prisma.Exemplar$emprestimosArgs<ExtArgs>
   _count?: boolean | Prisma.ExemplarCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["exemplar"]>
@@ -614,6 +701,8 @@ export type ExemplarSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   codigo_tombo?: boolean
   estado?: boolean
   localizacao?: boolean
+  livro_id?: boolean
+  livro?: boolean | Prisma.LivroDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["exemplar"]>
 
 export type ExemplarSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -621,6 +710,8 @@ export type ExemplarSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   codigo_tombo?: boolean
   estado?: boolean
   localizacao?: boolean
+  livro_id?: boolean
+  livro?: boolean | Prisma.LivroDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["exemplar"]>
 
 export type ExemplarSelectScalar = {
@@ -628,23 +719,28 @@ export type ExemplarSelectScalar = {
   codigo_tombo?: boolean
   estado?: boolean
   localizacao?: boolean
+  livro_id?: boolean
 }
 
-export type ExemplarOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_exemplar" | "codigo_tombo" | "estado" | "localizacao", ExtArgs["result"]["exemplar"]>
+export type ExemplarOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_exemplar" | "codigo_tombo" | "estado" | "localizacao" | "livro_id", ExtArgs["result"]["exemplar"]>
 export type ExemplarInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  livro?: boolean | Prisma.LivroDefaultArgs<ExtArgs>
   multas?: boolean | Prisma.Exemplar$multasArgs<ExtArgs>
-  pertences?: boolean | Prisma.Exemplar$pertencesArgs<ExtArgs>
   emprestimos?: boolean | Prisma.Exemplar$emprestimosArgs<ExtArgs>
   _count?: boolean | Prisma.ExemplarCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type ExemplarIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type ExemplarIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ExemplarIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  livro?: boolean | Prisma.LivroDefaultArgs<ExtArgs>
+}
+export type ExemplarIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  livro?: boolean | Prisma.LivroDefaultArgs<ExtArgs>
+}
 
 export type $ExemplarPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Exemplar"
   objects: {
+    livro: Prisma.$LivroPayload<ExtArgs>
     multas: Prisma.$MultaPayload<ExtArgs>[]
-    pertences: Prisma.$PertencePayload<ExtArgs>[]
     emprestimos: Prisma.$EmprestimoPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -652,6 +748,7 @@ export type $ExemplarPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     codigo_tombo: string
     estado: string
     localizacao: string
+    livro_id: number
   }, ExtArgs["result"]["exemplar"]>
   composites: {}
 }
@@ -1046,8 +1143,8 @@ readonly fields: ExemplarFieldRefs;
  */
 export interface Prisma__ExemplarClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  livro<T extends Prisma.LivroDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LivroDefaultArgs<ExtArgs>>): Prisma.Prisma__LivroClient<runtime.Types.Result.GetResult<Prisma.$LivroPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   multas<T extends Prisma.Exemplar$multasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Exemplar$multasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MultaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  pertences<T extends Prisma.Exemplar$pertencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Exemplar$pertencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PertencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   emprestimos<T extends Prisma.Exemplar$emprestimosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Exemplar$emprestimosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmprestimoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1082,6 +1179,7 @@ export interface ExemplarFieldRefs {
   readonly codigo_tombo: Prisma.FieldRef<"Exemplar", 'String'>
   readonly estado: Prisma.FieldRef<"Exemplar", 'String'>
   readonly localizacao: Prisma.FieldRef<"Exemplar", 'String'>
+  readonly livro_id: Prisma.FieldRef<"Exemplar", 'Int'>
 }
     
 
@@ -1334,6 +1432,10 @@ export type ExemplarCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many Exemplars.
    */
   data: Prisma.ExemplarCreateManyInput | Prisma.ExemplarCreateManyInput[]
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExemplarIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1404,6 +1506,10 @@ export type ExemplarUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many Exemplars to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExemplarIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1494,30 +1600,6 @@ export type Exemplar$multasArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.MultaScalarFieldEnum | Prisma.MultaScalarFieldEnum[]
-}
-
-/**
- * Exemplar.pertences
- */
-export type Exemplar$pertencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Pertence
-   */
-  select?: Prisma.PertenceSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Pertence
-   */
-  omit?: Prisma.PertenceOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PertenceInclude<ExtArgs> | null
-  where?: Prisma.PertenceWhereInput
-  orderBy?: Prisma.PertenceOrderByWithRelationInput | Prisma.PertenceOrderByWithRelationInput[]
-  cursor?: Prisma.PertenceWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.PertenceScalarFieldEnum | Prisma.PertenceScalarFieldEnum[]
 }
 
 /**

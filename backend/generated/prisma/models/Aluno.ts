@@ -27,77 +27,67 @@ export type AggregateAluno = {
 }
 
 export type AlunoAvgAggregateOutputType = {
-  id_aluno: number | null
-  ano_ingresso: number | null
   usuario_id: number | null
+  ano_ingresso: number | null
 }
 
 export type AlunoSumAggregateOutputType = {
-  id_aluno: number | null
-  ano_ingresso: number | null
   usuario_id: number | null
+  ano_ingresso: number | null
 }
 
 export type AlunoMinAggregateOutputType = {
-  id_aluno: number | null
+  usuario_id: number | null
   ano_ingresso: number | null
   curso: string | null
   matricula_aluno: string | null
-  usuario_id: number | null
 }
 
 export type AlunoMaxAggregateOutputType = {
-  id_aluno: number | null
+  usuario_id: number | null
   ano_ingresso: number | null
   curso: string | null
   matricula_aluno: string | null
-  usuario_id: number | null
 }
 
 export type AlunoCountAggregateOutputType = {
-  id_aluno: number
+  usuario_id: number
   ano_ingresso: number
   curso: number
   matricula_aluno: number
-  usuario_id: number
   _all: number
 }
 
 
 export type AlunoAvgAggregateInputType = {
-  id_aluno?: true
-  ano_ingresso?: true
   usuario_id?: true
+  ano_ingresso?: true
 }
 
 export type AlunoSumAggregateInputType = {
-  id_aluno?: true
-  ano_ingresso?: true
   usuario_id?: true
+  ano_ingresso?: true
 }
 
 export type AlunoMinAggregateInputType = {
-  id_aluno?: true
+  usuario_id?: true
   ano_ingresso?: true
   curso?: true
   matricula_aluno?: true
-  usuario_id?: true
 }
 
 export type AlunoMaxAggregateInputType = {
-  id_aluno?: true
+  usuario_id?: true
   ano_ingresso?: true
   curso?: true
   matricula_aluno?: true
-  usuario_id?: true
 }
 
 export type AlunoCountAggregateInputType = {
-  id_aluno?: true
+  usuario_id?: true
   ano_ingresso?: true
   curso?: true
   matricula_aluno?: true
-  usuario_id?: true
   _all?: true
 }
 
@@ -188,11 +178,10 @@ export type AlunoGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 }
 
 export type AlunoGroupByOutputType = {
-  id_aluno: number
+  usuario_id: number
   ano_ingresso: number
   curso: string
   matricula_aluno: string
-  usuario_id: number
   _count: AlunoCountAggregateOutputType | null
   _avg: AlunoAvgAggregateOutputType | null
   _sum: AlunoSumAggregateOutputType | null
@@ -219,41 +208,37 @@ export type AlunoWhereInput = {
   AND?: Prisma.AlunoWhereInput | Prisma.AlunoWhereInput[]
   OR?: Prisma.AlunoWhereInput[]
   NOT?: Prisma.AlunoWhereInput | Prisma.AlunoWhereInput[]
-  id_aluno?: Prisma.IntFilter<"Aluno"> | number
+  usuario_id?: Prisma.IntFilter<"Aluno"> | number
   ano_ingresso?: Prisma.IntFilter<"Aluno"> | number
   curso?: Prisma.StringFilter<"Aluno"> | string
   matricula_aluno?: Prisma.StringFilter<"Aluno"> | string
-  usuario_id?: Prisma.IntFilter<"Aluno"> | number
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
 }
 
 export type AlunoOrderByWithRelationInput = {
-  id_aluno?: Prisma.SortOrder
+  usuario_id?: Prisma.SortOrder
   ano_ingresso?: Prisma.SortOrder
   curso?: Prisma.SortOrder
   matricula_aluno?: Prisma.SortOrder
-  usuario_id?: Prisma.SortOrder
   usuario?: Prisma.UsuarioOrderByWithRelationInput
 }
 
 export type AlunoWhereUniqueInput = Prisma.AtLeast<{
-  id_aluno?: number
-  matricula_aluno?: string
   usuario_id?: number
+  matricula_aluno?: string
   AND?: Prisma.AlunoWhereInput | Prisma.AlunoWhereInput[]
   OR?: Prisma.AlunoWhereInput[]
   NOT?: Prisma.AlunoWhereInput | Prisma.AlunoWhereInput[]
   ano_ingresso?: Prisma.IntFilter<"Aluno"> | number
   curso?: Prisma.StringFilter<"Aluno"> | string
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
-}, "id_aluno" | "matricula_aluno" | "usuario_id">
+}, "usuario_id" | "matricula_aluno">
 
 export type AlunoOrderByWithAggregationInput = {
-  id_aluno?: Prisma.SortOrder
+  usuario_id?: Prisma.SortOrder
   ano_ingresso?: Prisma.SortOrder
   curso?: Prisma.SortOrder
   matricula_aluno?: Prisma.SortOrder
-  usuario_id?: Prisma.SortOrder
   _count?: Prisma.AlunoCountOrderByAggregateInput
   _avg?: Prisma.AlunoAvgOrderByAggregateInput
   _max?: Prisma.AlunoMaxOrderByAggregateInput
@@ -265,11 +250,10 @@ export type AlunoScalarWhereWithAggregatesInput = {
   AND?: Prisma.AlunoScalarWhereWithAggregatesInput | Prisma.AlunoScalarWhereWithAggregatesInput[]
   OR?: Prisma.AlunoScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AlunoScalarWhereWithAggregatesInput | Prisma.AlunoScalarWhereWithAggregatesInput[]
-  id_aluno?: Prisma.IntWithAggregatesFilter<"Aluno"> | number
+  usuario_id?: Prisma.IntWithAggregatesFilter<"Aluno"> | number
   ano_ingresso?: Prisma.IntWithAggregatesFilter<"Aluno"> | number
   curso?: Prisma.StringWithAggregatesFilter<"Aluno"> | string
   matricula_aluno?: Prisma.StringWithAggregatesFilter<"Aluno"> | string
-  usuario_id?: Prisma.IntWithAggregatesFilter<"Aluno"> | number
 }
 
 export type AlunoCreateInput = {
@@ -280,11 +264,10 @@ export type AlunoCreateInput = {
 }
 
 export type AlunoUncheckedCreateInput = {
-  id_aluno?: number
+  usuario_id: number
   ano_ingresso: number
   curso: string
   matricula_aluno: string
-  usuario_id: number
 }
 
 export type AlunoUpdateInput = {
@@ -295,19 +278,17 @@ export type AlunoUpdateInput = {
 }
 
 export type AlunoUncheckedUpdateInput = {
-  id_aluno?: Prisma.IntFieldUpdateOperationsInput | number
+  usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
   ano_ingresso?: Prisma.IntFieldUpdateOperationsInput | number
   curso?: Prisma.StringFieldUpdateOperationsInput | string
   matricula_aluno?: Prisma.StringFieldUpdateOperationsInput | string
-  usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type AlunoCreateManyInput = {
-  id_aluno?: number
+  usuario_id: number
   ano_ingresso: number
   curso: string
   matricula_aluno: string
-  usuario_id: number
 }
 
 export type AlunoUpdateManyMutationInput = {
@@ -317,11 +298,10 @@ export type AlunoUpdateManyMutationInput = {
 }
 
 export type AlunoUncheckedUpdateManyInput = {
-  id_aluno?: Prisma.IntFieldUpdateOperationsInput | number
+  usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
   ano_ingresso?: Prisma.IntFieldUpdateOperationsInput | number
   curso?: Prisma.StringFieldUpdateOperationsInput | string
   matricula_aluno?: Prisma.StringFieldUpdateOperationsInput | string
-  usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type AlunoNullableScalarRelationFilter = {
@@ -330,39 +310,34 @@ export type AlunoNullableScalarRelationFilter = {
 }
 
 export type AlunoCountOrderByAggregateInput = {
-  id_aluno?: Prisma.SortOrder
+  usuario_id?: Prisma.SortOrder
   ano_ingresso?: Prisma.SortOrder
   curso?: Prisma.SortOrder
   matricula_aluno?: Prisma.SortOrder
-  usuario_id?: Prisma.SortOrder
 }
 
 export type AlunoAvgOrderByAggregateInput = {
-  id_aluno?: Prisma.SortOrder
-  ano_ingresso?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
+  ano_ingresso?: Prisma.SortOrder
 }
 
 export type AlunoMaxOrderByAggregateInput = {
-  id_aluno?: Prisma.SortOrder
+  usuario_id?: Prisma.SortOrder
   ano_ingresso?: Prisma.SortOrder
   curso?: Prisma.SortOrder
   matricula_aluno?: Prisma.SortOrder
-  usuario_id?: Prisma.SortOrder
 }
 
 export type AlunoMinOrderByAggregateInput = {
-  id_aluno?: Prisma.SortOrder
+  usuario_id?: Prisma.SortOrder
   ano_ingresso?: Prisma.SortOrder
   curso?: Prisma.SortOrder
   matricula_aluno?: Prisma.SortOrder
-  usuario_id?: Prisma.SortOrder
 }
 
 export type AlunoSumOrderByAggregateInput = {
-  id_aluno?: Prisma.SortOrder
-  ano_ingresso?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
+  ano_ingresso?: Prisma.SortOrder
 }
 
 export type AlunoCreateNestedOneWithoutUsuarioInput = {
@@ -404,7 +379,6 @@ export type AlunoCreateWithoutUsuarioInput = {
 }
 
 export type AlunoUncheckedCreateWithoutUsuarioInput = {
-  id_aluno?: number
   ano_ingresso: number
   curso: string
   matricula_aluno: string
@@ -433,7 +407,6 @@ export type AlunoUpdateWithoutUsuarioInput = {
 }
 
 export type AlunoUncheckedUpdateWithoutUsuarioInput = {
-  id_aluno?: Prisma.IntFieldUpdateOperationsInput | number
   ano_ingresso?: Prisma.IntFieldUpdateOperationsInput | number
   curso?: Prisma.StringFieldUpdateOperationsInput | string
   matricula_aluno?: Prisma.StringFieldUpdateOperationsInput | string
@@ -442,41 +415,37 @@ export type AlunoUncheckedUpdateWithoutUsuarioInput = {
 
 
 export type AlunoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id_aluno?: boolean
+  usuario_id?: boolean
   ano_ingresso?: boolean
   curso?: boolean
   matricula_aluno?: boolean
-  usuario_id?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["aluno"]>
 
 export type AlunoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id_aluno?: boolean
+  usuario_id?: boolean
   ano_ingresso?: boolean
   curso?: boolean
   matricula_aluno?: boolean
-  usuario_id?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["aluno"]>
 
 export type AlunoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id_aluno?: boolean
+  usuario_id?: boolean
   ano_ingresso?: boolean
   curso?: boolean
   matricula_aluno?: boolean
-  usuario_id?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["aluno"]>
 
 export type AlunoSelectScalar = {
-  id_aluno?: boolean
+  usuario_id?: boolean
   ano_ingresso?: boolean
   curso?: boolean
   matricula_aluno?: boolean
-  usuario_id?: boolean
 }
 
-export type AlunoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_aluno" | "ano_ingresso" | "curso" | "matricula_aluno" | "usuario_id", ExtArgs["result"]["aluno"]>
+export type AlunoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"usuario_id" | "ano_ingresso" | "curso" | "matricula_aluno", ExtArgs["result"]["aluno"]>
 export type AlunoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }
@@ -493,11 +462,10 @@ export type $AlunoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     usuario: Prisma.$UsuarioPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id_aluno: number
+    usuario_id: number
     ano_ingresso: number
     curso: string
     matricula_aluno: string
-    usuario_id: number
   }, ExtArgs["result"]["aluno"]>
   composites: {}
 }
@@ -581,8 +549,8 @@ export interface AlunoDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    * // Get first 10 Alunos
    * const alunos = await prisma.aluno.findMany({ take: 10 })
    * 
-   * // Only select the `id_aluno`
-   * const alunoWithId_alunoOnly = await prisma.aluno.findMany({ select: { id_aluno: true } })
+   * // Only select the `usuario_id`
+   * const alunoWithUsuario_idOnly = await prisma.aluno.findMany({ select: { usuario_id: true } })
    * 
    */
   findMany<T extends AlunoFindManyArgs>(args?: Prisma.SelectSubset<T, AlunoFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AlunoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -626,9 +594,9 @@ export interface AlunoDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    *   ]
    * })
    * 
-   * // Create many Alunos and only return the `id_aluno`
-   * const alunoWithId_alunoOnly = await prisma.aluno.createManyAndReturn({
-   *   select: { id_aluno: true },
+   * // Create many Alunos and only return the `usuario_id`
+   * const alunoWithUsuario_idOnly = await prisma.aluno.createManyAndReturn({
+   *   select: { usuario_id: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -717,9 +685,9 @@ export interface AlunoDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    *   ]
    * })
    * 
-   * // Update zero or more Alunos and only return the `id_aluno`
-   * const alunoWithId_alunoOnly = await prisma.aluno.updateManyAndReturn({
-   *   select: { id_aluno: true },
+   * // Update zero or more Alunos and only return the `usuario_id`
+   * const alunoWithUsuario_idOnly = await prisma.aluno.updateManyAndReturn({
+   *   select: { usuario_id: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -922,11 +890,10 @@ export interface Prisma__AlunoClient<T, Null = never, ExtArgs extends runtime.Ty
  * Fields of the Aluno model
  */
 export interface AlunoFieldRefs {
-  readonly id_aluno: Prisma.FieldRef<"Aluno", 'Int'>
+  readonly usuario_id: Prisma.FieldRef<"Aluno", 'Int'>
   readonly ano_ingresso: Prisma.FieldRef<"Aluno", 'Int'>
   readonly curso: Prisma.FieldRef<"Aluno", 'String'>
   readonly matricula_aluno: Prisma.FieldRef<"Aluno", 'String'>
-  readonly usuario_id: Prisma.FieldRef<"Aluno", 'Int'>
 }
     
 

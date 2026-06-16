@@ -1,4 +1,5 @@
 // Classe base com validações e exceções customizadas
+import bcrypt from "bcryptjs";
 import { ErroUsuario, ErroEmail, ErroSenha } from "../excecoes/index.js";
 
 export class Usuario {
@@ -7,13 +8,17 @@ export class Usuario {
   #email: string;
   #senha: string;
   #nivelAcesso: string; // "aluno", "professor", "admin"
+  #fotoPerfilUrl?: string;
+  #fundoPerfilUrl?: string;
 
   constructor(
     idUsuario: number,
     nome: string,
     email: string,
     senha: string,
-    nivelAcesso: string
+    nivelAcesso: string,
+    fotoPerfilUrl?: string,
+    fundoPerfilUrl?: string
   ) {
     // Validações no construtor
     this.validarNome(nome);
@@ -26,6 +31,8 @@ export class Usuario {
     this.#email = email;
     this.#senha = senha;
     this.#nivelAcesso = nivelAcesso;
+    this.#fotoPerfilUrl = fotoPerfilUrl;
+    this.#fundoPerfilUrl = fundoPerfilUrl;
   }
 
   // Getters
@@ -47,6 +54,14 @@ export class Usuario {
 
   get nivelAcesso(): string {
     return this.#nivelAcesso;
+  }
+
+  get fotoPerfilUrl(): string | undefined {
+    return this.#fotoPerfilUrl;
+  }
+
+  get fundoPerfilUrl(): string | undefined {
+    return this.#fundoPerfilUrl;
   }
 
   // Setters com validações
@@ -117,7 +132,13 @@ export class Usuario {
 
   // Método público para autenticação
   autenticar(email: string, senha: string): boolean {
-    return this.#email === email && this.#senha === senha;
+    if (this.#email !== email) {
+      return false;
+    }
+    if (/^\$2[aby]\$\d{2}\$/.test(this.#senha)) {
+      return bcrypt.compareSync(senha, this.#senha);
+    }
+    return this.#senha === senha;
   }
 
   toJSON() {
@@ -126,6 +147,8 @@ export class Usuario {
       nome: this.#nome,
       email: this.#email,
       nivelAcesso: this.#nivelAcesso,
+      fotoPerfilUrl: this.#fotoPerfilUrl,
+      fundoPerfilUrl: this.#fundoPerfilUrl,
     };
   }
 }

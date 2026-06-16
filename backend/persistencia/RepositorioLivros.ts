@@ -1,6 +1,7 @@
 // Repositório de Livros - Persistência com Prisma
 
 import { prisma } from "../config/prismaClient.js";
+import { montarUrlArquivoApi } from "../config/minioClient.js";
 import { Livro } from "../negocios/Livro.js";
 
 export class RepositorioLivros {
@@ -12,7 +13,10 @@ export class RepositorioLivros {
       data.genero,
       data.ano_publicacao,
       data.sinopse,
-      data.status
+      data.status,
+      data.capa_objeto ? montarUrlArquivoApi(data.capa_objeto) : data.capa_url ?? null,
+      data.capa_objeto ?? null,
+      data._count?.curtidas ?? data.curtidasTotal ?? 0
     );
   }
 
@@ -25,6 +29,8 @@ export class RepositorioLivros {
         ano_publicacao: livro.anoPublicacao,
         sinopse: livro.sinopse,
         status: livro.status,
+        capa_url: livro.capaUrl,
+        capa_objeto: livro.capaObjeto,
       },
     });
     return this.criarLivroDoDb(livroCriado);
@@ -33,6 +39,7 @@ export class RepositorioLivros {
   async buscarPorId(id: number): Promise<Livro | undefined> {
     const livro = await prisma.livro.findUnique({
       where: { id_livro: id },
+      include: { _count: { select: { curtidas: true } } },
     });
     return livro ? this.criarLivroDoDb(livro) : undefined;
   }
@@ -40,6 +47,7 @@ export class RepositorioLivros {
   async buscarPorTitulo(titulo: string): Promise<Livro[]> {
     const livros = await prisma.livro.findMany({
       where: { titulo: { contains: titulo } },
+      include: { _count: { select: { curtidas: true } } },
     });
     return livros.map((l) => this.criarLivroDoDb(l));
   }
@@ -47,12 +55,16 @@ export class RepositorioLivros {
   async buscarPorAutor(autor: string): Promise<Livro[]> {
     const livros = await prisma.livro.findMany({
       where: { autor: { contains: autor } },
+      include: { _count: { select: { curtidas: true } } },
     });
     return livros.map((l) => this.criarLivroDoDb(l));
   }
 
   async listarTodos(): Promise<Livro[]> {
-    const livros = await prisma.livro.findMany();
+    const livros = await prisma.livro.findMany({
+      include: { _count: { select: { curtidas: true } } },
+      orderBy: { id_livro: "desc" },
+    });
     return livros.map((l) => this.criarLivroDoDb(l));
   }
 
@@ -130,6 +142,125 @@ export class RepositorioLivros {
       return true;
     } catch {
       return false;
+    }
+  }
+
+  async removerOuInativar(id: number): Promise<
+    | { acao: "excluido"; livro: null; reservasCanceladas: number }
+    | { acao: "inativado"; livro: Livro; reservasCanceladas: number }
+    | null
+  > {
+    try {
+      return await prisma.$transaction(async (tx) => {
+        const livro = await tx.livro.findUnique({
+          where: { id_livro: id },
+          include: {
+            reservas: {
+              select: {
+                id_reserva: true,
+                usuario_id: true,
+                status_reserva: true,
+              },
+            },
+            exemplares: {
+              select: {
+                id_exemplar: true,
+                emprestimos: { select: { id_emprestimo: true } },
+                multas: { select: { id_multa: true } },
+              },
+            },
+            _count: { select: { curtidas: true } },
+          },
+        });
+
+        if (!livro) return null;
+
+        const reservasParaCancelar = livro.reservas.filter((reserva) =>
+          ["ativa", "pronta"].includes(reserva.status_reserva)
+        );
+        const possuiHistorico =
+          livro.reservas.length > 0 ||
+          livro.exemplares.some(
+            (exemplar) =>
+              exemplar.emprestimos.length > 0 || exemplar.multas.length > 0
+          );
+
+        if (possuiHistorico) {
+          await Promise.all(
+            reservasParaCancelar.map((reserva) =>
+              (tx as any).notificacao.create({
+                data: {
+                  usuario_id: reserva.usuario_id,
+                  tipo: "reserva",
+                  mensagem: `Sua reserva de "${livro.titulo}" foi cancelada porque o livro saiu do acervo.`,
+                  data_envio: new Date(),
+                  lido: false,
+                  acao: "gerenciar_reservas",
+                  referencia_id: reserva.id_reserva,
+                },
+              })
+            )
+          );
+
+          await tx.reserva.updateMany({
+            where: {
+              livro_id: id,
+              status_reserva: { in: ["ativa", "pronta"] },
+            },
+            data: { status_reserva: "cancelada" },
+          });
+
+          const livroDb = await tx.livro.update({
+            where: { id_livro: id },
+            data: { status: "inativo" },
+            include: { _count: { select: { curtidas: true } } },
+          });
+          return {
+            acao: "inativado",
+            livro: this.criarLivroDoDb(livroDb),
+            reservasCanceladas: reservasParaCancelar.length,
+          };
+        }
+
+        await tx.livro.delete({ where: { id_livro: id } });
+        return { acao: "excluido", livro: null, reservasCanceladas: 0 };
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  async atualizarCapa(
+    id: number,
+    capaObjeto: string,
+    capaUrl: string
+  ): Promise<Livro | null> {
+    try {
+      const livroDb = await prisma.livro.update({
+        where: { id_livro: id },
+        data: {
+          capa_objeto: capaObjeto,
+          capa_url: capaUrl,
+        },
+      });
+      return this.criarLivroDoDb(livroDb);
+    } catch {
+      return null;
+    }
+  }
+
+  async removerCapa(id: number): Promise<Livro | null> {
+    try {
+      const livroDb = await prisma.livro.update({
+        where: { id_livro: id },
+        data: {
+          capa_objeto: null,
+          capa_url: null,
+        },
+      });
+      return this.criarLivroDoDb(livroDb);
+    } catch {
+      return null;
     }
   }
 

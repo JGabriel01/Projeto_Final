@@ -28,12 +28,14 @@ export type AggregateNotificacao = {
 
 export type NotificacaoAvgAggregateOutputType = {
   id_notificacao: number | null
+  referencia_id: number | null
   usuario_id: number | null
   id_emprestimo: number | null
 }
 
 export type NotificacaoSumAggregateOutputType = {
   id_notificacao: number | null
+  referencia_id: number | null
   usuario_id: number | null
   id_emprestimo: number | null
 }
@@ -44,6 +46,8 @@ export type NotificacaoMinAggregateOutputType = {
   mensagem: string | null
   data_envio: Date | null
   lido: boolean | null
+  acao: string | null
+  referencia_id: number | null
   usuario_id: number | null
   id_emprestimo: number | null
 }
@@ -54,6 +58,8 @@ export type NotificacaoMaxAggregateOutputType = {
   mensagem: string | null
   data_envio: Date | null
   lido: boolean | null
+  acao: string | null
+  referencia_id: number | null
   usuario_id: number | null
   id_emprestimo: number | null
 }
@@ -64,6 +70,8 @@ export type NotificacaoCountAggregateOutputType = {
   mensagem: number
   data_envio: number
   lido: number
+  acao: number
+  referencia_id: number
   usuario_id: number
   id_emprestimo: number
   _all: number
@@ -72,12 +80,14 @@ export type NotificacaoCountAggregateOutputType = {
 
 export type NotificacaoAvgAggregateInputType = {
   id_notificacao?: true
+  referencia_id?: true
   usuario_id?: true
   id_emprestimo?: true
 }
 
 export type NotificacaoSumAggregateInputType = {
   id_notificacao?: true
+  referencia_id?: true
   usuario_id?: true
   id_emprestimo?: true
 }
@@ -88,6 +98,8 @@ export type NotificacaoMinAggregateInputType = {
   mensagem?: true
   data_envio?: true
   lido?: true
+  acao?: true
+  referencia_id?: true
   usuario_id?: true
   id_emprestimo?: true
 }
@@ -98,6 +110,8 @@ export type NotificacaoMaxAggregateInputType = {
   mensagem?: true
   data_envio?: true
   lido?: true
+  acao?: true
+  referencia_id?: true
   usuario_id?: true
   id_emprestimo?: true
 }
@@ -108,6 +122,8 @@ export type NotificacaoCountAggregateInputType = {
   mensagem?: true
   data_envio?: true
   lido?: true
+  acao?: true
+  referencia_id?: true
   usuario_id?: true
   id_emprestimo?: true
   _all?: true
@@ -205,6 +221,8 @@ export type NotificacaoGroupByOutputType = {
   mensagem: string
   data_envio: Date
   lido: boolean
+  acao: string | null
+  referencia_id: number | null
   usuario_id: number
   id_emprestimo: number | null
   _count: NotificacaoCountAggregateOutputType | null
@@ -238,6 +256,8 @@ export type NotificacaoWhereInput = {
   mensagem?: Prisma.StringFilter<"Notificacao"> | string
   data_envio?: Prisma.DateTimeFilter<"Notificacao"> | Date | string
   lido?: Prisma.BoolFilter<"Notificacao"> | boolean
+  acao?: Prisma.StringNullableFilter<"Notificacao"> | string | null
+  referencia_id?: Prisma.IntNullableFilter<"Notificacao"> | number | null
   usuario_id?: Prisma.IntFilter<"Notificacao"> | number
   id_emprestimo?: Prisma.IntNullableFilter<"Notificacao"> | number | null
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
@@ -250,6 +270,8 @@ export type NotificacaoOrderByWithRelationInput = {
   mensagem?: Prisma.SortOrder
   data_envio?: Prisma.SortOrder
   lido?: Prisma.SortOrder
+  acao?: Prisma.SortOrderInput | Prisma.SortOrder
+  referencia_id?: Prisma.SortOrderInput | Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   id_emprestimo?: Prisma.SortOrderInput | Prisma.SortOrder
   usuario?: Prisma.UsuarioOrderByWithRelationInput
@@ -265,6 +287,8 @@ export type NotificacaoWhereUniqueInput = Prisma.AtLeast<{
   mensagem?: Prisma.StringFilter<"Notificacao"> | string
   data_envio?: Prisma.DateTimeFilter<"Notificacao"> | Date | string
   lido?: Prisma.BoolFilter<"Notificacao"> | boolean
+  acao?: Prisma.StringNullableFilter<"Notificacao"> | string | null
+  referencia_id?: Prisma.IntNullableFilter<"Notificacao"> | number | null
   usuario_id?: Prisma.IntFilter<"Notificacao"> | number
   id_emprestimo?: Prisma.IntNullableFilter<"Notificacao"> | number | null
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
@@ -277,6 +301,8 @@ export type NotificacaoOrderByWithAggregationInput = {
   mensagem?: Prisma.SortOrder
   data_envio?: Prisma.SortOrder
   lido?: Prisma.SortOrder
+  acao?: Prisma.SortOrderInput | Prisma.SortOrder
+  referencia_id?: Prisma.SortOrderInput | Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   id_emprestimo?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.NotificacaoCountOrderByAggregateInput
@@ -295,6 +321,8 @@ export type NotificacaoScalarWhereWithAggregatesInput = {
   mensagem?: Prisma.StringWithAggregatesFilter<"Notificacao"> | string
   data_envio?: Prisma.DateTimeWithAggregatesFilter<"Notificacao"> | Date | string
   lido?: Prisma.BoolWithAggregatesFilter<"Notificacao"> | boolean
+  acao?: Prisma.StringNullableWithAggregatesFilter<"Notificacao"> | string | null
+  referencia_id?: Prisma.IntNullableWithAggregatesFilter<"Notificacao"> | number | null
   usuario_id?: Prisma.IntWithAggregatesFilter<"Notificacao"> | number
   id_emprestimo?: Prisma.IntNullableWithAggregatesFilter<"Notificacao"> | number | null
 }
@@ -304,6 +332,8 @@ export type NotificacaoCreateInput = {
   mensagem: string
   data_envio: Date | string
   lido?: boolean
+  acao?: string | null
+  referencia_id?: number | null
   usuario: Prisma.UsuarioCreateNestedOneWithoutNotificacoesInput
   emprestimo?: Prisma.EmprestimoCreateNestedOneWithoutNotificacoesInput
 }
@@ -314,6 +344,8 @@ export type NotificacaoUncheckedCreateInput = {
   mensagem: string
   data_envio: Date | string
   lido?: boolean
+  acao?: string | null
+  referencia_id?: number | null
   usuario_id: number
   id_emprestimo?: number | null
 }
@@ -323,6 +355,8 @@ export type NotificacaoUpdateInput = {
   mensagem?: Prisma.StringFieldUpdateOperationsInput | string
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  acao?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencia_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usuario?: Prisma.UsuarioUpdateOneRequiredWithoutNotificacoesNestedInput
   emprestimo?: Prisma.EmprestimoUpdateOneWithoutNotificacoesNestedInput
 }
@@ -333,6 +367,8 @@ export type NotificacaoUncheckedUpdateInput = {
   mensagem?: Prisma.StringFieldUpdateOperationsInput | string
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  acao?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencia_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
   id_emprestimo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
@@ -343,6 +379,8 @@ export type NotificacaoCreateManyInput = {
   mensagem: string
   data_envio: Date | string
   lido?: boolean
+  acao?: string | null
+  referencia_id?: number | null
   usuario_id: number
   id_emprestimo?: number | null
 }
@@ -352,6 +390,8 @@ export type NotificacaoUpdateManyMutationInput = {
   mensagem?: Prisma.StringFieldUpdateOperationsInput | string
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  acao?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencia_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type NotificacaoUncheckedUpdateManyInput = {
@@ -360,6 +400,8 @@ export type NotificacaoUncheckedUpdateManyInput = {
   mensagem?: Prisma.StringFieldUpdateOperationsInput | string
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  acao?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencia_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
   id_emprestimo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
@@ -370,12 +412,15 @@ export type NotificacaoCountOrderByAggregateInput = {
   mensagem?: Prisma.SortOrder
   data_envio?: Prisma.SortOrder
   lido?: Prisma.SortOrder
+  acao?: Prisma.SortOrder
+  referencia_id?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   id_emprestimo?: Prisma.SortOrder
 }
 
 export type NotificacaoAvgOrderByAggregateInput = {
   id_notificacao?: Prisma.SortOrder
+  referencia_id?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   id_emprestimo?: Prisma.SortOrder
 }
@@ -386,6 +431,8 @@ export type NotificacaoMaxOrderByAggregateInput = {
   mensagem?: Prisma.SortOrder
   data_envio?: Prisma.SortOrder
   lido?: Prisma.SortOrder
+  acao?: Prisma.SortOrder
+  referencia_id?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   id_emprestimo?: Prisma.SortOrder
 }
@@ -396,12 +443,15 @@ export type NotificacaoMinOrderByAggregateInput = {
   mensagem?: Prisma.SortOrder
   data_envio?: Prisma.SortOrder
   lido?: Prisma.SortOrder
+  acao?: Prisma.SortOrder
+  referencia_id?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   id_emprestimo?: Prisma.SortOrder
 }
 
 export type NotificacaoSumOrderByAggregateInput = {
   id_notificacao?: Prisma.SortOrder
+  referencia_id?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   id_emprestimo?: Prisma.SortOrder
 }
@@ -428,16 +478,20 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
   increment?: number
   decrement?: number
   multiply?: number
   divide?: number
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
+export type IntFieldUpdateOperationsInput = {
+  set?: number
   increment?: number
   decrement?: number
   multiply?: number
@@ -533,6 +587,8 @@ export type NotificacaoCreateWithoutUsuarioInput = {
   mensagem: string
   data_envio: Date | string
   lido?: boolean
+  acao?: string | null
+  referencia_id?: number | null
   emprestimo?: Prisma.EmprestimoCreateNestedOneWithoutNotificacoesInput
 }
 
@@ -542,6 +598,8 @@ export type NotificacaoUncheckedCreateWithoutUsuarioInput = {
   mensagem: string
   data_envio: Date | string
   lido?: boolean
+  acao?: string | null
+  referencia_id?: number | null
   id_emprestimo?: number | null
 }
 
@@ -579,6 +637,8 @@ export type NotificacaoScalarWhereInput = {
   mensagem?: Prisma.StringFilter<"Notificacao"> | string
   data_envio?: Prisma.DateTimeFilter<"Notificacao"> | Date | string
   lido?: Prisma.BoolFilter<"Notificacao"> | boolean
+  acao?: Prisma.StringNullableFilter<"Notificacao"> | string | null
+  referencia_id?: Prisma.IntNullableFilter<"Notificacao"> | number | null
   usuario_id?: Prisma.IntFilter<"Notificacao"> | number
   id_emprestimo?: Prisma.IntNullableFilter<"Notificacao"> | number | null
 }
@@ -588,6 +648,8 @@ export type NotificacaoCreateWithoutEmprestimoInput = {
   mensagem: string
   data_envio: Date | string
   lido?: boolean
+  acao?: string | null
+  referencia_id?: number | null
   usuario: Prisma.UsuarioCreateNestedOneWithoutNotificacoesInput
 }
 
@@ -597,6 +659,8 @@ export type NotificacaoUncheckedCreateWithoutEmprestimoInput = {
   mensagem: string
   data_envio: Date | string
   lido?: boolean
+  acao?: string | null
+  referencia_id?: number | null
   usuario_id: number
 }
 
@@ -631,6 +695,8 @@ export type NotificacaoCreateManyUsuarioInput = {
   mensagem: string
   data_envio: Date | string
   lido?: boolean
+  acao?: string | null
+  referencia_id?: number | null
   id_emprestimo?: number | null
 }
 
@@ -639,6 +705,8 @@ export type NotificacaoUpdateWithoutUsuarioInput = {
   mensagem?: Prisma.StringFieldUpdateOperationsInput | string
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  acao?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencia_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   emprestimo?: Prisma.EmprestimoUpdateOneWithoutNotificacoesNestedInput
 }
 
@@ -648,6 +716,8 @@ export type NotificacaoUncheckedUpdateWithoutUsuarioInput = {
   mensagem?: Prisma.StringFieldUpdateOperationsInput | string
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  acao?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencia_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   id_emprestimo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
@@ -657,6 +727,8 @@ export type NotificacaoUncheckedUpdateManyWithoutUsuarioInput = {
   mensagem?: Prisma.StringFieldUpdateOperationsInput | string
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  acao?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencia_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   id_emprestimo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
@@ -666,6 +738,8 @@ export type NotificacaoCreateManyEmprestimoInput = {
   mensagem: string
   data_envio: Date | string
   lido?: boolean
+  acao?: string | null
+  referencia_id?: number | null
   usuario_id: number
 }
 
@@ -674,6 +748,8 @@ export type NotificacaoUpdateWithoutEmprestimoInput = {
   mensagem?: Prisma.StringFieldUpdateOperationsInput | string
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  acao?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencia_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usuario?: Prisma.UsuarioUpdateOneRequiredWithoutNotificacoesNestedInput
 }
 
@@ -683,6 +759,8 @@ export type NotificacaoUncheckedUpdateWithoutEmprestimoInput = {
   mensagem?: Prisma.StringFieldUpdateOperationsInput | string
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  acao?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencia_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -692,6 +770,8 @@ export type NotificacaoUncheckedUpdateManyWithoutEmprestimoInput = {
   mensagem?: Prisma.StringFieldUpdateOperationsInput | string
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  acao?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referencia_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -703,6 +783,8 @@ export type NotificacaoSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   mensagem?: boolean
   data_envio?: boolean
   lido?: boolean
+  acao?: boolean
+  referencia_id?: boolean
   usuario_id?: boolean
   id_emprestimo?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
@@ -715,6 +797,8 @@ export type NotificacaoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   mensagem?: boolean
   data_envio?: boolean
   lido?: boolean
+  acao?: boolean
+  referencia_id?: boolean
   usuario_id?: boolean
   id_emprestimo?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
@@ -727,6 +811,8 @@ export type NotificacaoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   mensagem?: boolean
   data_envio?: boolean
   lido?: boolean
+  acao?: boolean
+  referencia_id?: boolean
   usuario_id?: boolean
   id_emprestimo?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
@@ -739,11 +825,13 @@ export type NotificacaoSelectScalar = {
   mensagem?: boolean
   data_envio?: boolean
   lido?: boolean
+  acao?: boolean
+  referencia_id?: boolean
   usuario_id?: boolean
   id_emprestimo?: boolean
 }
 
-export type NotificacaoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_notificacao" | "tipo" | "mensagem" | "data_envio" | "lido" | "usuario_id" | "id_emprestimo", ExtArgs["result"]["notificacao"]>
+export type NotificacaoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_notificacao" | "tipo" | "mensagem" | "data_envio" | "lido" | "acao" | "referencia_id" | "usuario_id" | "id_emprestimo", ExtArgs["result"]["notificacao"]>
 export type NotificacaoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   emprestimo?: boolean | Prisma.Notificacao$emprestimoArgs<ExtArgs>
@@ -769,6 +857,8 @@ export type $NotificacaoPayload<ExtArgs extends runtime.Types.Extensions.Interna
     mensagem: string
     data_envio: Date
     lido: boolean
+    acao: string | null
+    referencia_id: number | null
     usuario_id: number
     id_emprestimo: number | null
   }, ExtArgs["result"]["notificacao"]>
@@ -1201,6 +1291,8 @@ export interface NotificacaoFieldRefs {
   readonly mensagem: Prisma.FieldRef<"Notificacao", 'String'>
   readonly data_envio: Prisma.FieldRef<"Notificacao", 'DateTime'>
   readonly lido: Prisma.FieldRef<"Notificacao", 'Boolean'>
+  readonly acao: Prisma.FieldRef<"Notificacao", 'String'>
+  readonly referencia_id: Prisma.FieldRef<"Notificacao", 'Int'>
   readonly usuario_id: Prisma.FieldRef<"Notificacao", 'Int'>
   readonly id_emprestimo: Prisma.FieldRef<"Notificacao", 'Int'>
 }

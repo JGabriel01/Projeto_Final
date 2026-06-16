@@ -19,6 +19,8 @@ model Notificacao {
   mensagem       String
   data_envio     DateTime
   lido           Boolean @default(false)
+  acao           String?
+  referencia_id  Int?
   
   usuario_id     Int
   usuario        Usuario  @relation(fields: [usuario_id], references: [id_usuario])
@@ -34,10 +36,16 @@ model Usuario {
   email      String    @unique
   senha      String
   nivel_acesso String    // "aluno", "professor", "admin", "usuario_comum"
+  foto_perfil_url String?
+  foto_perfil_objeto String?
+  fundo_perfil_url String?
+  fundo_perfil_objeto String?
   
   notificacoes Notificacao[]
   reservas    Reserva[]
   emprestimos Emprestimo[]
+  curtidasLivros CurtidaLivro[]
+  solicitacoesExclusaoAdmin SolicitacaoExclusaoAdmin[] @relation("AdminSolicitante")
   
   aluno      Aluno?
   professor  Professor?
@@ -46,31 +54,28 @@ model Usuario {
 
 // Aluno (subtipo de Usuario)
 model Aluno {
-  id_aluno          Int     @id @default(autoincrement())
+  usuario_id        Int     @id
   ano_ingresso      Int
   curso             String
   matricula_aluno   String  @unique
   
-  usuario_id Int @unique
   usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario], onDelete: Cascade)
 }
 
 // Professor (subtipo de Usuario)
 model Professor {
-  id_professor      Int    @id @default(autoincrement())
+  usuario_id Int @id
   departamento      String
   matricula_professor String @unique
   
-  usuario_id Int @unique
   usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario], onDelete: Cascade)
 }
 
 // Admin (subtipo de Usuario)
 model Admin {
-  id_admin Int    @id @default(autoincrement())
+  usuario_id Int @id
   cargo    String
   
-  usuario_id Int @unique
   usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario], onDelete: Cascade)
 }
 
@@ -83,9 +88,26 @@ model Livro {
   ano_publicacao Int
   sinopse        String
   status         String @default("disponível")
+  capa_url       String?
+  capa_objeto    String?
   
   reservas       Reserva[]
-  pertences      Pertence[]
+  exemplares     Exemplar[]
+  curtidas        CurtidaLivro[]
+}
+
+model CurtidaLivro {
+  id_curtida   Int      @id @default(autoincrement())
+  data_curtida DateTime @default(now())
+
+  usuario_id Int
+  usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario], onDelete: Cascade)
+
+  livro_id Int
+  livro    Livro @relation(fields: [livro_id], references: [id_livro], onDelete: Cascade)
+
+  @@unique([usuario_id, livro_id])
+  @@index([livro_id])
 }
 
 // Exemplar
@@ -94,10 +116,13 @@ model Exemplar {
   codigo_tombo     String @unique
   estado           String
   localizacao      String
+  livro_id         Int
+  livro            Livro @relation(fields: [livro_id], references: [id_livro], onDelete: Cascade)
   
   multas           Multa[]
-  pertences        Pertence[]
   emprestimos      Emprestimo[]
+
+  @@index([livro_id])
 }
 
 // Reserva
@@ -106,6 +131,7 @@ model Reserva {
   data_reserva   DateTime @default(now())
   data_expiracao DateTime
   status_reserva String   @default("ativa")
+  notificado_em  DateTime?
   
   usuario_id Int
   usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario])
@@ -123,6 +149,8 @@ model Emprestimo {
   data_saida       DateTime @default(now())
   data_vencimento  DateTime
   data_devolucao_real DateTime?
+  renovacoes       Int      @default(0)
+  status_extensao  String   @default("nenhuma")
   
   usuario_id Int
   usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario])
@@ -152,17 +180,16 @@ model Multa {
   exemplar    Exemplar @relation(fields: [exemplar_id], references: [id_exemplar])
 }
 
-// Pertence (relacionamento entre Livro e Exemplar)
-model Pertence {
-  id_pertence Int @id @default(autoincrement())
-  
-  livro_id Int
-  livro    Livro @relation(fields: [livro_id], references: [id_livro], onDelete: Cascade)
-  
-  exemplar_id Int
-  exemplar    Exemplar @relation(fields: [exemplar_id], references: [id_exemplar], onDelete: Cascade)
-  
-  @@unique([livro_id, exemplar_id])
-  @@index([livro_id])
-  @@index([exemplar_id])
+model SolicitacaoExclusaoAdmin {
+  id_solicitacao Int      @id @default(autoincrement())
+  admin_id       Int
+  status         String   @default("pendente")
+  data_criacao   DateTime @default(now())
+  data_decisao   DateTime?
+  decidido_por   Int?
+
+  admin          Usuario  @relation("AdminSolicitante", fields: [admin_id], references: [id_usuario], onDelete: Cascade)
+
+  @@index([admin_id])
 }
+

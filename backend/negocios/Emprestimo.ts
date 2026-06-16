@@ -15,7 +15,8 @@ export class Emprestimo {
     usuarioId: number,
     exemplarId: number | null,
     dataSaida: Date = new Date(),
-    dataVencimento: Date = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) // 14 dias
+    dataVencimento: Date = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 dias
+    dataDevolucaoReal: Date | null = null
   ) {
     // Validações no construtor
     this.validarUsuarioId(usuarioId);
@@ -25,10 +26,14 @@ export class Emprestimo {
     this.#idEmprestimo = idEmprestimo;
     this.#dataSaida = dataSaida;
     this.#dataVencimento = dataVencimento;
-    this.#dataDevolucaoReal = null;
+    this.#dataDevolucaoReal = dataDevolucaoReal;
     this.#usuarioId = usuarioId;
     this.#exemplarId = exemplarId;
-    this.#status = "ativo";
+    this.#status = dataDevolucaoReal
+      ? dataDevolucaoReal > dataVencimento
+        ? "devolvido_atrasado"
+        : "devolvido"
+      : "ativo";
   }
 
   // Getters

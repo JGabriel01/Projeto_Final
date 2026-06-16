@@ -1,14 +1,20 @@
-// Exporta todas as exceções
-export { ErroValidacao } from "./ErroValidacao.js";
-export { ErroUsuario } from "./ErroUsuario.js";
-export { ErroEmail } from "./ErroEmail.js";
-export { ErroSenha } from "./ErroSenha.js";
-export { ErroAutenticacao } from "./ErroAutenticacao.js";
-export { ErroLivro } from "./ErroLivro.js";
-export { ErroEmprestimo } from "./ErroEmprestimo.js";
-export { ErroExemplar } from "./ErroExemplar.js";
-export { ErroReserva } from "./ErroReserva.js";
-export { ErroMulta } from "./ErroMulta.js";
-export { ErroNaoEncontrado } from "./ErroNaoEncontrado.js";
-export { ErroDuplicado } from "./ErroDuplicado.js";
-export { ErroBancoDados } from "./ErroBancoDados.js";
+class ErroBase extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = new.target.name;
+  }
+}
+
+export class ErroValidacao extends ErroBase {}
+export class ErroUsuario extends ErroBase {}
+export class ErroEmail extends ErroBase {}
+export class ErroSenha extends ErroBase {}
+export class ErroAutenticacao extends ErroBase {}
+export class ErroLivro extends ErroBase {}
+export class ErroEmprestimo extends ErroBase {}
+export class ErroExemplar extends ErroBase {}
+export class ErroReserva extends ErroBase {}
+export class ErroMulta extends ErroBase {}
+export class ErroNaoEncontrado extends ErroBase {}
+export class ErroDuplicado extends ErroBase {}
+export class ErroBancoDados extends ErroBase {}

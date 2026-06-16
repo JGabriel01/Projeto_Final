@@ -27,61 +27,51 @@ export type AggregateAdmin = {
 }
 
 export type AdminAvgAggregateOutputType = {
-  id_admin: number | null
   usuario_id: number | null
 }
 
 export type AdminSumAggregateOutputType = {
-  id_admin: number | null
   usuario_id: number | null
 }
 
 export type AdminMinAggregateOutputType = {
-  id_admin: number | null
-  cargo: string | null
   usuario_id: number | null
+  cargo: string | null
 }
 
 export type AdminMaxAggregateOutputType = {
-  id_admin: number | null
-  cargo: string | null
   usuario_id: number | null
+  cargo: string | null
 }
 
 export type AdminCountAggregateOutputType = {
-  id_admin: number
-  cargo: number
   usuario_id: number
+  cargo: number
   _all: number
 }
 
 
 export type AdminAvgAggregateInputType = {
-  id_admin?: true
   usuario_id?: true
 }
 
 export type AdminSumAggregateInputType = {
-  id_admin?: true
   usuario_id?: true
 }
 
 export type AdminMinAggregateInputType = {
-  id_admin?: true
-  cargo?: true
   usuario_id?: true
+  cargo?: true
 }
 
 export type AdminMaxAggregateInputType = {
-  id_admin?: true
-  cargo?: true
   usuario_id?: true
+  cargo?: true
 }
 
 export type AdminCountAggregateInputType = {
-  id_admin?: true
-  cargo?: true
   usuario_id?: true
+  cargo?: true
   _all?: true
 }
 
@@ -172,9 +162,8 @@ export type AdminGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 }
 
 export type AdminGroupByOutputType = {
-  id_admin: number
-  cargo: string
   usuario_id: number
+  cargo: string
   _count: AdminCountAggregateOutputType | null
   _avg: AdminAvgAggregateOutputType | null
   _sum: AdminSumAggregateOutputType | null
@@ -201,33 +190,29 @@ export type AdminWhereInput = {
   AND?: Prisma.AdminWhereInput | Prisma.AdminWhereInput[]
   OR?: Prisma.AdminWhereInput[]
   NOT?: Prisma.AdminWhereInput | Prisma.AdminWhereInput[]
-  id_admin?: Prisma.IntFilter<"Admin"> | number
-  cargo?: Prisma.StringFilter<"Admin"> | string
   usuario_id?: Prisma.IntFilter<"Admin"> | number
+  cargo?: Prisma.StringFilter<"Admin"> | string
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
 }
 
 export type AdminOrderByWithRelationInput = {
-  id_admin?: Prisma.SortOrder
-  cargo?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
+  cargo?: Prisma.SortOrder
   usuario?: Prisma.UsuarioOrderByWithRelationInput
 }
 
 export type AdminWhereUniqueInput = Prisma.AtLeast<{
-  id_admin?: number
   usuario_id?: number
   AND?: Prisma.AdminWhereInput | Prisma.AdminWhereInput[]
   OR?: Prisma.AdminWhereInput[]
   NOT?: Prisma.AdminWhereInput | Prisma.AdminWhereInput[]
   cargo?: Prisma.StringFilter<"Admin"> | string
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
-}, "id_admin" | "usuario_id">
+}, "usuario_id">
 
 export type AdminOrderByWithAggregationInput = {
-  id_admin?: Prisma.SortOrder
-  cargo?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
+  cargo?: Prisma.SortOrder
   _count?: Prisma.AdminCountOrderByAggregateInput
   _avg?: Prisma.AdminAvgOrderByAggregateInput
   _max?: Prisma.AdminMaxOrderByAggregateInput
@@ -239,9 +224,8 @@ export type AdminScalarWhereWithAggregatesInput = {
   AND?: Prisma.AdminScalarWhereWithAggregatesInput | Prisma.AdminScalarWhereWithAggregatesInput[]
   OR?: Prisma.AdminScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AdminScalarWhereWithAggregatesInput | Prisma.AdminScalarWhereWithAggregatesInput[]
-  id_admin?: Prisma.IntWithAggregatesFilter<"Admin"> | number
-  cargo?: Prisma.StringWithAggregatesFilter<"Admin"> | string
   usuario_id?: Prisma.IntWithAggregatesFilter<"Admin"> | number
+  cargo?: Prisma.StringWithAggregatesFilter<"Admin"> | string
 }
 
 export type AdminCreateInput = {
@@ -250,9 +234,8 @@ export type AdminCreateInput = {
 }
 
 export type AdminUncheckedCreateInput = {
-  id_admin?: number
-  cargo: string
   usuario_id: number
+  cargo: string
 }
 
 export type AdminUpdateInput = {
@@ -261,15 +244,13 @@ export type AdminUpdateInput = {
 }
 
 export type AdminUncheckedUpdateInput = {
-  id_admin?: Prisma.IntFieldUpdateOperationsInput | number
-  cargo?: Prisma.StringFieldUpdateOperationsInput | string
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
+  cargo?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type AdminCreateManyInput = {
-  id_admin?: number
-  cargo: string
   usuario_id: number
+  cargo: string
 }
 
 export type AdminUpdateManyMutationInput = {
@@ -277,9 +258,8 @@ export type AdminUpdateManyMutationInput = {
 }
 
 export type AdminUncheckedUpdateManyInput = {
-  id_admin?: Prisma.IntFieldUpdateOperationsInput | number
-  cargo?: Prisma.StringFieldUpdateOperationsInput | string
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
+  cargo?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type AdminNullableScalarRelationFilter = {
@@ -288,30 +268,25 @@ export type AdminNullableScalarRelationFilter = {
 }
 
 export type AdminCountOrderByAggregateInput = {
-  id_admin?: Prisma.SortOrder
-  cargo?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
+  cargo?: Prisma.SortOrder
 }
 
 export type AdminAvgOrderByAggregateInput = {
-  id_admin?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
 }
 
 export type AdminMaxOrderByAggregateInput = {
-  id_admin?: Prisma.SortOrder
-  cargo?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
+  cargo?: Prisma.SortOrder
 }
 
 export type AdminMinOrderByAggregateInput = {
-  id_admin?: Prisma.SortOrder
-  cargo?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
+  cargo?: Prisma.SortOrder
 }
 
 export type AdminSumOrderByAggregateInput = {
-  id_admin?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
 }
 
@@ -352,7 +327,6 @@ export type AdminCreateWithoutUsuarioInput = {
 }
 
 export type AdminUncheckedCreateWithoutUsuarioInput = {
-  id_admin?: number
   cargo: string
 }
 
@@ -377,40 +351,35 @@ export type AdminUpdateWithoutUsuarioInput = {
 }
 
 export type AdminUncheckedUpdateWithoutUsuarioInput = {
-  id_admin?: Prisma.IntFieldUpdateOperationsInput | number
   cargo?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
 
 export type AdminSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id_admin?: boolean
-  cargo?: boolean
   usuario_id?: boolean
+  cargo?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["admin"]>
 
 export type AdminSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id_admin?: boolean
-  cargo?: boolean
   usuario_id?: boolean
+  cargo?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["admin"]>
 
 export type AdminSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id_admin?: boolean
-  cargo?: boolean
   usuario_id?: boolean
+  cargo?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["admin"]>
 
 export type AdminSelectScalar = {
-  id_admin?: boolean
-  cargo?: boolean
   usuario_id?: boolean
+  cargo?: boolean
 }
 
-export type AdminOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_admin" | "cargo" | "usuario_id", ExtArgs["result"]["admin"]>
+export type AdminOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"usuario_id" | "cargo", ExtArgs["result"]["admin"]>
 export type AdminInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }
@@ -427,9 +396,8 @@ export type $AdminPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     usuario: Prisma.$UsuarioPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id_admin: number
-    cargo: string
     usuario_id: number
+    cargo: string
   }, ExtArgs["result"]["admin"]>
   composites: {}
 }
@@ -513,8 +481,8 @@ export interface AdminDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    * // Get first 10 Admins
    * const admins = await prisma.admin.findMany({ take: 10 })
    * 
-   * // Only select the `id_admin`
-   * const adminWithId_adminOnly = await prisma.admin.findMany({ select: { id_admin: true } })
+   * // Only select the `usuario_id`
+   * const adminWithUsuario_idOnly = await prisma.admin.findMany({ select: { usuario_id: true } })
    * 
    */
   findMany<T extends AdminFindManyArgs>(args?: Prisma.SelectSubset<T, AdminFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -558,9 +526,9 @@ export interface AdminDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    *   ]
    * })
    * 
-   * // Create many Admins and only return the `id_admin`
-   * const adminWithId_adminOnly = await prisma.admin.createManyAndReturn({
-   *   select: { id_admin: true },
+   * // Create many Admins and only return the `usuario_id`
+   * const adminWithUsuario_idOnly = await prisma.admin.createManyAndReturn({
+   *   select: { usuario_id: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -649,9 +617,9 @@ export interface AdminDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    *   ]
    * })
    * 
-   * // Update zero or more Admins and only return the `id_admin`
-   * const adminWithId_adminOnly = await prisma.admin.updateManyAndReturn({
-   *   select: { id_admin: true },
+   * // Update zero or more Admins and only return the `usuario_id`
+   * const adminWithUsuario_idOnly = await prisma.admin.updateManyAndReturn({
+   *   select: { usuario_id: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -854,9 +822,8 @@ export interface Prisma__AdminClient<T, Null = never, ExtArgs extends runtime.Ty
  * Fields of the Admin model
  */
 export interface AdminFieldRefs {
-  readonly id_admin: Prisma.FieldRef<"Admin", 'Int'>
-  readonly cargo: Prisma.FieldRef<"Admin", 'String'>
   readonly usuario_id: Prisma.FieldRef<"Admin", 'Int'>
+  readonly cargo: Prisma.FieldRef<"Admin", 'String'>
 }
     
 

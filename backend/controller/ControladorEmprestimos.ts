@@ -1,10 +1,12 @@
 import { Emprestimo } from "../negocios/Emprestimo.js";
+import { RepositorioExemplares } from "../persistencia/RepositorioExemplares.js";
 import { RepositorioEmprestimos } from "../persistencia/RepositorioEmprestimos.js";
-import { ErroEmprestimo, ErroValidacao } from "../excecoes/index.js";
+import { ErroEmprestimo, ErroNaoEncontrado, ErroValidacao } from "../excecoes/index.js";
 import type { ResultadoOperacao } from "./ControladorUsuarios.js";
 
 export class ControladorEmprestimos {
   private repositorioEmprestimos = new RepositorioEmprestimos();
+  private repositorioExemplares = new RepositorioExemplares();
 
   async criarEmprestimo(
     usuarioId: number,
@@ -21,6 +23,16 @@ export class ControladorEmprestimos {
         throw new ErroEmprestimo("ID do exemplar invalido");
       }
 
+      if (exemplarId !== null) {
+        const exemplar = await this.repositorioExemplares.buscarPorId(exemplarId);
+        if (!exemplar) {
+          throw new ErroNaoEncontrado(`Exemplar com ID ${exemplarId} nao encontrado`);
+        }
+        if (String(exemplar.livro?.status || "").toLowerCase() === "inativo") {
+          throw new ErroEmprestimo("Livro inativo nao pode gerar novos emprestimos");
+        }
+      }
+
       const emprestimo = new Emprestimo(
         0,
         usuarioId,
@@ -34,6 +46,103 @@ export class ControladorEmprestimos {
       return { sucesso: true, dados: emprestimoCriado };
     } catch (erro: any) {
       return this.tratarErro(erro, "Erro ao criar emprestimo");
+    }
+  }
+
+  async listarTodos(): Promise<ResultadoOperacao<Emprestimo[]>> {
+    try {
+      const emprestimos = await this.repositorioEmprestimos.listarTodos();
+      return { sucesso: true, dados: emprestimos };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao listar emprestimos");
+    }
+  }
+
+  async buscarPorId(id: number): Promise<ResultadoOperacao<Emprestimo>> {
+    try {
+      if (typeof id !== "number" || id <= 0) {
+        throw new ErroValidacao("ID deve ser um numero positivo");
+      }
+
+      const emprestimo = await this.repositorioEmprestimos.buscarPorId(id);
+      if (!emprestimo) {
+        throw new ErroNaoEncontrado(`Emprestimo com ID ${id} nao encontrado`);
+      }
+
+      return { sucesso: true, dados: emprestimo };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao buscar emprestimo");
+    }
+  }
+
+  async excluirEmprestimo(id: number): Promise<ResultadoOperacao<{ id: number }>> {
+    try {
+      if (typeof id !== "number" || id <= 0) {
+        throw new ErroValidacao("ID deve ser um numero positivo");
+      }
+
+      const excluiu = await this.repositorioEmprestimos.deletar(id);
+      if (!excluiu) {
+        throw new ErroNaoEncontrado(`Emprestimo com ID ${id} nao encontrado`);
+      }
+
+      return { sucesso: true, dados: { id } };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao excluir emprestimo");
+    }
+  }
+
+  async atualizarEmprestimo(
+    id: number,
+    dados: { dataVencimento?: Date; exemplarId?: number | null }
+  ): Promise<ResultadoOperacao<Emprestimo>> {
+    try {
+      if (typeof id !== "number" || id <= 0) {
+        throw new ErroValidacao("ID deve ser um numero positivo");
+      }
+
+      if (dados.dataVencimento && isNaN(dados.dataVencimento.getTime())) {
+        throw new ErroValidacao("Data de vencimento invalida");
+      }
+      if (
+        dados.exemplarId !== undefined &&
+        dados.exemplarId !== null &&
+        (typeof dados.exemplarId !== "number" || dados.exemplarId <= 0)
+      ) {
+        throw new ErroValidacao("ID do exemplar deve ser positivo ou nulo");
+      }
+
+      const atualizado = await this.repositorioEmprestimos.atualizar(id, dados);
+      if (!atualizado) {
+        throw new ErroNaoEncontrado(`Emprestimo com ID ${id} nao encontrado`);
+      }
+
+      return { sucesso: true, dados: atualizado };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao atualizar emprestimo");
+    }
+  }
+
+  async registrarDevolucao(
+    id: number,
+    dataDevolucaoReal?: Date
+  ): Promise<ResultadoOperacao<Emprestimo>> {
+    try {
+      if (typeof id !== "number" || id <= 0) {
+        throw new ErroValidacao("ID deve ser um numero positivo");
+      }
+
+      const devolvido = await this.repositorioEmprestimos.registrarDevolucao(
+        id,
+        dataDevolucaoReal
+      );
+      if (!devolvido) {
+        throw new ErroNaoEncontrado(`Emprestimo com ID ${id} nao encontrado`);
+      }
+
+      return { sucesso: true, dados: devolvido };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao registrar devolucao");
     }
   }
 
@@ -54,6 +163,16 @@ export class ControladorEmprestimos {
         erro: {
           mensagem: erro.message,
           tipo: "ErroValidacao",
+        },
+      };
+    }
+
+    if (erro instanceof ErroNaoEncontrado) {
+      return {
+        sucesso: false,
+        erro: {
+          mensagem: erro.message,
+          tipo: "ErroNaoEncontrado",
         },
       };
     }

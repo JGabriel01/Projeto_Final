@@ -3,32 +3,27 @@ import { Usuario } from "./Usuario.js";
 import { ErroUsuario, ErroValidacao } from "../excecoes/index.js";
 
 export class Professor extends Usuario {
-  #idProfessor: number;
   #departamento: string;
   #matriculaProfessor: string;
 
   constructor(
-    idProfessor: number,
     idUsuario: number,
     nome: string,
     email: string,
     senha: string,
     departamento: string,
-    matriculaProfessor: string
+    matriculaProfessor: string,
+    fotoPerfilUrl?: string,
+    fundoPerfilUrl?: string
   ) {
-    super(idUsuario, nome, email, senha, "professor");
+    super(idUsuario, nome, email, senha, "professor", fotoPerfilUrl, fundoPerfilUrl);
     
     // Validações específicas do Professor
     this.validarDepartamento(departamento);
     this.validarMatriculaProfessor(matriculaProfessor);
 
-    this.#idProfessor = idProfessor;
     this.#departamento = departamento;
     this.#matriculaProfessor = matriculaProfessor;
-  }
-
-  get idProfessor(): number {
-    return this.#idProfessor;
   }
 
   get departamento(): string {
@@ -87,7 +82,6 @@ export class Professor extends Usuario {
   override toJSON() {
     return {
       ...super.toJSON(),
-      idProfessor: this.#idProfessor,
       departamento: this.#departamento,
       matriculaProfessor: this.#matriculaProfessor,
     };

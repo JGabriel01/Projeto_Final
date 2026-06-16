@@ -44,6 +44,8 @@ export type LivroMinAggregateOutputType = {
   ano_publicacao: number | null
   sinopse: string | null
   status: string | null
+  capa_url: string | null
+  capa_objeto: string | null
 }
 
 export type LivroMaxAggregateOutputType = {
@@ -54,6 +56,8 @@ export type LivroMaxAggregateOutputType = {
   ano_publicacao: number | null
   sinopse: string | null
   status: string | null
+  capa_url: string | null
+  capa_objeto: string | null
 }
 
 export type LivroCountAggregateOutputType = {
@@ -64,6 +68,8 @@ export type LivroCountAggregateOutputType = {
   ano_publicacao: number
   sinopse: number
   status: number
+  capa_url: number
+  capa_objeto: number
   _all: number
 }
 
@@ -86,6 +92,8 @@ export type LivroMinAggregateInputType = {
   ano_publicacao?: true
   sinopse?: true
   status?: true
+  capa_url?: true
+  capa_objeto?: true
 }
 
 export type LivroMaxAggregateInputType = {
@@ -96,6 +104,8 @@ export type LivroMaxAggregateInputType = {
   ano_publicacao?: true
   sinopse?: true
   status?: true
+  capa_url?: true
+  capa_objeto?: true
 }
 
 export type LivroCountAggregateInputType = {
@@ -106,6 +116,8 @@ export type LivroCountAggregateInputType = {
   ano_publicacao?: true
   sinopse?: true
   status?: true
+  capa_url?: true
+  capa_objeto?: true
   _all?: true
 }
 
@@ -203,6 +215,8 @@ export type LivroGroupByOutputType = {
   ano_publicacao: number
   sinopse: string
   status: string
+  capa_url: string | null
+  capa_objeto: string | null
   _count: LivroCountAggregateOutputType | null
   _avg: LivroAvgAggregateOutputType | null
   _sum: LivroSumAggregateOutputType | null
@@ -236,8 +250,11 @@ export type LivroWhereInput = {
   ano_publicacao?: Prisma.IntFilter<"Livro"> | number
   sinopse?: Prisma.StringFilter<"Livro"> | string
   status?: Prisma.StringFilter<"Livro"> | string
+  capa_url?: Prisma.StringNullableFilter<"Livro"> | string | null
+  capa_objeto?: Prisma.StringNullableFilter<"Livro"> | string | null
   reservas?: Prisma.ReservaListRelationFilter
-  pertences?: Prisma.PertenceListRelationFilter
+  exemplares?: Prisma.ExemplarListRelationFilter
+  curtidas?: Prisma.CurtidaLivroListRelationFilter
 }
 
 export type LivroOrderByWithRelationInput = {
@@ -248,8 +265,11 @@ export type LivroOrderByWithRelationInput = {
   ano_publicacao?: Prisma.SortOrder
   sinopse?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  capa_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  capa_objeto?: Prisma.SortOrderInput | Prisma.SortOrder
   reservas?: Prisma.ReservaOrderByRelationAggregateInput
-  pertences?: Prisma.PertenceOrderByRelationAggregateInput
+  exemplares?: Prisma.ExemplarOrderByRelationAggregateInput
+  curtidas?: Prisma.CurtidaLivroOrderByRelationAggregateInput
 }
 
 export type LivroWhereUniqueInput = Prisma.AtLeast<{
@@ -263,8 +283,11 @@ export type LivroWhereUniqueInput = Prisma.AtLeast<{
   ano_publicacao?: Prisma.IntFilter<"Livro"> | number
   sinopse?: Prisma.StringFilter<"Livro"> | string
   status?: Prisma.StringFilter<"Livro"> | string
+  capa_url?: Prisma.StringNullableFilter<"Livro"> | string | null
+  capa_objeto?: Prisma.StringNullableFilter<"Livro"> | string | null
   reservas?: Prisma.ReservaListRelationFilter
-  pertences?: Prisma.PertenceListRelationFilter
+  exemplares?: Prisma.ExemplarListRelationFilter
+  curtidas?: Prisma.CurtidaLivroListRelationFilter
 }, "id_livro">
 
 export type LivroOrderByWithAggregationInput = {
@@ -275,6 +298,8 @@ export type LivroOrderByWithAggregationInput = {
   ano_publicacao?: Prisma.SortOrder
   sinopse?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  capa_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  capa_objeto?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.LivroCountOrderByAggregateInput
   _avg?: Prisma.LivroAvgOrderByAggregateInput
   _max?: Prisma.LivroMaxOrderByAggregateInput
@@ -293,6 +318,8 @@ export type LivroScalarWhereWithAggregatesInput = {
   ano_publicacao?: Prisma.IntWithAggregatesFilter<"Livro"> | number
   sinopse?: Prisma.StringWithAggregatesFilter<"Livro"> | string
   status?: Prisma.StringWithAggregatesFilter<"Livro"> | string
+  capa_url?: Prisma.StringNullableWithAggregatesFilter<"Livro"> | string | null
+  capa_objeto?: Prisma.StringNullableWithAggregatesFilter<"Livro"> | string | null
 }
 
 export type LivroCreateInput = {
@@ -302,8 +329,11 @@ export type LivroCreateInput = {
   ano_publicacao: number
   sinopse: string
   status?: string
+  capa_url?: string | null
+  capa_objeto?: string | null
   reservas?: Prisma.ReservaCreateNestedManyWithoutLivroInput
-  pertences?: Prisma.PertenceCreateNestedManyWithoutLivroInput
+  exemplares?: Prisma.ExemplarCreateNestedManyWithoutLivroInput
+  curtidas?: Prisma.CurtidaLivroCreateNestedManyWithoutLivroInput
 }
 
 export type LivroUncheckedCreateInput = {
@@ -314,8 +344,11 @@ export type LivroUncheckedCreateInput = {
   ano_publicacao: number
   sinopse: string
   status?: string
+  capa_url?: string | null
+  capa_objeto?: string | null
   reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutLivroInput
-  pertences?: Prisma.PertenceUncheckedCreateNestedManyWithoutLivroInput
+  exemplares?: Prisma.ExemplarUncheckedCreateNestedManyWithoutLivroInput
+  curtidas?: Prisma.CurtidaLivroUncheckedCreateNestedManyWithoutLivroInput
 }
 
 export type LivroUpdateInput = {
@@ -325,8 +358,11 @@ export type LivroUpdateInput = {
   ano_publicacao?: Prisma.IntFieldUpdateOperationsInput | number
   sinopse?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  capa_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capa_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reservas?: Prisma.ReservaUpdateManyWithoutLivroNestedInput
-  pertences?: Prisma.PertenceUpdateManyWithoutLivroNestedInput
+  exemplares?: Prisma.ExemplarUpdateManyWithoutLivroNestedInput
+  curtidas?: Prisma.CurtidaLivroUpdateManyWithoutLivroNestedInput
 }
 
 export type LivroUncheckedUpdateInput = {
@@ -337,8 +373,11 @@ export type LivroUncheckedUpdateInput = {
   ano_publicacao?: Prisma.IntFieldUpdateOperationsInput | number
   sinopse?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  capa_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capa_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reservas?: Prisma.ReservaUncheckedUpdateManyWithoutLivroNestedInput
-  pertences?: Prisma.PertenceUncheckedUpdateManyWithoutLivroNestedInput
+  exemplares?: Prisma.ExemplarUncheckedUpdateManyWithoutLivroNestedInput
+  curtidas?: Prisma.CurtidaLivroUncheckedUpdateManyWithoutLivroNestedInput
 }
 
 export type LivroCreateManyInput = {
@@ -349,6 +388,8 @@ export type LivroCreateManyInput = {
   ano_publicacao: number
   sinopse: string
   status?: string
+  capa_url?: string | null
+  capa_objeto?: string | null
 }
 
 export type LivroUpdateManyMutationInput = {
@@ -358,6 +399,8 @@ export type LivroUpdateManyMutationInput = {
   ano_publicacao?: Prisma.IntFieldUpdateOperationsInput | number
   sinopse?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  capa_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capa_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type LivroUncheckedUpdateManyInput = {
@@ -368,6 +411,8 @@ export type LivroUncheckedUpdateManyInput = {
   ano_publicacao?: Prisma.IntFieldUpdateOperationsInput | number
   sinopse?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  capa_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capa_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type LivroCountOrderByAggregateInput = {
@@ -378,6 +423,8 @@ export type LivroCountOrderByAggregateInput = {
   ano_publicacao?: Prisma.SortOrder
   sinopse?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  capa_url?: Prisma.SortOrder
+  capa_objeto?: Prisma.SortOrder
 }
 
 export type LivroAvgOrderByAggregateInput = {
@@ -393,6 +440,8 @@ export type LivroMaxOrderByAggregateInput = {
   ano_publicacao?: Prisma.SortOrder
   sinopse?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  capa_url?: Prisma.SortOrder
+  capa_objeto?: Prisma.SortOrder
 }
 
 export type LivroMinOrderByAggregateInput = {
@@ -403,6 +452,8 @@ export type LivroMinOrderByAggregateInput = {
   ano_publicacao?: Prisma.SortOrder
   sinopse?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  capa_url?: Prisma.SortOrder
+  capa_objeto?: Prisma.SortOrder
 }
 
 export type LivroSumOrderByAggregateInput = {
@@ -413,6 +464,34 @@ export type LivroSumOrderByAggregateInput = {
 export type LivroScalarRelationFilter = {
   is?: Prisma.LivroWhereInput
   isNot?: Prisma.LivroWhereInput
+}
+
+export type LivroCreateNestedOneWithoutCurtidasInput = {
+  create?: Prisma.XOR<Prisma.LivroCreateWithoutCurtidasInput, Prisma.LivroUncheckedCreateWithoutCurtidasInput>
+  connectOrCreate?: Prisma.LivroCreateOrConnectWithoutCurtidasInput
+  connect?: Prisma.LivroWhereUniqueInput
+}
+
+export type LivroUpdateOneRequiredWithoutCurtidasNestedInput = {
+  create?: Prisma.XOR<Prisma.LivroCreateWithoutCurtidasInput, Prisma.LivroUncheckedCreateWithoutCurtidasInput>
+  connectOrCreate?: Prisma.LivroCreateOrConnectWithoutCurtidasInput
+  upsert?: Prisma.LivroUpsertWithoutCurtidasInput
+  connect?: Prisma.LivroWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LivroUpdateToOneWithWhereWithoutCurtidasInput, Prisma.LivroUpdateWithoutCurtidasInput>, Prisma.LivroUncheckedUpdateWithoutCurtidasInput>
+}
+
+export type LivroCreateNestedOneWithoutExemplaresInput = {
+  create?: Prisma.XOR<Prisma.LivroCreateWithoutExemplaresInput, Prisma.LivroUncheckedCreateWithoutExemplaresInput>
+  connectOrCreate?: Prisma.LivroCreateOrConnectWithoutExemplaresInput
+  connect?: Prisma.LivroWhereUniqueInput
+}
+
+export type LivroUpdateOneRequiredWithoutExemplaresNestedInput = {
+  create?: Prisma.XOR<Prisma.LivroCreateWithoutExemplaresInput, Prisma.LivroUncheckedCreateWithoutExemplaresInput>
+  connectOrCreate?: Prisma.LivroCreateOrConnectWithoutExemplaresInput
+  upsert?: Prisma.LivroUpsertWithoutExemplaresInput
+  connect?: Prisma.LivroWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LivroUpdateToOneWithWhereWithoutExemplaresInput, Prisma.LivroUpdateWithoutExemplaresInput>, Prisma.LivroUncheckedUpdateWithoutExemplaresInput>
 }
 
 export type LivroCreateNestedOneWithoutReservasInput = {
@@ -429,18 +508,144 @@ export type LivroUpdateOneRequiredWithoutReservasNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.LivroUpdateToOneWithWhereWithoutReservasInput, Prisma.LivroUpdateWithoutReservasInput>, Prisma.LivroUncheckedUpdateWithoutReservasInput>
 }
 
-export type LivroCreateNestedOneWithoutPertencesInput = {
-  create?: Prisma.XOR<Prisma.LivroCreateWithoutPertencesInput, Prisma.LivroUncheckedCreateWithoutPertencesInput>
-  connectOrCreate?: Prisma.LivroCreateOrConnectWithoutPertencesInput
-  connect?: Prisma.LivroWhereUniqueInput
+export type LivroCreateWithoutCurtidasInput = {
+  titulo: string
+  autor: string
+  genero: string
+  ano_publicacao: number
+  sinopse: string
+  status?: string
+  capa_url?: string | null
+  capa_objeto?: string | null
+  reservas?: Prisma.ReservaCreateNestedManyWithoutLivroInput
+  exemplares?: Prisma.ExemplarCreateNestedManyWithoutLivroInput
 }
 
-export type LivroUpdateOneRequiredWithoutPertencesNestedInput = {
-  create?: Prisma.XOR<Prisma.LivroCreateWithoutPertencesInput, Prisma.LivroUncheckedCreateWithoutPertencesInput>
-  connectOrCreate?: Prisma.LivroCreateOrConnectWithoutPertencesInput
-  upsert?: Prisma.LivroUpsertWithoutPertencesInput
-  connect?: Prisma.LivroWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.LivroUpdateToOneWithWhereWithoutPertencesInput, Prisma.LivroUpdateWithoutPertencesInput>, Prisma.LivroUncheckedUpdateWithoutPertencesInput>
+export type LivroUncheckedCreateWithoutCurtidasInput = {
+  id_livro?: number
+  titulo: string
+  autor: string
+  genero: string
+  ano_publicacao: number
+  sinopse: string
+  status?: string
+  capa_url?: string | null
+  capa_objeto?: string | null
+  reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutLivroInput
+  exemplares?: Prisma.ExemplarUncheckedCreateNestedManyWithoutLivroInput
+}
+
+export type LivroCreateOrConnectWithoutCurtidasInput = {
+  where: Prisma.LivroWhereUniqueInput
+  create: Prisma.XOR<Prisma.LivroCreateWithoutCurtidasInput, Prisma.LivroUncheckedCreateWithoutCurtidasInput>
+}
+
+export type LivroUpsertWithoutCurtidasInput = {
+  update: Prisma.XOR<Prisma.LivroUpdateWithoutCurtidasInput, Prisma.LivroUncheckedUpdateWithoutCurtidasInput>
+  create: Prisma.XOR<Prisma.LivroCreateWithoutCurtidasInput, Prisma.LivroUncheckedCreateWithoutCurtidasInput>
+  where?: Prisma.LivroWhereInput
+}
+
+export type LivroUpdateToOneWithWhereWithoutCurtidasInput = {
+  where?: Prisma.LivroWhereInput
+  data: Prisma.XOR<Prisma.LivroUpdateWithoutCurtidasInput, Prisma.LivroUncheckedUpdateWithoutCurtidasInput>
+}
+
+export type LivroUpdateWithoutCurtidasInput = {
+  titulo?: Prisma.StringFieldUpdateOperationsInput | string
+  autor?: Prisma.StringFieldUpdateOperationsInput | string
+  genero?: Prisma.StringFieldUpdateOperationsInput | string
+  ano_publicacao?: Prisma.IntFieldUpdateOperationsInput | number
+  sinopse?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  capa_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capa_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservas?: Prisma.ReservaUpdateManyWithoutLivroNestedInput
+  exemplares?: Prisma.ExemplarUpdateManyWithoutLivroNestedInput
+}
+
+export type LivroUncheckedUpdateWithoutCurtidasInput = {
+  id_livro?: Prisma.IntFieldUpdateOperationsInput | number
+  titulo?: Prisma.StringFieldUpdateOperationsInput | string
+  autor?: Prisma.StringFieldUpdateOperationsInput | string
+  genero?: Prisma.StringFieldUpdateOperationsInput | string
+  ano_publicacao?: Prisma.IntFieldUpdateOperationsInput | number
+  sinopse?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  capa_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capa_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservas?: Prisma.ReservaUncheckedUpdateManyWithoutLivroNestedInput
+  exemplares?: Prisma.ExemplarUncheckedUpdateManyWithoutLivroNestedInput
+}
+
+export type LivroCreateWithoutExemplaresInput = {
+  titulo: string
+  autor: string
+  genero: string
+  ano_publicacao: number
+  sinopse: string
+  status?: string
+  capa_url?: string | null
+  capa_objeto?: string | null
+  reservas?: Prisma.ReservaCreateNestedManyWithoutLivroInput
+  curtidas?: Prisma.CurtidaLivroCreateNestedManyWithoutLivroInput
+}
+
+export type LivroUncheckedCreateWithoutExemplaresInput = {
+  id_livro?: number
+  titulo: string
+  autor: string
+  genero: string
+  ano_publicacao: number
+  sinopse: string
+  status?: string
+  capa_url?: string | null
+  capa_objeto?: string | null
+  reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutLivroInput
+  curtidas?: Prisma.CurtidaLivroUncheckedCreateNestedManyWithoutLivroInput
+}
+
+export type LivroCreateOrConnectWithoutExemplaresInput = {
+  where: Prisma.LivroWhereUniqueInput
+  create: Prisma.XOR<Prisma.LivroCreateWithoutExemplaresInput, Prisma.LivroUncheckedCreateWithoutExemplaresInput>
+}
+
+export type LivroUpsertWithoutExemplaresInput = {
+  update: Prisma.XOR<Prisma.LivroUpdateWithoutExemplaresInput, Prisma.LivroUncheckedUpdateWithoutExemplaresInput>
+  create: Prisma.XOR<Prisma.LivroCreateWithoutExemplaresInput, Prisma.LivroUncheckedCreateWithoutExemplaresInput>
+  where?: Prisma.LivroWhereInput
+}
+
+export type LivroUpdateToOneWithWhereWithoutExemplaresInput = {
+  where?: Prisma.LivroWhereInput
+  data: Prisma.XOR<Prisma.LivroUpdateWithoutExemplaresInput, Prisma.LivroUncheckedUpdateWithoutExemplaresInput>
+}
+
+export type LivroUpdateWithoutExemplaresInput = {
+  titulo?: Prisma.StringFieldUpdateOperationsInput | string
+  autor?: Prisma.StringFieldUpdateOperationsInput | string
+  genero?: Prisma.StringFieldUpdateOperationsInput | string
+  ano_publicacao?: Prisma.IntFieldUpdateOperationsInput | number
+  sinopse?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  capa_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capa_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservas?: Prisma.ReservaUpdateManyWithoutLivroNestedInput
+  curtidas?: Prisma.CurtidaLivroUpdateManyWithoutLivroNestedInput
+}
+
+export type LivroUncheckedUpdateWithoutExemplaresInput = {
+  id_livro?: Prisma.IntFieldUpdateOperationsInput | number
+  titulo?: Prisma.StringFieldUpdateOperationsInput | string
+  autor?: Prisma.StringFieldUpdateOperationsInput | string
+  genero?: Prisma.StringFieldUpdateOperationsInput | string
+  ano_publicacao?: Prisma.IntFieldUpdateOperationsInput | number
+  sinopse?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  capa_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capa_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservas?: Prisma.ReservaUncheckedUpdateManyWithoutLivroNestedInput
+  curtidas?: Prisma.CurtidaLivroUncheckedUpdateManyWithoutLivroNestedInput
 }
 
 export type LivroCreateWithoutReservasInput = {
@@ -450,7 +655,10 @@ export type LivroCreateWithoutReservasInput = {
   ano_publicacao: number
   sinopse: string
   status?: string
-  pertences?: Prisma.PertenceCreateNestedManyWithoutLivroInput
+  capa_url?: string | null
+  capa_objeto?: string | null
+  exemplares?: Prisma.ExemplarCreateNestedManyWithoutLivroInput
+  curtidas?: Prisma.CurtidaLivroCreateNestedManyWithoutLivroInput
 }
 
 export type LivroUncheckedCreateWithoutReservasInput = {
@@ -461,7 +669,10 @@ export type LivroUncheckedCreateWithoutReservasInput = {
   ano_publicacao: number
   sinopse: string
   status?: string
-  pertences?: Prisma.PertenceUncheckedCreateNestedManyWithoutLivroInput
+  capa_url?: string | null
+  capa_objeto?: string | null
+  exemplares?: Prisma.ExemplarUncheckedCreateNestedManyWithoutLivroInput
+  curtidas?: Prisma.CurtidaLivroUncheckedCreateNestedManyWithoutLivroInput
 }
 
 export type LivroCreateOrConnectWithoutReservasInput = {
@@ -487,7 +698,10 @@ export type LivroUpdateWithoutReservasInput = {
   ano_publicacao?: Prisma.IntFieldUpdateOperationsInput | number
   sinopse?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  pertences?: Prisma.PertenceUpdateManyWithoutLivroNestedInput
+  capa_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capa_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  exemplares?: Prisma.ExemplarUpdateManyWithoutLivroNestedInput
+  curtidas?: Prisma.CurtidaLivroUpdateManyWithoutLivroNestedInput
 }
 
 export type LivroUncheckedUpdateWithoutReservasInput = {
@@ -498,65 +712,10 @@ export type LivroUncheckedUpdateWithoutReservasInput = {
   ano_publicacao?: Prisma.IntFieldUpdateOperationsInput | number
   sinopse?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  pertences?: Prisma.PertenceUncheckedUpdateManyWithoutLivroNestedInput
-}
-
-export type LivroCreateWithoutPertencesInput = {
-  titulo: string
-  autor: string
-  genero: string
-  ano_publicacao: number
-  sinopse: string
-  status?: string
-  reservas?: Prisma.ReservaCreateNestedManyWithoutLivroInput
-}
-
-export type LivroUncheckedCreateWithoutPertencesInput = {
-  id_livro?: number
-  titulo: string
-  autor: string
-  genero: string
-  ano_publicacao: number
-  sinopse: string
-  status?: string
-  reservas?: Prisma.ReservaUncheckedCreateNestedManyWithoutLivroInput
-}
-
-export type LivroCreateOrConnectWithoutPertencesInput = {
-  where: Prisma.LivroWhereUniqueInput
-  create: Prisma.XOR<Prisma.LivroCreateWithoutPertencesInput, Prisma.LivroUncheckedCreateWithoutPertencesInput>
-}
-
-export type LivroUpsertWithoutPertencesInput = {
-  update: Prisma.XOR<Prisma.LivroUpdateWithoutPertencesInput, Prisma.LivroUncheckedUpdateWithoutPertencesInput>
-  create: Prisma.XOR<Prisma.LivroCreateWithoutPertencesInput, Prisma.LivroUncheckedCreateWithoutPertencesInput>
-  where?: Prisma.LivroWhereInput
-}
-
-export type LivroUpdateToOneWithWhereWithoutPertencesInput = {
-  where?: Prisma.LivroWhereInput
-  data: Prisma.XOR<Prisma.LivroUpdateWithoutPertencesInput, Prisma.LivroUncheckedUpdateWithoutPertencesInput>
-}
-
-export type LivroUpdateWithoutPertencesInput = {
-  titulo?: Prisma.StringFieldUpdateOperationsInput | string
-  autor?: Prisma.StringFieldUpdateOperationsInput | string
-  genero?: Prisma.StringFieldUpdateOperationsInput | string
-  ano_publicacao?: Prisma.IntFieldUpdateOperationsInput | number
-  sinopse?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  reservas?: Prisma.ReservaUpdateManyWithoutLivroNestedInput
-}
-
-export type LivroUncheckedUpdateWithoutPertencesInput = {
-  id_livro?: Prisma.IntFieldUpdateOperationsInput | number
-  titulo?: Prisma.StringFieldUpdateOperationsInput | string
-  autor?: Prisma.StringFieldUpdateOperationsInput | string
-  genero?: Prisma.StringFieldUpdateOperationsInput | string
-  ano_publicacao?: Prisma.IntFieldUpdateOperationsInput | number
-  sinopse?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  reservas?: Prisma.ReservaUncheckedUpdateManyWithoutLivroNestedInput
+  capa_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capa_objeto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  exemplares?: Prisma.ExemplarUncheckedUpdateManyWithoutLivroNestedInput
+  curtidas?: Prisma.CurtidaLivroUncheckedUpdateManyWithoutLivroNestedInput
 }
 
 
@@ -566,12 +725,14 @@ export type LivroUncheckedUpdateWithoutPertencesInput = {
 
 export type LivroCountOutputType = {
   reservas: number
-  pertences: number
+  exemplares: number
+  curtidas: number
 }
 
 export type LivroCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reservas?: boolean | LivroCountOutputTypeCountReservasArgs
-  pertences?: boolean | LivroCountOutputTypeCountPertencesArgs
+  exemplares?: boolean | LivroCountOutputTypeCountExemplaresArgs
+  curtidas?: boolean | LivroCountOutputTypeCountCurtidasArgs
 }
 
 /**
@@ -594,8 +755,15 @@ export type LivroCountOutputTypeCountReservasArgs<ExtArgs extends runtime.Types.
 /**
  * LivroCountOutputType without action
  */
-export type LivroCountOutputTypeCountPertencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PertenceWhereInput
+export type LivroCountOutputTypeCountExemplaresArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExemplarWhereInput
+}
+
+/**
+ * LivroCountOutputType without action
+ */
+export type LivroCountOutputTypeCountCurtidasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CurtidaLivroWhereInput
 }
 
 
@@ -607,8 +775,11 @@ export type LivroSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   ano_publicacao?: boolean
   sinopse?: boolean
   status?: boolean
+  capa_url?: boolean
+  capa_objeto?: boolean
   reservas?: boolean | Prisma.Livro$reservasArgs<ExtArgs>
-  pertences?: boolean | Prisma.Livro$pertencesArgs<ExtArgs>
+  exemplares?: boolean | Prisma.Livro$exemplaresArgs<ExtArgs>
+  curtidas?: boolean | Prisma.Livro$curtidasArgs<ExtArgs>
   _count?: boolean | Prisma.LivroCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["livro"]>
 
@@ -620,6 +791,8 @@ export type LivroSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   ano_publicacao?: boolean
   sinopse?: boolean
   status?: boolean
+  capa_url?: boolean
+  capa_objeto?: boolean
 }, ExtArgs["result"]["livro"]>
 
 export type LivroSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -630,6 +803,8 @@ export type LivroSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   ano_publicacao?: boolean
   sinopse?: boolean
   status?: boolean
+  capa_url?: boolean
+  capa_objeto?: boolean
 }, ExtArgs["result"]["livro"]>
 
 export type LivroSelectScalar = {
@@ -640,12 +815,15 @@ export type LivroSelectScalar = {
   ano_publicacao?: boolean
   sinopse?: boolean
   status?: boolean
+  capa_url?: boolean
+  capa_objeto?: boolean
 }
 
-export type LivroOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_livro" | "titulo" | "autor" | "genero" | "ano_publicacao" | "sinopse" | "status", ExtArgs["result"]["livro"]>
+export type LivroOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_livro" | "titulo" | "autor" | "genero" | "ano_publicacao" | "sinopse" | "status" | "capa_url" | "capa_objeto", ExtArgs["result"]["livro"]>
 export type LivroInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reservas?: boolean | Prisma.Livro$reservasArgs<ExtArgs>
-  pertences?: boolean | Prisma.Livro$pertencesArgs<ExtArgs>
+  exemplares?: boolean | Prisma.Livro$exemplaresArgs<ExtArgs>
+  curtidas?: boolean | Prisma.Livro$curtidasArgs<ExtArgs>
   _count?: boolean | Prisma.LivroCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LivroIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -655,7 +833,8 @@ export type $LivroPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Livro"
   objects: {
     reservas: Prisma.$ReservaPayload<ExtArgs>[]
-    pertences: Prisma.$PertencePayload<ExtArgs>[]
+    exemplares: Prisma.$ExemplarPayload<ExtArgs>[]
+    curtidas: Prisma.$CurtidaLivroPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id_livro: number
@@ -665,6 +844,8 @@ export type $LivroPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     ano_publicacao: number
     sinopse: string
     status: string
+    capa_url: string | null
+    capa_objeto: string | null
   }, ExtArgs["result"]["livro"]>
   composites: {}
 }
@@ -1060,7 +1241,8 @@ readonly fields: LivroFieldRefs;
 export interface Prisma__LivroClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   reservas<T extends Prisma.Livro$reservasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Livro$reservasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReservaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  pertences<T extends Prisma.Livro$pertencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Livro$pertencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PertencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  exemplares<T extends Prisma.Livro$exemplaresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Livro$exemplaresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExemplarPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  curtidas<T extends Prisma.Livro$curtidasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Livro$curtidasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CurtidaLivroPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1097,6 +1279,8 @@ export interface LivroFieldRefs {
   readonly ano_publicacao: Prisma.FieldRef<"Livro", 'Int'>
   readonly sinopse: Prisma.FieldRef<"Livro", 'String'>
   readonly status: Prisma.FieldRef<"Livro", 'String'>
+  readonly capa_url: Prisma.FieldRef<"Livro", 'String'>
+  readonly capa_objeto: Prisma.FieldRef<"Livro", 'String'>
 }
     
 
@@ -1512,27 +1696,51 @@ export type Livro$reservasArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * Livro.pertences
+ * Livro.exemplares
  */
-export type Livro$pertencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Livro$exemplaresArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Pertence
+   * Select specific fields to fetch from the Exemplar
    */
-  select?: Prisma.PertenceSelect<ExtArgs> | null
+  select?: Prisma.ExemplarSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Pertence
+   * Omit specific fields from the Exemplar
    */
-  omit?: Prisma.PertenceOmit<ExtArgs> | null
+  omit?: Prisma.ExemplarOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PertenceInclude<ExtArgs> | null
-  where?: Prisma.PertenceWhereInput
-  orderBy?: Prisma.PertenceOrderByWithRelationInput | Prisma.PertenceOrderByWithRelationInput[]
-  cursor?: Prisma.PertenceWhereUniqueInput
+  include?: Prisma.ExemplarInclude<ExtArgs> | null
+  where?: Prisma.ExemplarWhereInput
+  orderBy?: Prisma.ExemplarOrderByWithRelationInput | Prisma.ExemplarOrderByWithRelationInput[]
+  cursor?: Prisma.ExemplarWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.PertenceScalarFieldEnum | Prisma.PertenceScalarFieldEnum[]
+  distinct?: Prisma.ExemplarScalarFieldEnum | Prisma.ExemplarScalarFieldEnum[]
+}
+
+/**
+ * Livro.curtidas
+ */
+export type Livro$curtidasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CurtidaLivro
+   */
+  select?: Prisma.CurtidaLivroSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CurtidaLivro
+   */
+  omit?: Prisma.CurtidaLivroOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CurtidaLivroInclude<ExtArgs> | null
+  where?: Prisma.CurtidaLivroWhereInput
+  orderBy?: Prisma.CurtidaLivroOrderByWithRelationInput | Prisma.CurtidaLivroOrderByWithRelationInput[]
+  cursor?: Prisma.CurtidaLivroWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CurtidaLivroScalarFieldEnum | Prisma.CurtidaLivroScalarFieldEnum[]
 }
 
 /**

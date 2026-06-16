@@ -1,11 +1,10 @@
-// Classe Reserva - Representação de uma reserva de livro
 import { ErroReserva } from "../excecoes/index.js";
 
 export class Reserva {
   #idReserva: number;
   #dataReserva: Date;
   #dataExpiracao: Date;
-  #statusReserva: string; // "ativa", "cancelada", "retirada"
+  #statusReserva: string;
   #usuarioId: number;
   #livroId: number;
 
@@ -14,9 +13,8 @@ export class Reserva {
     usuarioId: number,
     livroId: number,
     dataReserva: Date = new Date(),
-    dataExpiracao: Date = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 dias
+    dataExpiracao: Date = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
   ) {
-    // Validações no construtor
     this.validarUsuarioId(usuarioId);
     this.validarLivroId(livroId);
     this.validarDatas(dataReserva, dataExpiracao);
@@ -29,7 +27,6 @@ export class Reserva {
     this.#livroId = livroId;
   }
 
-  // Getters
   get idReserva(): number {
     return this.#idReserva;
   }
@@ -54,7 +51,6 @@ export class Reserva {
     return this.#livroId;
   }
 
-  // Setters com validações
   set dataExpiracao(data: Date) {
     this.validarDatas(this.#dataReserva, data);
     this.#dataExpiracao = data;
@@ -65,68 +61,62 @@ export class Reserva {
     this.#statusReserva = status;
   }
 
-  // Validações privadas
   private validarUsuarioId(usuarioId: number): void {
     if (typeof usuarioId !== "number" || usuarioId <= 0) {
-      throw new ErroReserva("ID do usuário deve ser um número positivo");
+      throw new ErroReserva("ID do usuario deve ser um numero positivo");
     }
   }
 
   private validarLivroId(livroId: number): void {
     if (typeof livroId !== "number" || livroId <= 0) {
-      throw new ErroReserva("ID do livro deve ser um número positivo");
+      throw new ErroReserva("ID do livro deve ser um numero positivo");
     }
   }
 
   private validarDatas(dataReserva: Date, dataExpiracao: Date): void {
     if (!(dataReserva instanceof Date) || isNaN(dataReserva.getTime())) {
-      throw new ErroReserva("Data da reserva deve ser uma data válida");
+      throw new ErroReserva("Data da reserva deve ser uma data valida");
     }
     if (!(dataExpiracao instanceof Date) || isNaN(dataExpiracao.getTime())) {
-      throw new ErroReserva("Data de expiração deve ser uma data válida");
+      throw new ErroReserva("Data de expiracao deve ser uma data valida");
     }
     if (dataExpiracao <= dataReserva) {
-      throw new ErroReserva("Data de expiração não pode ser anterior ou igual à data da reserva");
+      throw new ErroReserva("Data de expiracao nao pode ser anterior ou igual a data da reserva");
     }
-    // Máximo de 30 dias de reserva
-    const diasMaximos = 30;
-    const diffMs = dataExpiracao.getTime() - dataReserva.getTime();
-    const dias = diffMs / (1000 * 60 * 60 * 24);
-    if (dias > diasMaximos) {
-      throw new ErroReserva(`Reserva não pode exceder ${diasMaximos} dias`);
+
+    const dias = (dataExpiracao.getTime() - dataReserva.getTime()) / (1000 * 60 * 60 * 24);
+    if (dias > 30) {
+      throw new ErroReserva("Reserva nao pode exceder 30 dias");
     }
   }
 
   private validarStatusReserva(status: string): void {
-    const statusValidos = ["ativa", "cancelada", "retirada"];
+    const statusValidos = ["ativa", "cancelada", "retirada", "expirada", "pronta", "em_espera"];
     if (!statusValidos.includes(status)) {
-      throw new ErroReserva("Status de reserva inválido. Valores permitidos: ativa, cancelada, retirada");
+      throw new ErroReserva("Status de reserva invalido");
     }
   }
 
-  // Método para verificar se a reserva expirou
   expirou(): boolean {
     return new Date() > this.#dataExpiracao && this.#statusReserva === "ativa";
   }
 
-  // Método para cancelar reserva
   cancelar(): void {
     if (this.#statusReserva === "retirada") {
-      throw new ErroReserva("Não é possível cancelar uma reserva já retirada");
+      throw new ErroReserva("Nao e possivel cancelar uma reserva ja retirada");
     }
     if (this.#statusReserva === "cancelada") {
-      throw new ErroReserva("Esta reserva já foi cancelada");
+      throw new ErroReserva("Esta reserva ja foi cancelada");
     }
     this.#statusReserva = "cancelada";
   }
 
-  // Método para confirmar retirada
   confirmarRetirada(): void {
     if (this.#statusReserva !== "ativa") {
       throw new ErroReserva("Apenas reservas ativas podem ser retiradas");
     }
     if (this.expirou()) {
-      throw new ErroReserva("Não é possível retirar uma reserva expirada");
+      throw new ErroReserva("Nao e possivel retirar uma reserva expirada");
     }
     this.#statusReserva = "retirada";
   }

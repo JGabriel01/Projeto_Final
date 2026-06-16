@@ -6,6 +6,7 @@ import { RepositorioUsuarios } from "../persistencia/RepositorioUsuarios.js";
 import {
   ErroValidacao,
   ErroEmail,
+  ErroSenha,
   ErroDuplicado,
   ErroNaoEncontrado,
   ErroAutenticacao,
@@ -21,8 +22,45 @@ export interface ResultadoOperacao<T = any> {
   };
 }
 
+export type UsuarioPublico = {
+  idUsuario: number;
+  nome: string;
+  nivelAcesso: string;
+  fotoPerfilUrl?: string;
+  fundoPerfilUrl?: string;
+  anoIngresso?: number;
+  curso?: string;
+  departamento?: string;
+  cargo?: string;
+};
+
 export class ControladorUsuarios {
   private repositorioUsuarios = new RepositorioUsuarios();
+
+  private formatarUsuarioPublico(usuario: Usuario): UsuarioPublico {
+    const usuarioPublico: UsuarioPublico = {
+      idUsuario: usuario.idUsuario,
+      nome: usuario.nome,
+      nivelAcesso: usuario.nivelAcesso,
+      fotoPerfilUrl: usuario.fotoPerfilUrl,
+      fundoPerfilUrl: usuario.fundoPerfilUrl,
+    };
+
+    if (usuario instanceof Aluno) {
+      usuarioPublico.anoIngresso = usuario.anoIngresso;
+      usuarioPublico.curso = usuario.curso;
+    }
+
+    if (usuario instanceof Professor) {
+      usuarioPublico.departamento = usuario.departamento;
+    }
+
+    if (usuario instanceof Admin) {
+      usuarioPublico.cargo = usuario.cargo;
+    }
+
+    return usuarioPublico;
+  }
 
   async criarAluno(
     nome: string,
@@ -49,7 +87,6 @@ export class ControladorUsuarios {
       }
 
       const aluno = new Aluno(
-        0,
         0,
         nome,
         email,
@@ -95,7 +132,6 @@ export class ControladorUsuarios {
 
       const professor = new Professor(
         0,
-        0,
         nome,
         email,
         senha,
@@ -127,7 +163,7 @@ export class ControladorUsuarios {
         throw new ErroDuplicado(`Email ${email} ja esta cadastrado`);
       }
 
-      const admin = new Admin(0, 0, nome, email, senha, cargo);
+      const admin = new Admin(0, nome, email, senha, cargo);
       const adminCriado = await this.repositorioUsuarios.adicionarAdmin(admin);
       return { sucesso: true, dados: adminCriado };
     } catch (erro: any) {
@@ -152,6 +188,213 @@ export class ControladorUsuarios {
     }
   }
 
+  async buscarPublicoPorId(id: number): Promise<ResultadoOperacao<UsuarioPublico>> {
+    try {
+      if (typeof id !== "number" || id <= 0) {
+        throw new ErroValidacao("ID deve ser um numero positivo");
+      }
+
+      const usuario = await this.repositorioUsuarios.buscarPorId(id);
+      if (!usuario) {
+        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+      }
+
+      return { sucesso: true, dados: this.formatarUsuarioPublico(usuario) };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao buscar usuario");
+    }
+  }
+
+  async listarTodos(): Promise<ResultadoOperacao<Usuario[]>> {
+    try {
+      const usuarios = await this.repositorioUsuarios.listarTodos();
+      return { sucesso: true, dados: usuarios };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao listar usuarios");
+    }
+  }
+
+  async listarPublicos(): Promise<ResultadoOperacao<UsuarioPublico[]>> {
+    try {
+      const usuarios = await this.repositorioUsuarios.listarTodos();
+      return {
+        sucesso: true,
+        dados: usuarios.map((usuario) => this.formatarUsuarioPublico(usuario)),
+      };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao listar usuarios");
+    }
+  }
+
+  async atualizarUsuario(
+    id: number,
+    dados: {
+      nome?: string;
+      email?: string;
+      senha?: string;
+      cargo?: string;
+      anoIngresso?: number;
+      curso?: string;
+      departamento?: string;
+    }
+  ): Promise<ResultadoOperacao<Usuario>> {
+    try {
+      if (typeof id !== "number" || id <= 0) {
+        throw new ErroValidacao("ID deve ser um numero positivo");
+      }
+
+      if (
+        dados.cargo !== undefined &&
+        (typeof dados.cargo !== "string" ||
+          dados.cargo.trim().length < 3 ||
+          dados.cargo.trim().length > 100)
+      ) {
+        throw new ErroValidacao("Cargo deve ter entre 3 e 100 caracteres");
+      }
+
+      const usuarioExistente = await this.repositorioUsuarios.buscarPorId(id);
+      if (!usuarioExistente) {
+        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+      }
+
+      if (dados.cargo !== undefined && usuarioExistente.nivelAcesso !== "admin") {
+        throw new ErroValidacao("Cargo so pode ser alterado para administradores");
+      }
+
+      if (
+        (dados.anoIngresso !== undefined || dados.curso !== undefined) &&
+        usuarioExistente.nivelAcesso !== "aluno"
+      ) {
+        throw new ErroValidacao("Curso e ano de ingresso so podem ser alterados para alunos");
+      }
+
+      if (dados.departamento !== undefined && usuarioExistente.nivelAcesso !== "professor") {
+        throw new ErroValidacao("Departamento so pode ser alterado para professores");
+      }
+
+      if (
+        dados.anoIngresso !== undefined &&
+        (!Number.isInteger(dados.anoIngresso) ||
+          dados.anoIngresso < 1900 ||
+          dados.anoIngresso > new Date().getFullYear())
+      ) {
+        throw new ErroValidacao("Ano de ingresso invalido");
+      }
+
+      if (
+        dados.curso !== undefined &&
+        (typeof dados.curso !== "string" ||
+          dados.curso.trim().length < 3 ||
+          dados.curso.trim().length > 100)
+      ) {
+        throw new ErroValidacao("Curso deve ter entre 3 e 100 caracteres");
+      }
+
+      if (
+        dados.departamento !== undefined &&
+        (typeof dados.departamento !== "string" ||
+          dados.departamento.trim().length < 3 ||
+          dados.departamento.trim().length > 100)
+      ) {
+        throw new ErroValidacao("Departamento deve ter entre 3 e 100 caracteres");
+      }
+
+      const usuarioAtualizado = await this.repositorioUsuarios.atualizar(id, dados);
+      if (!usuarioAtualizado) {
+        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+      }
+
+      return { sucesso: true, dados: usuarioAtualizado };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao atualizar usuario");
+    }
+  }
+
+  async atualizarImagensPerfil(
+    id: number,
+    imagens: {
+      fotoPerfilUrl?: string;
+      fotoPerfilObjeto?: string;
+      fundoPerfilUrl?: string;
+      fundoPerfilObjeto?: string;
+    }
+  ): Promise<ResultadoOperacao<Usuario>> {
+    try {
+      if (typeof id !== "number" || id <= 0) {
+        throw new ErroValidacao("ID deve ser um numero positivo");
+      }
+
+      if (!imagens.fotoPerfilUrl && !imagens.fundoPerfilUrl) {
+        throw new ErroValidacao("Envie pelo menos uma imagem de perfil");
+      }
+
+      const usuarioAtualizado =
+        await this.repositorioUsuarios.atualizarImagensPerfil(id, imagens);
+      if (!usuarioAtualizado) {
+        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+      }
+
+      return { sucesso: true, dados: usuarioAtualizado };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao atualizar imagens de perfil");
+    }
+  }
+
+  async removerImagemPerfil(
+    id: number,
+    tipo: "foto" | "fundo" | "todas"
+  ): Promise<ResultadoOperacao<Usuario>> {
+    try {
+      if (typeof id !== "number" || id <= 0) {
+        throw new ErroValidacao("ID deve ser um numero positivo");
+      }
+
+      const imagens: {
+        fotoPerfilUrl?: string | null;
+        fotoPerfilObjeto?: string | null;
+        fundoPerfilUrl?: string | null;
+        fundoPerfilObjeto?: string | null;
+      } = {};
+
+      if (tipo === "foto" || tipo === "todas") {
+        imagens.fotoPerfilUrl = null;
+        imagens.fotoPerfilObjeto = null;
+      }
+
+      if (tipo === "fundo" || tipo === "todas") {
+        imagens.fundoPerfilUrl = null;
+        imagens.fundoPerfilObjeto = null;
+      }
+
+      const usuarioAtualizado =
+        await this.repositorioUsuarios.atualizarImagensPerfil(id, imagens);
+      if (!usuarioAtualizado) {
+        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+      }
+
+      return { sucesso: true, dados: usuarioAtualizado };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao remover imagem de perfil");
+    }
+  }
+
+  async excluirUsuario(id: number): Promise<ResultadoOperacao<{ id: number }>> {
+    try {
+      if (typeof id !== "number" || id <= 0) {
+        throw new ErroValidacao("A chave primaria idUsuario deve ser um numero positivo");
+      }
+
+      const excluiu = await this.repositorioUsuarios.deletar(id);
+      if (!excluiu) {
+        throw new ErroNaoEncontrado(`Cadastro com ID ${id} nao encontrado`);
+      }
+
+      return { sucesso: true, dados: { id } };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao excluir cadastro");
+    }
+  }
+
   async autenticar(
     email: string,
     senha: string
@@ -172,7 +415,69 @@ export class ControladorUsuarios {
     }
   }
 
+  async verificarEmailRecuperacao(
+    email: string
+  ): Promise<ResultadoOperacao<{ email: string }>> {
+    try {
+      if (!email) {
+        throw new ErroValidacao("Email e obrigatorio");
+      }
+
+      const usuario = await this.repositorioUsuarios.buscarPorEmail(email);
+      if (!usuario) {
+        throw new ErroNaoEncontrado("Funcionario nao encontrado");
+      }
+
+      return { sucesso: true, dados: { email: usuario.email } };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao verificar email");
+    }
+  }
+
+  async redefinirSenhaPorEmail(
+    email: string,
+    senha: string
+  ): Promise<ResultadoOperacao<{ mensagem: string }>> {
+    try {
+      if (!email || !senha) {
+        throw new ErroValidacao("Email e nova senha sao obrigatorios");
+      }
+
+      const usuario = await this.repositorioUsuarios.buscarPorEmail(email);
+      if (!usuario) {
+        throw new ErroNaoEncontrado("Funcionario nao encontrado");
+      }
+
+      usuario.senha = senha;
+
+      const usuarioAtualizado = await this.repositorioUsuarios.atualizar(
+        usuario.idUsuario,
+        { senha }
+      );
+      if (!usuarioAtualizado) {
+        throw new ErroNaoEncontrado("Funcionario nao encontrado");
+      }
+
+      return {
+        sucesso: true,
+        dados: { mensagem: "Senha redefinida com sucesso" },
+      };
+    } catch (erro: any) {
+      return this.tratarErro(erro, "Erro ao redefinir senha");
+    }
+  }
+
   private tratarErro(erro: any, mensagemDefault: string): ResultadoOperacao {
+    if (erro instanceof ErroNaoEncontrado) {
+      return {
+        sucesso: false,
+        erro: {
+          mensagem: erro.message,
+          tipo: "ErroNaoEncontrado",
+        },
+      };
+    }
+
     if (erro instanceof ErroValidacao) {
       return {
         sucesso: false,
@@ -193,6 +498,16 @@ export class ControladorUsuarios {
       };
     }
 
+    if (erro instanceof ErroSenha) {
+      return {
+        sucesso: false,
+        erro: {
+          mensagem: erro.message,
+          tipo: "ErroValidacao",
+        },
+      };
+    }
+
     if (erro instanceof ErroAutenticacao) {
       return {
         sucesso: false,
@@ -209,16 +524,6 @@ export class ControladorUsuarios {
         erro: {
           mensagem: erro.message,
           tipo: "ErroDuplicado",
-        },
-      };
-    }
-
-    if (erro instanceof ErroNaoEncontrado) {
-      return {
-        sucesso: false,
-        erro: {
-          mensagem: erro.message,
-          tipo: "ErroNaoEncontrado",
         },
       };
     }

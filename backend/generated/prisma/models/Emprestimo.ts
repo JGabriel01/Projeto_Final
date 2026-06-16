@@ -28,12 +28,14 @@ export type AggregateEmprestimo = {
 
 export type EmprestimoAvgAggregateOutputType = {
   id_emprestimo: number | null
+  renovacoes: number | null
   usuario_id: number | null
   exemplar_id: number | null
 }
 
 export type EmprestimoSumAggregateOutputType = {
   id_emprestimo: number | null
+  renovacoes: number | null
   usuario_id: number | null
   exemplar_id: number | null
 }
@@ -43,6 +45,8 @@ export type EmprestimoMinAggregateOutputType = {
   data_saida: Date | null
   data_vencimento: Date | null
   data_devolucao_real: Date | null
+  renovacoes: number | null
+  status_extensao: string | null
   usuario_id: number | null
   exemplar_id: number | null
 }
@@ -52,6 +56,8 @@ export type EmprestimoMaxAggregateOutputType = {
   data_saida: Date | null
   data_vencimento: Date | null
   data_devolucao_real: Date | null
+  renovacoes: number | null
+  status_extensao: string | null
   usuario_id: number | null
   exemplar_id: number | null
 }
@@ -61,6 +67,8 @@ export type EmprestimoCountAggregateOutputType = {
   data_saida: number
   data_vencimento: number
   data_devolucao_real: number
+  renovacoes: number
+  status_extensao: number
   usuario_id: number
   exemplar_id: number
   _all: number
@@ -69,12 +77,14 @@ export type EmprestimoCountAggregateOutputType = {
 
 export type EmprestimoAvgAggregateInputType = {
   id_emprestimo?: true
+  renovacoes?: true
   usuario_id?: true
   exemplar_id?: true
 }
 
 export type EmprestimoSumAggregateInputType = {
   id_emprestimo?: true
+  renovacoes?: true
   usuario_id?: true
   exemplar_id?: true
 }
@@ -84,6 +94,8 @@ export type EmprestimoMinAggregateInputType = {
   data_saida?: true
   data_vencimento?: true
   data_devolucao_real?: true
+  renovacoes?: true
+  status_extensao?: true
   usuario_id?: true
   exemplar_id?: true
 }
@@ -93,6 +105,8 @@ export type EmprestimoMaxAggregateInputType = {
   data_saida?: true
   data_vencimento?: true
   data_devolucao_real?: true
+  renovacoes?: true
+  status_extensao?: true
   usuario_id?: true
   exemplar_id?: true
 }
@@ -102,6 +116,8 @@ export type EmprestimoCountAggregateInputType = {
   data_saida?: true
   data_vencimento?: true
   data_devolucao_real?: true
+  renovacoes?: true
+  status_extensao?: true
   usuario_id?: true
   exemplar_id?: true
   _all?: true
@@ -198,6 +214,8 @@ export type EmprestimoGroupByOutputType = {
   data_saida: Date
   data_vencimento: Date
   data_devolucao_real: Date | null
+  renovacoes: number
+  status_extensao: string
   usuario_id: number
   exemplar_id: number | null
   _count: EmprestimoCountAggregateOutputType | null
@@ -230,6 +248,8 @@ export type EmprestimoWhereInput = {
   data_saida?: Prisma.DateTimeFilter<"Emprestimo"> | Date | string
   data_vencimento?: Prisma.DateTimeFilter<"Emprestimo"> | Date | string
   data_devolucao_real?: Prisma.DateTimeNullableFilter<"Emprestimo"> | Date | string | null
+  renovacoes?: Prisma.IntFilter<"Emprestimo"> | number
+  status_extensao?: Prisma.StringFilter<"Emprestimo"> | string
   usuario_id?: Prisma.IntFilter<"Emprestimo"> | number
   exemplar_id?: Prisma.IntNullableFilter<"Emprestimo"> | number | null
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
@@ -243,6 +263,8 @@ export type EmprestimoOrderByWithRelationInput = {
   data_saida?: Prisma.SortOrder
   data_vencimento?: Prisma.SortOrder
   data_devolucao_real?: Prisma.SortOrderInput | Prisma.SortOrder
+  renovacoes?: Prisma.SortOrder
+  status_extensao?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   exemplar_id?: Prisma.SortOrderInput | Prisma.SortOrder
   usuario?: Prisma.UsuarioOrderByWithRelationInput
@@ -259,6 +281,8 @@ export type EmprestimoWhereUniqueInput = Prisma.AtLeast<{
   data_saida?: Prisma.DateTimeFilter<"Emprestimo"> | Date | string
   data_vencimento?: Prisma.DateTimeFilter<"Emprestimo"> | Date | string
   data_devolucao_real?: Prisma.DateTimeNullableFilter<"Emprestimo"> | Date | string | null
+  renovacoes?: Prisma.IntFilter<"Emprestimo"> | number
+  status_extensao?: Prisma.StringFilter<"Emprestimo"> | string
   usuario_id?: Prisma.IntFilter<"Emprestimo"> | number
   exemplar_id?: Prisma.IntNullableFilter<"Emprestimo"> | number | null
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
@@ -272,6 +296,8 @@ export type EmprestimoOrderByWithAggregationInput = {
   data_saida?: Prisma.SortOrder
   data_vencimento?: Prisma.SortOrder
   data_devolucao_real?: Prisma.SortOrderInput | Prisma.SortOrder
+  renovacoes?: Prisma.SortOrder
+  status_extensao?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   exemplar_id?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.EmprestimoCountOrderByAggregateInput
@@ -289,6 +315,8 @@ export type EmprestimoScalarWhereWithAggregatesInput = {
   data_saida?: Prisma.DateTimeWithAggregatesFilter<"Emprestimo"> | Date | string
   data_vencimento?: Prisma.DateTimeWithAggregatesFilter<"Emprestimo"> | Date | string
   data_devolucao_real?: Prisma.DateTimeNullableWithAggregatesFilter<"Emprestimo"> | Date | string | null
+  renovacoes?: Prisma.IntWithAggregatesFilter<"Emprestimo"> | number
+  status_extensao?: Prisma.StringWithAggregatesFilter<"Emprestimo"> | string
   usuario_id?: Prisma.IntWithAggregatesFilter<"Emprestimo"> | number
   exemplar_id?: Prisma.IntNullableWithAggregatesFilter<"Emprestimo"> | number | null
 }
@@ -297,6 +325,8 @@ export type EmprestimoCreateInput = {
   data_saida?: Date | string
   data_vencimento: Date | string
   data_devolucao_real?: Date | string | null
+  renovacoes?: number
+  status_extensao?: string
   usuario: Prisma.UsuarioCreateNestedOneWithoutEmprestimosInput
   exemplar?: Prisma.ExemplarCreateNestedOneWithoutEmprestimosInput
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutEmprestimoInput
@@ -308,6 +338,8 @@ export type EmprestimoUncheckedCreateInput = {
   data_saida?: Date | string
   data_vencimento: Date | string
   data_devolucao_real?: Date | string | null
+  renovacoes?: number
+  status_extensao?: string
   usuario_id: number
   exemplar_id?: number | null
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutEmprestimoInput
@@ -318,6 +350,8 @@ export type EmprestimoUpdateInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
   usuario?: Prisma.UsuarioUpdateOneRequiredWithoutEmprestimosNestedInput
   exemplar?: Prisma.ExemplarUpdateOneWithoutEmprestimosNestedInput
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutEmprestimoNestedInput
@@ -329,6 +363,8 @@ export type EmprestimoUncheckedUpdateInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
   exemplar_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutEmprestimoNestedInput
@@ -340,6 +376,8 @@ export type EmprestimoCreateManyInput = {
   data_saida?: Date | string
   data_vencimento: Date | string
   data_devolucao_real?: Date | string | null
+  renovacoes?: number
+  status_extensao?: string
   usuario_id: number
   exemplar_id?: number | null
 }
@@ -348,6 +386,8 @@ export type EmprestimoUpdateManyMutationInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type EmprestimoUncheckedUpdateManyInput = {
@@ -355,6 +395,8 @@ export type EmprestimoUncheckedUpdateManyInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
   exemplar_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
@@ -379,12 +421,15 @@ export type EmprestimoCountOrderByAggregateInput = {
   data_saida?: Prisma.SortOrder
   data_vencimento?: Prisma.SortOrder
   data_devolucao_real?: Prisma.SortOrder
+  renovacoes?: Prisma.SortOrder
+  status_extensao?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   exemplar_id?: Prisma.SortOrder
 }
 
 export type EmprestimoAvgOrderByAggregateInput = {
   id_emprestimo?: Prisma.SortOrder
+  renovacoes?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   exemplar_id?: Prisma.SortOrder
 }
@@ -394,6 +439,8 @@ export type EmprestimoMaxOrderByAggregateInput = {
   data_saida?: Prisma.SortOrder
   data_vencimento?: Prisma.SortOrder
   data_devolucao_real?: Prisma.SortOrder
+  renovacoes?: Prisma.SortOrder
+  status_extensao?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   exemplar_id?: Prisma.SortOrder
 }
@@ -403,12 +450,15 @@ export type EmprestimoMinOrderByAggregateInput = {
   data_saida?: Prisma.SortOrder
   data_vencimento?: Prisma.SortOrder
   data_devolucao_real?: Prisma.SortOrder
+  renovacoes?: Prisma.SortOrder
+  status_extensao?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   exemplar_id?: Prisma.SortOrder
 }
 
 export type EmprestimoSumOrderByAggregateInput = {
   id_emprestimo?: Prisma.SortOrder
+  renovacoes?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
   exemplar_id?: Prisma.SortOrder
 }
@@ -518,10 +568,6 @@ export type EmprestimoUncheckedUpdateManyWithoutExemplarNestedInput = {
   deleteMany?: Prisma.EmprestimoScalarWhereInput | Prisma.EmprestimoScalarWhereInput[]
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type EmprestimoCreateNestedOneWithoutMultaInput = {
   create?: Prisma.XOR<Prisma.EmprestimoCreateWithoutMultaInput, Prisma.EmprestimoUncheckedCreateWithoutMultaInput>
   connectOrCreate?: Prisma.EmprestimoCreateOrConnectWithoutMultaInput
@@ -540,6 +586,8 @@ export type EmprestimoCreateWithoutNotificacoesInput = {
   data_saida?: Date | string
   data_vencimento: Date | string
   data_devolucao_real?: Date | string | null
+  renovacoes?: number
+  status_extensao?: string
   usuario: Prisma.UsuarioCreateNestedOneWithoutEmprestimosInput
   exemplar?: Prisma.ExemplarCreateNestedOneWithoutEmprestimosInput
   multa?: Prisma.MultaCreateNestedOneWithoutEmprestimoInput
@@ -550,6 +598,8 @@ export type EmprestimoUncheckedCreateWithoutNotificacoesInput = {
   data_saida?: Date | string
   data_vencimento: Date | string
   data_devolucao_real?: Date | string | null
+  renovacoes?: number
+  status_extensao?: string
   usuario_id: number
   exemplar_id?: number | null
   multa?: Prisma.MultaUncheckedCreateNestedOneWithoutEmprestimoInput
@@ -575,6 +625,8 @@ export type EmprestimoUpdateWithoutNotificacoesInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
   usuario?: Prisma.UsuarioUpdateOneRequiredWithoutEmprestimosNestedInput
   exemplar?: Prisma.ExemplarUpdateOneWithoutEmprestimosNestedInput
   multa?: Prisma.MultaUpdateOneWithoutEmprestimoNestedInput
@@ -585,6 +637,8 @@ export type EmprestimoUncheckedUpdateWithoutNotificacoesInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
   exemplar_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   multa?: Prisma.MultaUncheckedUpdateOneWithoutEmprestimoNestedInput
@@ -594,6 +648,8 @@ export type EmprestimoCreateWithoutUsuarioInput = {
   data_saida?: Date | string
   data_vencimento: Date | string
   data_devolucao_real?: Date | string | null
+  renovacoes?: number
+  status_extensao?: string
   exemplar?: Prisma.ExemplarCreateNestedOneWithoutEmprestimosInput
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutEmprestimoInput
   multa?: Prisma.MultaCreateNestedOneWithoutEmprestimoInput
@@ -604,6 +660,8 @@ export type EmprestimoUncheckedCreateWithoutUsuarioInput = {
   data_saida?: Date | string
   data_vencimento: Date | string
   data_devolucao_real?: Date | string | null
+  renovacoes?: number
+  status_extensao?: string
   exemplar_id?: number | null
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutEmprestimoInput
   multa?: Prisma.MultaUncheckedCreateNestedOneWithoutEmprestimoInput
@@ -642,6 +700,8 @@ export type EmprestimoScalarWhereInput = {
   data_saida?: Prisma.DateTimeFilter<"Emprestimo"> | Date | string
   data_vencimento?: Prisma.DateTimeFilter<"Emprestimo"> | Date | string
   data_devolucao_real?: Prisma.DateTimeNullableFilter<"Emprestimo"> | Date | string | null
+  renovacoes?: Prisma.IntFilter<"Emprestimo"> | number
+  status_extensao?: Prisma.StringFilter<"Emprestimo"> | string
   usuario_id?: Prisma.IntFilter<"Emprestimo"> | number
   exemplar_id?: Prisma.IntNullableFilter<"Emprestimo"> | number | null
 }
@@ -650,6 +710,8 @@ export type EmprestimoCreateWithoutExemplarInput = {
   data_saida?: Date | string
   data_vencimento: Date | string
   data_devolucao_real?: Date | string | null
+  renovacoes?: number
+  status_extensao?: string
   usuario: Prisma.UsuarioCreateNestedOneWithoutEmprestimosInput
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutEmprestimoInput
   multa?: Prisma.MultaCreateNestedOneWithoutEmprestimoInput
@@ -660,6 +722,8 @@ export type EmprestimoUncheckedCreateWithoutExemplarInput = {
   data_saida?: Date | string
   data_vencimento: Date | string
   data_devolucao_real?: Date | string | null
+  renovacoes?: number
+  status_extensao?: string
   usuario_id: number
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutEmprestimoInput
   multa?: Prisma.MultaUncheckedCreateNestedOneWithoutEmprestimoInput
@@ -694,6 +758,8 @@ export type EmprestimoCreateWithoutMultaInput = {
   data_saida?: Date | string
   data_vencimento: Date | string
   data_devolucao_real?: Date | string | null
+  renovacoes?: number
+  status_extensao?: string
   usuario: Prisma.UsuarioCreateNestedOneWithoutEmprestimosInput
   exemplar?: Prisma.ExemplarCreateNestedOneWithoutEmprestimosInput
   notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutEmprestimoInput
@@ -704,6 +770,8 @@ export type EmprestimoUncheckedCreateWithoutMultaInput = {
   data_saida?: Date | string
   data_vencimento: Date | string
   data_devolucao_real?: Date | string | null
+  renovacoes?: number
+  status_extensao?: string
   usuario_id: number
   exemplar_id?: number | null
   notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutEmprestimoInput
@@ -729,6 +797,8 @@ export type EmprestimoUpdateWithoutMultaInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
   usuario?: Prisma.UsuarioUpdateOneRequiredWithoutEmprestimosNestedInput
   exemplar?: Prisma.ExemplarUpdateOneWithoutEmprestimosNestedInput
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutEmprestimoNestedInput
@@ -739,6 +809,8 @@ export type EmprestimoUncheckedUpdateWithoutMultaInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
   exemplar_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutEmprestimoNestedInput
@@ -749,6 +821,8 @@ export type EmprestimoCreateManyUsuarioInput = {
   data_saida?: Date | string
   data_vencimento: Date | string
   data_devolucao_real?: Date | string | null
+  renovacoes?: number
+  status_extensao?: string
   exemplar_id?: number | null
 }
 
@@ -756,6 +830,8 @@ export type EmprestimoUpdateWithoutUsuarioInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
   exemplar?: Prisma.ExemplarUpdateOneWithoutEmprestimosNestedInput
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutEmprestimoNestedInput
   multa?: Prisma.MultaUpdateOneWithoutEmprestimoNestedInput
@@ -766,6 +842,8 @@ export type EmprestimoUncheckedUpdateWithoutUsuarioInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
   exemplar_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutEmprestimoNestedInput
   multa?: Prisma.MultaUncheckedUpdateOneWithoutEmprestimoNestedInput
@@ -776,6 +854,8 @@ export type EmprestimoUncheckedUpdateManyWithoutUsuarioInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
   exemplar_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
@@ -784,6 +864,8 @@ export type EmprestimoCreateManyExemplarInput = {
   data_saida?: Date | string
   data_vencimento: Date | string
   data_devolucao_real?: Date | string | null
+  renovacoes?: number
+  status_extensao?: string
   usuario_id: number
 }
 
@@ -791,6 +873,8 @@ export type EmprestimoUpdateWithoutExemplarInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
   usuario?: Prisma.UsuarioUpdateOneRequiredWithoutEmprestimosNestedInput
   notificacoes?: Prisma.NotificacaoUpdateManyWithoutEmprestimoNestedInput
   multa?: Prisma.MultaUpdateOneWithoutEmprestimoNestedInput
@@ -801,6 +885,8 @@ export type EmprestimoUncheckedUpdateWithoutExemplarInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
   notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutEmprestimoNestedInput
   multa?: Prisma.MultaUncheckedUpdateOneWithoutEmprestimoNestedInput
@@ -811,6 +897,8 @@ export type EmprestimoUncheckedUpdateManyWithoutExemplarInput = {
   data_saida?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_vencimento?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_devolucao_real?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  renovacoes?: Prisma.IntFieldUpdateOperationsInput | number
+  status_extensao?: Prisma.StringFieldUpdateOperationsInput | string
   usuario_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -850,6 +938,8 @@ export type EmprestimoSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   data_saida?: boolean
   data_vencimento?: boolean
   data_devolucao_real?: boolean
+  renovacoes?: boolean
+  status_extensao?: boolean
   usuario_id?: boolean
   exemplar_id?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
@@ -864,6 +954,8 @@ export type EmprestimoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   data_saida?: boolean
   data_vencimento?: boolean
   data_devolucao_real?: boolean
+  renovacoes?: boolean
+  status_extensao?: boolean
   usuario_id?: boolean
   exemplar_id?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
@@ -875,6 +967,8 @@ export type EmprestimoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   data_saida?: boolean
   data_vencimento?: boolean
   data_devolucao_real?: boolean
+  renovacoes?: boolean
+  status_extensao?: boolean
   usuario_id?: boolean
   exemplar_id?: boolean
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
@@ -886,11 +980,13 @@ export type EmprestimoSelectScalar = {
   data_saida?: boolean
   data_vencimento?: boolean
   data_devolucao_real?: boolean
+  renovacoes?: boolean
+  status_extensao?: boolean
   usuario_id?: boolean
   exemplar_id?: boolean
 }
 
-export type EmprestimoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_emprestimo" | "data_saida" | "data_vencimento" | "data_devolucao_real" | "usuario_id" | "exemplar_id", ExtArgs["result"]["emprestimo"]>
+export type EmprestimoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_emprestimo" | "data_saida" | "data_vencimento" | "data_devolucao_real" | "renovacoes" | "status_extensao" | "usuario_id" | "exemplar_id", ExtArgs["result"]["emprestimo"]>
 export type EmprestimoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   exemplar?: boolean | Prisma.Emprestimo$exemplarArgs<ExtArgs>
@@ -920,6 +1016,8 @@ export type $EmprestimoPayload<ExtArgs extends runtime.Types.Extensions.Internal
     data_saida: Date
     data_vencimento: Date
     data_devolucao_real: Date | null
+    renovacoes: number
+    status_extensao: string
     usuario_id: number
     exemplar_id: number | null
   }, ExtArgs["result"]["emprestimo"]>
@@ -1353,6 +1451,8 @@ export interface EmprestimoFieldRefs {
   readonly data_saida: Prisma.FieldRef<"Emprestimo", 'DateTime'>
   readonly data_vencimento: Prisma.FieldRef<"Emprestimo", 'DateTime'>
   readonly data_devolucao_real: Prisma.FieldRef<"Emprestimo", 'DateTime'>
+  readonly renovacoes: Prisma.FieldRef<"Emprestimo", 'Int'>
+  readonly status_extensao: Prisma.FieldRef<"Emprestimo", 'String'>
   readonly usuario_id: Prisma.FieldRef<"Emprestimo", 'Int'>
   readonly exemplar_id: Prisma.FieldRef<"Emprestimo", 'Int'>
 }

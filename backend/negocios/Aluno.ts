@@ -3,37 +3,31 @@ import { Usuario } from "./Usuario.js";
 import { ErroUsuario, ErroValidacao } from "../excecoes/index.js";
 
 export class Aluno extends Usuario {
-  #idAluno: number;
   #anoIngresso: number;
   #curso: string;
   #matriculaAluno: string;
 
   constructor(
-    idAluno: number,
     idUsuario: number,
     nome: string,
     email: string,
     senha: string,
     anoIngresso: number,
     curso: string,
-    matriculaAluno: string
+    matriculaAluno: string,
+    fotoPerfilUrl?: string,
+    fundoPerfilUrl?: string
   ) {
-    super(idUsuario, nome, email, senha, "aluno");
+    super(idUsuario, nome, email, senha, "aluno", fotoPerfilUrl, fundoPerfilUrl);
     
     // Validações específicas do Aluno
     this.validarAnoIngresso(anoIngresso);
     this.validarCurso(curso);
     this.validarMatriculaAluno(matriculaAluno);
 
-    this.#idAluno = idAluno;
     this.#anoIngresso = anoIngresso;
     this.#curso = curso;
     this.#matriculaAluno = matriculaAluno;
-  }
-
-  // Getters
-  get idAluno(): number {
-    return this.#idAluno;
   }
 
   get anoIngresso(): number {
@@ -107,7 +101,6 @@ export class Aluno extends Usuario {
   toJSON() {
     return {
       ...super.toJSON(),
-      idAluno: this.#idAluno,
       anoIngresso: this.#anoIngresso,
       curso: this.#curso,
       matriculaAluno: this.#matriculaAluno,

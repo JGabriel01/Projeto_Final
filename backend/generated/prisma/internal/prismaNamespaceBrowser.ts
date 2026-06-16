@@ -57,11 +57,12 @@ export const ModelName = {
   Professor: 'Professor',
   Admin: 'Admin',
   Livro: 'Livro',
+  CurtidaLivro: 'CurtidaLivro',
   Exemplar: 'Exemplar',
   Reserva: 'Reserva',
   Emprestimo: 'Emprestimo',
   Multa: 'Multa',
-  Pertence: 'Pertence'
+  SolicitacaoExclusaoAdmin: 'SolicitacaoExclusaoAdmin'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -83,6 +84,8 @@ export const NotificacaoScalarFieldEnum = {
   mensagem: 'mensagem',
   data_envio: 'data_envio',
   lido: 'lido',
+  acao: 'acao',
+  referencia_id: 'referencia_id',
   usuario_id: 'usuario_id',
   id_emprestimo: 'id_emprestimo'
 } as const
@@ -95,37 +98,38 @@ export const UsuarioScalarFieldEnum = {
   nome: 'nome',
   email: 'email',
   senha: 'senha',
-  nivel_acesso: 'nivel_acesso'
+  nivel_acesso: 'nivel_acesso',
+  foto_perfil_url: 'foto_perfil_url',
+  foto_perfil_objeto: 'foto_perfil_objeto',
+  fundo_perfil_url: 'fundo_perfil_url',
+  fundo_perfil_objeto: 'fundo_perfil_objeto'
 } as const
 
 export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]
 
 
 export const AlunoScalarFieldEnum = {
-  id_aluno: 'id_aluno',
+  usuario_id: 'usuario_id',
   ano_ingresso: 'ano_ingresso',
   curso: 'curso',
-  matricula_aluno: 'matricula_aluno',
-  usuario_id: 'usuario_id'
+  matricula_aluno: 'matricula_aluno'
 } as const
 
 export type AlunoScalarFieldEnum = (typeof AlunoScalarFieldEnum)[keyof typeof AlunoScalarFieldEnum]
 
 
 export const ProfessorScalarFieldEnum = {
-  id_professor: 'id_professor',
+  usuario_id: 'usuario_id',
   departamento: 'departamento',
-  matricula_professor: 'matricula_professor',
-  usuario_id: 'usuario_id'
+  matricula_professor: 'matricula_professor'
 } as const
 
 export type ProfessorScalarFieldEnum = (typeof ProfessorScalarFieldEnum)[keyof typeof ProfessorScalarFieldEnum]
 
 
 export const AdminScalarFieldEnum = {
-  id_admin: 'id_admin',
-  cargo: 'cargo',
-  usuario_id: 'usuario_id'
+  usuario_id: 'usuario_id',
+  cargo: 'cargo'
 } as const
 
 export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
@@ -138,17 +142,30 @@ export const LivroScalarFieldEnum = {
   genero: 'genero',
   ano_publicacao: 'ano_publicacao',
   sinopse: 'sinopse',
-  status: 'status'
+  status: 'status',
+  capa_url: 'capa_url',
+  capa_objeto: 'capa_objeto'
 } as const
 
 export type LivroScalarFieldEnum = (typeof LivroScalarFieldEnum)[keyof typeof LivroScalarFieldEnum]
+
+
+export const CurtidaLivroScalarFieldEnum = {
+  id_curtida: 'id_curtida',
+  data_curtida: 'data_curtida',
+  usuario_id: 'usuario_id',
+  livro_id: 'livro_id'
+} as const
+
+export type CurtidaLivroScalarFieldEnum = (typeof CurtidaLivroScalarFieldEnum)[keyof typeof CurtidaLivroScalarFieldEnum]
 
 
 export const ExemplarScalarFieldEnum = {
   id_exemplar: 'id_exemplar',
   codigo_tombo: 'codigo_tombo',
   estado: 'estado',
-  localizacao: 'localizacao'
+  localizacao: 'localizacao',
+  livro_id: 'livro_id'
 } as const
 
 export type ExemplarScalarFieldEnum = (typeof ExemplarScalarFieldEnum)[keyof typeof ExemplarScalarFieldEnum]
@@ -159,6 +176,7 @@ export const ReservaScalarFieldEnum = {
   data_reserva: 'data_reserva',
   data_expiracao: 'data_expiracao',
   status_reserva: 'status_reserva',
+  notificado_em: 'notificado_em',
   usuario_id: 'usuario_id',
   livro_id: 'livro_id'
 } as const
@@ -171,6 +189,8 @@ export const EmprestimoScalarFieldEnum = {
   data_saida: 'data_saida',
   data_vencimento: 'data_vencimento',
   data_devolucao_real: 'data_devolucao_real',
+  renovacoes: 'renovacoes',
+  status_extensao: 'status_extensao',
   usuario_id: 'usuario_id',
   exemplar_id: 'exemplar_id'
 } as const
@@ -191,13 +211,16 @@ export const MultaScalarFieldEnum = {
 export type MultaScalarFieldEnum = (typeof MultaScalarFieldEnum)[keyof typeof MultaScalarFieldEnum]
 
 
-export const PertenceScalarFieldEnum = {
-  id_pertence: 'id_pertence',
-  livro_id: 'livro_id',
-  exemplar_id: 'exemplar_id'
+export const SolicitacaoExclusaoAdminScalarFieldEnum = {
+  id_solicitacao: 'id_solicitacao',
+  admin_id: 'admin_id',
+  status: 'status',
+  data_criacao: 'data_criacao',
+  data_decisao: 'data_decisao',
+  decidido_por: 'decidido_por'
 } as const
 
-export type PertenceScalarFieldEnum = (typeof PertenceScalarFieldEnum)[keyof typeof PertenceScalarFieldEnum]
+export type SolicitacaoExclusaoAdminScalarFieldEnum = (typeof SolicitacaoExclusaoAdminScalarFieldEnum)[keyof typeof SolicitacaoExclusaoAdminScalarFieldEnum]
 
 
 export const SortOrder = {
