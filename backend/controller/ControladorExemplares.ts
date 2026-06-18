@@ -114,9 +114,20 @@ export class ControladorExemplares {
         throw new ErroValidacao("ID deve ser um número positivo");
       }
 
+      const exemplar = await this.repositorioExemplares.buscarPorId(id);
+      if (!exemplar) {
+        throw new ErroNaoEncontrado(`Exemplar com ID ${id} não encontrado`);
+      }
+
+      if (await this.repositorioExemplares.possuiHistorico(id)) {
+        throw new ErroValidacao(
+          `Exemplar com ID ${id} não pode ser removido porque possui empréstimos ou multas vinculados`
+        );
+      }
+
       const excluiu = await this.repositorioExemplares.deletar(id);
       if (!excluiu) {
-        throw new ErroNaoEncontrado(`Exemplar com ID ${id} não encontrado`);
+        throw new ErroValidacao(`Não foi possível remover o exemplar com ID ${id}`);
       }
       return { sucesso: true, dados: { id } };
     } catch (erro: any) {

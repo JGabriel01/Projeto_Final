@@ -58,6 +58,14 @@ export class RepositorioExemplares {
     });
   }
 
+  async possuiHistorico(id: number): Promise<boolean> {
+    const [emprestimos, multas] = await Promise.all([
+      (prisma as any).emprestimo.count({ where: { exemplar_id: id } }),
+      (prisma as any).multa.count({ where: { exemplar_id: id } }),
+    ]);
+    return emprestimos > 0 || multas > 0;
+  }
+
   async atualizar(
     id: number,
     dados: { codigoTombo?: string; estado?: string; localizacao?: string; livroId?: number }

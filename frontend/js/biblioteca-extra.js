@@ -129,6 +129,36 @@
     };
   }
 
+  function formatarTipoNotificacao(tipo) {
+    const tipos = {
+      devolucao: "Devolução",
+      emprestimo: "Empréstimo",
+      multa: "Multa",
+      renovacao: "Renovação",
+      reserva: "Reserva",
+    };
+    return tipos[String(tipo || "").toLowerCase()] || formatarStatus(tipo);
+  }
+
+  function formatarMensagemNotificacao(mensagem) {
+    return String(mensagem || "")
+      .replaceAll("devolucao", "devolução")
+      .replaceAll("Devolucao", "Devolução")
+      .replaceAll("emprestimo", "empréstimo")
+      .replaceAll("Emprestimo", "Empréstimo")
+      .replaceAll("Voce", "Você")
+      .replaceAll("voce", "você")
+      .replaceAll("Notificacao", "Notificação")
+      .replaceAll("notificacao", "notificação")
+      .replaceAll("notificacoes", "notificações")
+      .replaceAll("Usuario", "Usuário")
+      .replaceAll("usuario", "usuário")
+      .replaceAll("esta ", "está ")
+      .replaceAll("ate ", "até ")
+      .replaceAll("proximo", "próximo")
+      .replaceAll("proximos", "próximos");
+  }
+
   function ownId() {
     return estado.usuario?.idUsuario;
   }
@@ -642,21 +672,22 @@
       document.querySelector(".sidebar").insertAdjacentHTML("beforeend", `<section id="notificationsPanel" class="notifications-panel hidden"></section>`);
       panel = byId("notificationsPanel");
     }
-    const unread = (estado.notificacoes || []).filter((n) => !n.lida).length;
+    const notificacoesVisiveis = (estado.notificacoes || []).filter((n) => !n.lida);
+    const unread = notificacoesVisiveis.length;
     const badge = byId("notificationsBadge");
     badge.textContent = unread;
     badge.classList.toggle("hidden", unread === 0);
     panel.classList.toggle("hidden", !notificationsOpen);
     panel.innerHTML = `
       <h3>Notificações</h3>
-      ${(estado.notificacoes || []).length ? estado.notificacoes.map((n) => `
+      ${notificacoesVisiveis.length ? notificacoesVisiveis.map((n) => `
         <article class="notification-item ${n.lida ? "" : "unread"}">
           <button class="notification-content" type="button" data-notification="${n.idNotificacao}" data-action="${n.acao || ""}" data-reference="${n.referenciaId || n.idEmprestimo || ""}">
-            <strong>${n.tipo}</strong>
-            <span>${n.mensagem}</span>
+            <strong>${formatarTipoNotificacao(n.tipo)}</strong>
+            <span>${formatarMensagemNotificacao(n.mensagem)}</span>
             <small>${formatarData(n.dataCriacao)}</small>
           </button>
-          <button class="notification-dismiss" type="button" data-dismiss-notification="${n.idNotificacao}">Dispensar</button>
+          <button class="notification-dismiss" type="button" data-dismiss-notification="${n.idNotificacao}" data-notification-type="${n.tipo || ""}">Dispensar</button>
         </article>
       `).join("") : `<p class="empty-state">Nenhuma notificação.</p>`}
     `;
@@ -871,7 +902,11 @@
       event.preventDefault();
       event.stopPropagation();
       try {
-        await apiExtra(`/notificacoes/${dismiss.dataset.dismissNotification}`, { method: "DELETE" });
+        const metodo = dismiss.dataset.notificationType === "devolucao" ? "PATCH" : "DELETE";
+        const rota = metodo === "PATCH"
+          ? `/notificacoes/${dismiss.dataset.dismissNotification}/lida`
+          : `/notificacoes/${dismiss.dataset.dismissNotification}`;
+        await apiExtra(rota, { method: metodo, body: metodo === "PATCH" ? JSON.stringify({}) : undefined });
         notificar("Notificação dispensada");
         await carregarTudo();
       } catch (error) {

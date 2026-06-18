@@ -155,6 +155,23 @@ Nesse exemplo:
 - `4` é o ID do empréstimo.
 - `8` é a quantidade de dias de atraso.
 
+## Simular alerta de devolução próxima
+
+O sistema gera uma notificação quando um empréstimo ativo está com vencimento entre hoje e os próximos 2 dias. A notificação aparece no painel de notificações do usuário quando a biblioteca é carregada.
+
+Para testar manualmente, dentro da pasta `backend`, rode:
+
+```powershell
+npm run simular:prazo-proximo -- 4 1
+```
+
+Nesse exemplo:
+
+- `4` é o ID do empréstimo.
+- `1` é a quantidade de dias até o vencimento.
+
+Use `0`, `1` ou `2` dias para gerar o alerta de prazo próximo. Depois recarregue a tela da biblioteca e abra o painel de notificações.
+
 ## Senha e email de usuário admin para testes
 
 - `email`: admin@biblioteca.com

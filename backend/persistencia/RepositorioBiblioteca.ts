@@ -138,6 +138,55 @@ export class RepositorioBiblioteca {
     );
   }
 
+  private async alertarEmprestimosProximosDoVencimento() {
+    const agora = new Date();
+    const limite = new Date(agora.getTime() + 2 * this.DIA);
+    const emprestimos = await (prisma as any).emprestimo.findMany({
+      where: {
+        data_devolucao_real: null,
+        data_vencimento: {
+          gte: agora,
+          lte: limite,
+        },
+        exemplar_id: { not: null },
+      },
+      include: {
+        exemplar: { include: { livro: true } },
+      },
+    });
+
+    await Promise.all(
+      emprestimos.map(async (emprestimo: any) => {
+        const alertaExistente = await (prisma as any).notificacao.findFirst({
+          where: {
+            usuario_id: emprestimo.usuario_id,
+            tipo: "devolucao",
+            acao: "consultar_emprestimos",
+            referencia_id: emprestimo.id_emprestimo,
+          },
+        });
+        if (alertaExistente) return;
+
+        const diasRestantes = Math.max(
+          0,
+          Math.ceil((new Date(emprestimo.data_vencimento).getTime() - agora.getTime()) / this.DIA)
+        );
+        const prazo = new Date(emprestimo.data_vencimento).toLocaleDateString("pt-BR");
+        const textoPrazo = diasRestantes === 0
+          ? "vence hoje"
+          : `vence em ${diasRestantes} ${diasRestantes === 1 ? "dia" : "dias"}`;
+
+        await this.notificar(
+          emprestimo.usuario_id,
+          "devolucao",
+          `O prazo de devolucao de "${emprestimo.exemplar.livro.titulo}" ${textoPrazo} (${prazo}).`,
+          "consultar_emprestimos",
+          emprestimo.id_emprestimo
+        );
+      })
+    );
+  }
+
   private async exemplaresDisponiveis(livroId: number) {
     const exemplares = await prisma.exemplar.findMany({ where: { livro_id: livroId } });
     const ids = exemplares.map((exemplar) => exemplar.id_exemplar);
@@ -195,6 +244,7 @@ export class RepositorioBiblioteca {
 
   private async sincronizarBiblioteca() {
     await this.gerarMultasEmprestimosAtrasados();
+    await this.alertarEmprestimosProximosDoVencimento();
     await this.atualizarValoresMultas();
     const livros = await prisma.livro.findMany({ select: { id_livro: true } });
     await Promise.all(livros.map((livro) => this.sincronizarFilaLivro(livro.id_livro)));
@@ -616,6 +666,18 @@ export class RepositorioBiblioteca {
     }
 
     if (atual.nivel_acesso === "admin") {
+      const outrosAdmins = await prisma.usuario.count({
+        where: {
+          nivel_acesso: "admin",
+          id_usuario: { not: atual.id_usuario },
+        },
+      });
+      if (outrosAdmins === 0) {
+        throw new ErroRepositorioBiblioteca(
+          "Não é possível solicitar exclusão: este é o único administrador do sistema. Cadastre outro administrador antes de excluir esta conta."
+        );
+      }
+
       const existente = await (prisma as any).solicitacaoExclusaoAdmin.findFirst({
         where: { admin_id: atual.id_usuario, status: "pendente" },
       });
