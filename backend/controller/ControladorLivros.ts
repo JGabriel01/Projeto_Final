@@ -16,7 +16,7 @@ export class ControladorLivros {
   ): Promise<ResultadoOperacao<Livro>> {
     try {
       if (!titulo || !autor || !genero || !sinopse) {
-        throw new ErroValidacao("Todos os campos de texto sao obrigatorios");
+        throw new ErroValidacao("Todos os campos de texto são obrigatórios");
       }
 
       const livro = new Livro(
@@ -48,12 +48,12 @@ export class ControladorLivros {
   async buscarPorId(id: number): Promise<ResultadoOperacao<Livro>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       const livro = await this.repositorioLivros.buscarPorId(id);
       if (!livro) {
-        throw new ErroNaoEncontrado(`Livro com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Livro com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: livro };
@@ -68,7 +68,7 @@ export class ControladorLivros {
   ): Promise<ResultadoOperacao<Livro>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       const dadosAtualizados = {
@@ -78,7 +78,7 @@ export class ControladorLivros {
 
       const livroAtualizado = await this.repositorioLivros.atualizar(id, dadosAtualizados);
       if (!livroAtualizado) {
-        throw new ErroNaoEncontrado(`Livro com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Livro com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: livroAtualizado };
@@ -100,12 +100,12 @@ export class ControladorLivros {
   > {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       const resultado = await this.repositorioLivros.removerOuInativar(id);
       if (!resultado) {
-        throw new ErroNaoEncontrado(`Livro com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Livro com ID ${id} não encontrado`);
       }
 
       if (resultado.acao === "inativado") {
@@ -116,8 +116,8 @@ export class ControladorLivros {
             acao: "inativado",
             mensagem:
               resultado.reservasCanceladas > 0
-                ? "Livro possui historico vinculado, foi marcado como inativo e as reservas pendentes foram canceladas com notificacao aos usuarios."
-                : "Livro possui historico vinculado e foi marcado como inativo.",
+                ? "Livro possui histórico vinculado, foi marcado como inativo e as reservas pendentes foram canceladas com notificação aos usuários."
+                : "Livro possui histórico vinculado e foi marcado como inativo.",
             livro: resultado.livro,
             reservasCanceladas: resultado.reservasCanceladas,
           },
@@ -129,7 +129,7 @@ export class ControladorLivros {
         dados: {
           id,
           acao: "excluido",
-          mensagem: "Livro excluido do acervo.",
+          mensagem: "Livro excluído do acervo.",
           reservasCanceladas: resultado.reservasCanceladas,
         },
       };
@@ -145,10 +145,10 @@ export class ControladorLivros {
   ): Promise<ResultadoOperacao<Livro>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
       if (!capaObjeto || !capaUrl) {
-        throw new ErroValidacao("Dados da capa sao obrigatorios");
+        throw new ErroValidacao("Dados da capa são obrigatórios");
       }
 
       const livroAtualizado = await this.repositorioLivros.atualizarCapa(
@@ -157,7 +157,7 @@ export class ControladorLivros {
         capaUrl
       );
       if (!livroAtualizado) {
-        throw new ErroNaoEncontrado(`Livro com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Livro com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: livroAtualizado };
@@ -169,12 +169,12 @@ export class ControladorLivros {
   async removerCapa(id: number): Promise<ResultadoOperacao<Livro>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       const livroAtualizado = await this.repositorioLivros.removerCapa(id);
       if (!livroAtualizado) {
-        throw new ErroNaoEncontrado(`Livro com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Livro com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: livroAtualizado };

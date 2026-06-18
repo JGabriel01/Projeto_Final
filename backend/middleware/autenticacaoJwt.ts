@@ -49,7 +49,7 @@ export function autenticarJwt(
   if (!token) {
     res.status(401).json({
       sucesso: false,
-      erro: { mensagem: "Token JWT nao informado", tipo: "ErroAutenticacao" },
+      erro: { mensagem: "Token JWT não informado", tipo: "ErroAutenticacao" },
     });
     return;
   }
@@ -62,7 +62,7 @@ export function autenticarJwt(
       res.status(401).json({
         sucesso: false,
         erro: {
-          mensagem: "Sessao expirada ou encerrada. Faca login novamente",
+          mensagem: "Sessão expirada ou encerrada. Faça login novamente",
           tipo: "ErroAutenticacao",
         },
       });
@@ -75,7 +75,7 @@ export function autenticarJwt(
   } catch {
     res.status(401).json({
       sucesso: false,
-      erro: { mensagem: "Token JWT invalido ou expirado", tipo: "ErroAutenticacao" },
+      erro: { mensagem: "Token JWT inválido ou expirado", tipo: "ErroAutenticacao" },
     });
   }
 }
@@ -88,7 +88,7 @@ export function autorizarProprioUsuario(parametroId: string = "id") {
     if (!Number.isInteger(idSolicitado) || idSolicitado <= 0) {
       res.status(400).json({
         sucesso: false,
-        erro: { mensagem: "ID deve ser um numero positivo", tipo: "ErroValidacao" },
+        erro: { mensagem: "ID deve ser um número positivo", tipo: "ErroValidacao" },
       });
       return;
     }
@@ -97,7 +97,7 @@ export function autorizarProprioUsuario(parametroId: string = "id") {
       res.status(403).json({
         sucesso: false,
         erro: {
-          mensagem: "Voce so pode acessar ou alterar os dados do proprio usuario",
+          mensagem: "Você só pode acessar ou alterar os dados do próprio usuário",
           tipo: "ErroAutorizacao",
         },
       });
@@ -116,7 +116,7 @@ export function autorizarProprioUsuarioBody() {
     if (!Number.isInteger(idSolicitado) || idSolicitado <= 0) {
       res.status(400).json({
         sucesso: false,
-        erro: { mensagem: "ID deve ser um numero positivo", tipo: "ErroValidacao" },
+        erro: { mensagem: "ID deve ser um número positivo", tipo: "ErroValidacao" },
       });
       return;
     }
@@ -125,7 +125,7 @@ export function autorizarProprioUsuarioBody() {
       res.status(403).json({
         sucesso: false,
         erro: {
-          mensagem: "Voce so pode excluir o proprio cadastro",
+          mensagem: "Você só pode excluir o próprio cadastro",
           tipo: "ErroAutorizacao",
         },
       });
@@ -145,7 +145,7 @@ export function autorizarAdmin(
     res.status(403).json({
       sucesso: false,
       erro: {
-        mensagem: "Apenas administradores podem realizar esta operacao",
+        mensagem: "Apenas administradores podem realizar esta operação",
         tipo: "ErroAutorizacao",
       },
     });

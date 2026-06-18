@@ -103,7 +103,7 @@
             <input id="registerCourse" type="text">
           </label>
           <label>Matrícula
-            <input id="registerStudentId" type="text">
+            <input id="registerStudentId" type="text" placeholder="A20260001" pattern="A[0-9]{8}" title="Use o padrão A20260001" maxlength="9">
           </label>
         </div>
         <div id="teacherFields" class="type-fields hidden">
@@ -111,7 +111,7 @@
             <input id="registerDepartment" type="text">
           </label>
           <label>Matrícula
-            <input id="registerTeacherId" type="text">
+            <input id="registerTeacherId" type="text" placeholder="P20260001" pattern="P[0-9]{8}" title="Use o padrão P20260001" maxlength="9">
           </label>
         </div>
         <div id="adminFields" class="type-fields hidden">
@@ -251,7 +251,7 @@
             <h3>Novo exemplar</h3>
             <form id="copyForm" class="stack-form">
               <label>ID do livro<input id="copyBookId" type="number" min="1" required></label>
-              <label>Código de tombo<input id="copyCode" type="text" required></label>
+              <label>Código de tombo<input id="copyCode" type="text" placeholder="T20260001" pattern="T[0-9]{8}" title="Use o padrão T20260001" maxlength="9" required></label>
               <label>Estado
                 <select id="copyState" required>
                   <option value="novo">Novo</option>
@@ -356,13 +356,13 @@
           </div>
           <div class="metric-grid profile-metrics">
             <article><span id="profileBooksCount">0</span><p>livros no acervo</p></article>
-            <article><span id="profileReservationsCount">0</span><p>suas reservas</p></article>
+            <article><span id="profileReservationsCount">0</span><p>suas reservas ativas</p></article>
             <article><span id="profileLoansCount">0</span><p>seus empréstimos</p></article>
             <article><span id="profileFinesCount">0</span><p>suas multas</p></article>
           </div>
           <div class="profile-details-grid">
             <article>
-              <h3>Reservas do usuário logado</h3>
+              <h3>Reservas ativas do usuário logado</h3>
               <div id="profileReservationsList" class="insight-list"></div>
             </article>
             <article>

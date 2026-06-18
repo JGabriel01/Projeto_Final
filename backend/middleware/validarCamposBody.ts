@@ -11,7 +11,7 @@ export function validarCamposBody(camposPermitidos: string[]) {
       res.status(400).json({
         sucesso: false,
         erro: {
-          mensagem: `Campo(s) nao permitido(s): ${camposInvalidos.join(", ")}`,
+          mensagem: `Campo(s) não permitido(s): ${camposInvalidos.join(", ")}`,
           tipo: "ErroValidacao",
           detalhes: `Campos permitidos: ${camposPermitidos.join(", ")}`,
         },

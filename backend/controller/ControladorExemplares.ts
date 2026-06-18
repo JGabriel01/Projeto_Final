@@ -1,9 +1,19 @@
 import { RepositorioExemplares } from "../persistencia/RepositorioExemplares.js";
-import { ErroNaoEncontrado, ErroValidacao } from "../excecoes/index.js";
+import { ErroDuplicado, ErroNaoEncontrado, ErroValidacao } from "../excecoes/index.js";
 import type { ResultadoOperacao } from "./ControladorUsuarios.js";
 
 export class ControladorExemplares {
   private repositorioExemplares = new RepositorioExemplares();
+
+  private normalizarCodigoTombo(codigoTombo: string): string {
+    return String(codigoTombo || "").trim().toUpperCase();
+  }
+
+  private validarCodigoTombo(codigoTombo: string): void {
+    if (!/^T\d{8}$/.test(codigoTombo)) {
+      throw new ErroValidacao("Código de tombo deve seguir o padrão T20260001");
+    }
+  }
 
   async criarParaLivro(
     livroId: number,
@@ -13,15 +23,23 @@ export class ControladorExemplares {
   ): Promise<ResultadoOperacao> {
     try {
       if (typeof livroId !== "number" || livroId <= 0) {
-        throw new ErroValidacao("ID do livro deve ser um numero positivo");
+        throw new ErroValidacao("ID do livro deve ser um número positivo");
       }
       if (!codigoTombo || !estado || !localizacao) {
-        throw new ErroValidacao("Codigo de tombo, estado e localizacao sao obrigatorios");
+        throw new ErroValidacao("Código de tombo, estado e localização são obrigatórios");
+      }
+
+      const codigoNormalizado = this.normalizarCodigoTombo(codigoTombo);
+      this.validarCodigoTombo(codigoNormalizado);
+
+      const tomboExistente = await this.repositorioExemplares.buscarPorCodigoTombo(codigoNormalizado);
+      if (tomboExistente) {
+        throw new ErroDuplicado(`Código de tombo ${codigoNormalizado} já está cadastrado`);
       }
 
       const exemplar = await this.repositorioExemplares.criarParaLivro(
         livroId,
-        codigoTombo,
+        codigoNormalizado,
         estado,
         localizacao
       );
@@ -43,12 +61,12 @@ export class ControladorExemplares {
   async buscarPorId(id: number): Promise<ResultadoOperacao> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       const exemplar = await this.repositorioExemplares.buscarPorId(id);
       if (!exemplar) {
-        throw new ErroNaoEncontrado(`Exemplar com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Exemplar com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: exemplar };
@@ -63,11 +81,23 @@ export class ControladorExemplares {
   ): Promise<ResultadoOperacao> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
+      }
+
+      const codigoRecebido = dados.codigoTombo ?? dados.codigo_tombo;
+      let codigoNormalizado: string | undefined;
+      if (codigoRecebido !== undefined) {
+        codigoNormalizado = this.normalizarCodigoTombo(codigoRecebido);
+        this.validarCodigoTombo(codigoNormalizado);
+
+        const tomboExistente = await this.repositorioExemplares.buscarPorCodigoTombo(codigoNormalizado);
+        if (tomboExistente && tomboExistente.id_exemplar !== id) {
+          throw new ErroDuplicado(`Código de tombo ${codigoNormalizado} já está cadastrado`);
+        }
       }
 
       const exemplar = await this.repositorioExemplares.atualizar(id, {
-        codigoTombo: dados.codigoTombo ?? dados.codigo_tombo,
+        codigoTombo: codigoNormalizado,
         estado: dados.estado,
         localizacao: dados.localizacao,
         livroId: dados.livroId ?? dados.livro_id,
@@ -81,12 +111,12 @@ export class ControladorExemplares {
   async excluir(id: number): Promise<ResultadoOperacao<{ id: number }>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       const excluiu = await this.repositorioExemplares.deletar(id);
       if (!excluiu) {
-        throw new ErroNaoEncontrado(`Exemplar com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Exemplar com ID ${id} não encontrado`);
       }
       return { sucesso: true, dados: { id } };
     } catch (erro: any) {
@@ -106,6 +136,13 @@ export class ControladorExemplares {
       return {
         sucesso: false,
         erro: { mensagem: erro.message, tipo: "ErroNaoEncontrado" },
+      };
+    }
+
+    if (erro instanceof ErroDuplicado) {
+      return {
+        sucesso: false,
+        erro: { mensagem: erro.message, tipo: "ErroDuplicado" },
       };
     }
 

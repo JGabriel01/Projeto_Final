@@ -49,6 +49,15 @@ export class RepositorioExemplares {
     });
   }
 
+  async buscarPorCodigoTombo(codigoTombo: string) {
+    return await prisma.exemplar.findUnique({
+      where: { codigo_tombo: codigoTombo },
+      include: {
+        livro: true,
+      },
+    });
+  }
+
   async atualizar(
     id: number,
     dados: { codigoTombo?: string; estado?: string; localizacao?: string; livroId?: number }

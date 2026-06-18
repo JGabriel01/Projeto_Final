@@ -33,10 +33,10 @@ export class ControladorReservas {
   async buscarPorId(id: number): Promise<ResultadoOperacao<Reserva>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
       const reserva = await this.repositorioReservas.buscarPorId(id);
-      if (!reserva) throw new ErroNaoEncontrado(`Reserva com ID ${id} nao encontrada`);
+      if (!reserva) throw new ErroNaoEncontrado(`Reserva com ID ${id} não encontrada`);
       return { sucesso: true, dados: reserva };
     } catch (erro: any) {
       return this.tratarErro(erro, "Erro ao buscar reserva");
@@ -46,12 +46,12 @@ export class ControladorReservas {
   async buscarPorUsuario(usuarioId: number): Promise<ResultadoOperacao<Reserva[]>> {
     try {
       if (typeof usuarioId !== "number" || usuarioId <= 0) {
-        throw new ErroValidacao("ID do usuario deve ser positivo");
+        throw new ErroValidacao("ID do usuário deve ser positivo");
       }
       const reservas = await this.repositorioReservas.buscarPorUsuario(usuarioId);
       return { sucesso: true, dados: reservas };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao listar reservas do usuario");
+      return this.tratarErro(erro, "Erro ao listar reservas do usuário");
     }
   }
 
@@ -61,13 +61,13 @@ export class ControladorReservas {
   ): Promise<ResultadoOperacao<Reserva>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
       if (dados.dataExpiracao && isNaN(dados.dataExpiracao.getTime())) {
-        throw new ErroValidacao("Data de expiracao invalida");
+        throw new ErroValidacao("Data de expiração inválida");
       }
       const reserva = await this.repositorioReservas.atualizar(id, dados);
-      if (!reserva) throw new ErroNaoEncontrado(`Reserva com ID ${id} nao encontrada`);
+      if (!reserva) throw new ErroNaoEncontrado(`Reserva com ID ${id} não encontrada`);
       return { sucesso: true, dados: reserva };
     } catch (erro: any) {
       return this.tratarErro(erro, "Erro ao atualizar reserva");
@@ -77,10 +77,10 @@ export class ControladorReservas {
   async excluirReserva(id: number): Promise<ResultadoOperacao<{ id: number }>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
       const excluiu = await this.repositorioReservas.deletar(id);
-      if (!excluiu) throw new ErroNaoEncontrado(`Reserva com ID ${id} nao encontrada`);
+      if (!excluiu) throw new ErroNaoEncontrado(`Reserva com ID ${id} não encontrada`);
       return { sucesso: true, dados: { id } };
     } catch (erro: any) {
       return this.tratarErro(erro, "Erro ao excluir reserva");

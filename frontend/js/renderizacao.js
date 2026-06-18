@@ -17,6 +17,7 @@ async function carregarTudo() {
     estado.reservas = reservas || [];
     estado.emprestimos = emprestimos || [];
     estado.multas = multas || [];
+    limparLivrosAusentesDaInterface();
     renderizarTudo();
     renderizarUsuarioAtual();
   } catch (error) {
@@ -36,15 +37,23 @@ function renderizarTudo() {
 function renderizarMetricas() {
   if (selecionar("#metricBooks")) selecionar("#metricBooks").textContent = estado.livros.length;
   if (selecionar("#metricUsers")) selecionar("#metricUsers").textContent = estado.usuarios.length;
-  if (selecionar("#metricReservations")) selecionar("#metricReservations").textContent = estado.reservas.length;
+  if (selecionar("#metricReservations")) selecionar("#metricReservations").textContent = reservasAtuais().length;
   if (selecionar("#metricLoans")) selecionar("#metricLoans").textContent = estado.emprestimos.length;
+}
+
+function reservaEstaAtual(reserva) {
+  return ["ativa", "pronta"].includes(reserva.statusReserva);
+}
+
+function reservasAtuais() {
+  return estado.reservas.filter(reservaEstaAtual);
 }
 
 function renderizarDestaquesInicio() {
   renderizarLivrosEmAlta();
   renderizarSecoesGeneros();
   renderizarLivrosIndisponiveis();
-  renderizarListaDestaques("#mostReservedBooks", livrosMaisReservados(), "Ainda não há reservas.");
+  renderizarListaDestaques("#mostReservedBooks", livrosMaisReservados(), "Ainda não há reservas ativas.");
   renderizarListaDestaques("#bestConditionBooks", livrosMelhorEstado(), "Ainda não há exemplares cadastrados.");
   renderizarListaDestaques("#soldOutBooks", livrosEsgotados(), "Nenhum livro está esgotado.");
 }
@@ -151,10 +160,10 @@ function renderizarLivrosIndisponiveis() {
 function livrosMaisReservados() {
   return livrosDoAcervo()
     .map((livro) => {
-      const total = estado.reservas.filter((reserva) => reserva.livroId === livro.idLivro).length;
+      const total = reservasAtuais().filter((reserva) => reserva.livroId === livro.idLivro).length;
       return {
         title: livro.titulo,
-        detail: `${total} reserva${total === 1 ? "" : "s"}`,
+        detail: `${total} reserva${total === 1 ? "" : "s"} ativa${total === 1 ? "" : "s"}`,
         coverUrl: livro.capaUrl,
         score: total,
       };
@@ -209,7 +218,7 @@ function livrosEsgotados() {
 function renderizarResumoPerfil() {
   if (!estado.usuario) return;
   const userId = estado.usuario.idUsuario;
-  const reservasDoUsuario = estado.reservas.filter((reserva) => reserva.usuarioId === userId);
+  const reservasDoUsuario = reservasAtuais().filter((reserva) => reserva.usuarioId === userId);
   const emprestimosDoUsuario = estado.emprestimos.filter((emprestimo) => emprestimo.usuarioId === userId);
   const idsEmprestimosDoUsuario = new Set(emprestimosDoUsuario.map((emprestimo) => emprestimo.idEmprestimo));
   const multasDoUsuario = estado.multas.filter((multa) => idsEmprestimosDoUsuario.has(multa.idEmprestimo));
@@ -225,7 +234,7 @@ function renderizarResumoPerfil() {
       title: tituloLivroPorId(reserva.livroId),
       detail: `Reserva ${reserva.idReserva} | ${formatarStatus(reserva.statusReserva || "ativa")}`,
     })),
-    "Você ainda não fez reservas."
+    "Você não tem reservas ativas."
   );
 
   renderizarListaDestaques(

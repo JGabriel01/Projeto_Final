@@ -86,15 +86,8 @@ export class Aluno extends Usuario {
     if (!matricula || typeof matricula !== "string") {
       throw new ErroValidacao("Matrícula é obrigatória e deve ser uma string");
     }
-    if (matricula.trim().length < 5) {
-      throw new ErroValidacao("Matrícula deve ter pelo menos 5 caracteres");
-    }
-    if (matricula.trim().length > 50) {
-      throw new ErroValidacao("Matrícula não pode exceder 50 caracteres");
-    }
-    // Validar formato: alfanumérico
-    if (!/^[a-zA-Z0-9]+$/.test(matricula.trim())) {
-      throw new ErroValidacao("Matrícula deve conter apenas letras e números");
+    if (!/^A\d{8}$/.test(matricula.trim().toUpperCase())) {
+      throw new ErroValidacao("Matrícula de aluno deve seguir o padrão A20260001");
     }
   }
 

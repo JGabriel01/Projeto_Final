@@ -52,7 +52,7 @@ rotasBiblioteca.post("/emprestimos", async (req, res) => {
     );
     resposta(res, emprestimo, 201);
   } catch (e: any) {
-    responderErroRepositorio(res, e, "Erro ao criar emprestimo");
+    responderErroRepositorio(res, e, "Erro ao criar empréstimo");
   }
 });
 
@@ -76,7 +76,7 @@ rotasBiblioteca.post("/reservas/:id/emprestimos", async (req, res) => {
     );
     resposta(res, emprestimo, 201);
   } catch (e: any) {
-    responderErroRepositorio(res, e, "Erro ao criar emprestimo da reserva");
+    responderErroRepositorio(res, e, "Erro ao criar empréstimo da reserva");
   }
 });
 
@@ -101,7 +101,7 @@ rotasBiblioteca.patch("/emprestimos/:id/devolucao", async (req, res) => {
     );
     resposta(res, emprestimo);
   } catch (e: any) {
-    responderErroRepositorio(res, e, "Erro ao devolver emprestimo");
+    responderErroRepositorio(res, e, "Erro ao devolver empréstimo");
   }
 });
 
@@ -113,7 +113,7 @@ rotasBiblioteca.post("/emprestimos/:id/extensoes", async (req, res) => {
     );
     resposta(res, resultado);
   } catch (e: any) {
-    responderErroRepositorio(res, e, "Erro ao solicitar extensao");
+    responderErroRepositorio(res, e, "Erro ao solicitar extensão");
   }
 });
 
@@ -125,7 +125,7 @@ rotasBiblioteca.patch("/emprestimos/:id/extensoes", autorizarAdmin, async (req, 
     );
     resposta(res, emprestimo);
   } catch (e: any) {
-    responderErroRepositorio(res, e, "Erro ao decidir extensao");
+    responderErroRepositorio(res, e, "Erro ao decidir extensão");
   }
 });
 
@@ -173,7 +173,7 @@ rotasBiblioteca.patch("/admins/exclusoes/:id", autorizarAdmin, async (req, res) 
     );
     resposta(res, resultado);
   } catch (e: any) {
-    responderErroRepositorio(res, e, "Erro ao decidir exclusao de admin");
+    responderErroRepositorio(res, e, "Erro ao decidir exclusão de admin");
   }
 });
 

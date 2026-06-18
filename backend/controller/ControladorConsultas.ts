@@ -8,12 +8,12 @@ export class ControladorConsultas {
   async emprestimosAtivosPorUsuario(usuarioId?: number): Promise<ResultadoOperacao> {
     try {
       if (usuarioId !== undefined && (typeof usuarioId !== "number" || usuarioId <= 0)) {
-        throw new ErroValidacao("ID do usuario deve ser positivo");
+        throw new ErroValidacao("ID do usuário deve ser positivo");
       }
       const dados = await this.repositorioConsultas.emprestimosAtivosPorUsuario(usuarioId);
       return { sucesso: true, dados };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao consultar emprestimos ativos por usuario");
+      return this.tratarErro(erro, "Erro ao consultar empréstimos ativos por usuário");
     }
   }
 
@@ -48,12 +48,12 @@ export class ControladorConsultas {
       const inicio = dataInicio ?? new Date("2026-01-01T00:00:00.000Z");
       const fim = dataFim ?? new Date("2026-12-31T23:59:59.999Z");
       if (isNaN(inicio.getTime()) || isNaN(fim.getTime())) {
-        throw new ErroValidacao("Periodo invalido");
+        throw new ErroValidacao("Período inválido");
       }
       const dados = await this.repositorioConsultas.relatorioUsoMensal(inicio, fim);
       return { sucesso: true, dados };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao gerar relatorio mensal");
+      return this.tratarErro(erro, "Erro ao gerar relatório mensal");
     }
   }
 

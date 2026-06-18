@@ -20,7 +20,7 @@ rotasArquivos.get(/^\/(.+)$/, async (req, res) => {
   } catch {
     res.status(404).json({
       sucesso: false,
-      erro: { mensagem: "Arquivo nao encontrado", tipo: "ErroNaoEncontrado" },
+      erro: { mensagem: "Arquivo não encontrado", tipo: "ErroNaoEncontrado" },
     });
   }
 });

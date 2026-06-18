@@ -37,6 +37,10 @@ export type UsuarioPublico = {
 export class ControladorUsuarios {
   private repositorioUsuarios = new RepositorioUsuarios();
 
+  private normalizarMatricula(matricula: string): string {
+    return String(matricula || "").trim().toUpperCase();
+  }
+
   private formatarUsuarioPublico(usuario: Usuario): UsuarioPublico {
     const usuarioPublico: UsuarioPublico = {
       idUsuario: usuario.idUsuario,
@@ -72,18 +76,19 @@ export class ControladorUsuarios {
   ): Promise<ResultadoOperacao<Aluno>> {
     try {
       if (!nome || !email || !senha || !curso || !matriculaAluno) {
-        throw new ErroValidacao("Todos os campos sao obrigatorios");
+        throw new ErroValidacao("Todos os campos são obrigatórios");
       }
+      const matriculaNormalizada = this.normalizarMatricula(matriculaAluno);
 
       const usuarioExistente = await this.repositorioUsuarios.buscarPorEmail(email);
       if (usuarioExistente) {
-        throw new ErroDuplicado(`Email ${email} ja esta cadastrado`);
+        throw new ErroDuplicado(`E-mail ${email} já está cadastrado`);
       }
 
       const alunoExistente =
-        await this.repositorioUsuarios.buscarAlunoPorMatricula(matriculaAluno);
+        await this.repositorioUsuarios.buscarAlunoPorMatricula(matriculaNormalizada);
       if (alunoExistente) {
-        throw new ErroDuplicado(`Matricula ${matriculaAluno} ja esta cadastrada`);
+        throw new ErroDuplicado(`Matrícula ${matriculaNormalizada} já está cadastrada`);
       }
 
       const aluno = new Aluno(
@@ -93,7 +98,7 @@ export class ControladorUsuarios {
         senha,
         anoIngresso,
         curso,
-        matriculaAluno
+        matriculaNormalizada
       );
 
       const alunoCriado = await this.repositorioUsuarios.adicionarAluno(aluno);
@@ -112,21 +117,22 @@ export class ControladorUsuarios {
   ): Promise<ResultadoOperacao<Professor>> {
     try {
       if (!nome || !email || !senha || !departamento || !matriculaProfessor) {
-        throw new ErroValidacao("Todos os campos sao obrigatorios");
+        throw new ErroValidacao("Todos os campos são obrigatórios");
       }
+      const matriculaNormalizada = this.normalizarMatricula(matriculaProfessor);
 
       const usuarioExistente = await this.repositorioUsuarios.buscarPorEmail(email);
       if (usuarioExistente) {
-        throw new ErroDuplicado(`Email ${email} ja esta cadastrado`);
+        throw new ErroDuplicado(`E-mail ${email} já está cadastrado`);
       }
 
       const professorExistente =
         await this.repositorioUsuarios.buscarProfessorPorMatricula(
-          matriculaProfessor
+          matriculaNormalizada
         );
       if (professorExistente) {
         throw new ErroDuplicado(
-          `Matricula de professor ${matriculaProfessor} ja esta cadastrada`
+          `Matrícula de professor ${matriculaNormalizada} já está cadastrada`
         );
       }
 
@@ -136,7 +142,7 @@ export class ControladorUsuarios {
         email,
         senha,
         departamento,
-        matriculaProfessor
+        matriculaNormalizada
       );
 
       const professorCriado =
@@ -155,12 +161,12 @@ export class ControladorUsuarios {
   ): Promise<ResultadoOperacao<Admin>> {
     try {
       if (!nome || !email || !senha || !cargo) {
-        throw new ErroValidacao("Todos os campos sao obrigatorios");
+        throw new ErroValidacao("Todos os campos são obrigatórios");
       }
 
       const usuarioExistente = await this.repositorioUsuarios.buscarPorEmail(email);
       if (usuarioExistente) {
-        throw new ErroDuplicado(`Email ${email} ja esta cadastrado`);
+        throw new ErroDuplicado(`E-mail ${email} já está cadastrado`);
       }
 
       const admin = new Admin(0, nome, email, senha, cargo);
@@ -174,34 +180,34 @@ export class ControladorUsuarios {
   async buscarPorId(id: number): Promise<ResultadoOperacao<Usuario>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       const usuario = await this.repositorioUsuarios.buscarPorId(id);
       if (!usuario) {
-        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Usuário com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: usuario };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao buscar usuario");
+      return this.tratarErro(erro, "Erro ao buscar usuário");
     }
   }
 
   async buscarPublicoPorId(id: number): Promise<ResultadoOperacao<UsuarioPublico>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       const usuario = await this.repositorioUsuarios.buscarPorId(id);
       if (!usuario) {
-        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Usuário com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: this.formatarUsuarioPublico(usuario) };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao buscar usuario");
+      return this.tratarErro(erro, "Erro ao buscar usuário");
     }
   }
 
@@ -210,7 +216,7 @@ export class ControladorUsuarios {
       const usuarios = await this.repositorioUsuarios.listarTodos();
       return { sucesso: true, dados: usuarios };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao listar usuarios");
+      return this.tratarErro(erro, "Erro ao listar usuários");
     }
   }
 
@@ -222,7 +228,7 @@ export class ControladorUsuarios {
         dados: usuarios.map((usuario) => this.formatarUsuarioPublico(usuario)),
       };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao listar usuarios");
+      return this.tratarErro(erro, "Erro ao listar usuários");
     }
   }
 
@@ -240,7 +246,7 @@ export class ControladorUsuarios {
   ): Promise<ResultadoOperacao<Usuario>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       if (
@@ -254,22 +260,22 @@ export class ControladorUsuarios {
 
       const usuarioExistente = await this.repositorioUsuarios.buscarPorId(id);
       if (!usuarioExistente) {
-        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Usuário com ID ${id} não encontrado`);
       }
 
       if (dados.cargo !== undefined && usuarioExistente.nivelAcesso !== "admin") {
-        throw new ErroValidacao("Cargo so pode ser alterado para administradores");
+        throw new ErroValidacao("Cargo só pode ser alterado para administradores");
       }
 
       if (
         (dados.anoIngresso !== undefined || dados.curso !== undefined) &&
         usuarioExistente.nivelAcesso !== "aluno"
       ) {
-        throw new ErroValidacao("Curso e ano de ingresso so podem ser alterados para alunos");
+        throw new ErroValidacao("Curso e ano de ingresso só podem ser alterados para alunos");
       }
 
       if (dados.departamento !== undefined && usuarioExistente.nivelAcesso !== "professor") {
-        throw new ErroValidacao("Departamento so pode ser alterado para professores");
+        throw new ErroValidacao("Departamento só pode ser alterado para professores");
       }
 
       if (
@@ -278,7 +284,7 @@ export class ControladorUsuarios {
           dados.anoIngresso < 1900 ||
           dados.anoIngresso > new Date().getFullYear())
       ) {
-        throw new ErroValidacao("Ano de ingresso invalido");
+        throw new ErroValidacao("Ano de ingresso inválido");
       }
 
       if (
@@ -301,12 +307,12 @@ export class ControladorUsuarios {
 
       const usuarioAtualizado = await this.repositorioUsuarios.atualizar(id, dados);
       if (!usuarioAtualizado) {
-        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Usuário com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: usuarioAtualizado };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao atualizar usuario");
+      return this.tratarErro(erro, "Erro ao atualizar usuário");
     }
   }
 
@@ -321,7 +327,7 @@ export class ControladorUsuarios {
   ): Promise<ResultadoOperacao<Usuario>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       if (!imagens.fotoPerfilUrl && !imagens.fundoPerfilUrl) {
@@ -331,7 +337,7 @@ export class ControladorUsuarios {
       const usuarioAtualizado =
         await this.repositorioUsuarios.atualizarImagensPerfil(id, imagens);
       if (!usuarioAtualizado) {
-        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Usuário com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: usuarioAtualizado };
@@ -346,7 +352,7 @@ export class ControladorUsuarios {
   ): Promise<ResultadoOperacao<Usuario>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       const imagens: {
@@ -369,7 +375,7 @@ export class ControladorUsuarios {
       const usuarioAtualizado =
         await this.repositorioUsuarios.atualizarImagensPerfil(id, imagens);
       if (!usuarioAtualizado) {
-        throw new ErroNaoEncontrado(`Usuario com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Usuário com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: usuarioAtualizado };
@@ -381,12 +387,12 @@ export class ControladorUsuarios {
   async excluirUsuario(id: number): Promise<ResultadoOperacao<{ id: number }>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("A chave primaria idUsuario deve ser um numero positivo");
+        throw new ErroValidacao("A chave primária idUsuario deve ser um número positivo");
       }
 
       const excluiu = await this.repositorioUsuarios.deletar(id);
       if (!excluiu) {
-        throw new ErroNaoEncontrado(`Cadastro com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Cadastro com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: { id } };
@@ -401,17 +407,17 @@ export class ControladorUsuarios {
   ): Promise<ResultadoOperacao<Usuario>> {
     try {
       if (!email || !senha) {
-        throw new ErroValidacao("Email e senha sao obrigatorios");
+        throw new ErroValidacao("E-mail e senha são obrigatórios");
       }
 
       const usuario = await this.repositorioUsuarios.autenticar(email, senha);
       if (!usuario) {
-        throw new ErroAutenticacao("Email ou senha invalidos");
+        throw new ErroAutenticacao("E-mail ou senha inválidos");
       }
 
       return { sucesso: true, dados: usuario };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro na autenticacao");
+      return this.tratarErro(erro, "Erro na autenticação");
     }
   }
 
@@ -420,12 +426,12 @@ export class ControladorUsuarios {
   ): Promise<ResultadoOperacao<{ email: string }>> {
     try {
       if (!email) {
-        throw new ErroValidacao("Email e obrigatorio");
+        throw new ErroValidacao("E-mail é obrigatório");
       }
 
       const usuario = await this.repositorioUsuarios.buscarPorEmail(email);
       if (!usuario) {
-        throw new ErroNaoEncontrado("Funcionario nao encontrado");
+        throw new ErroNaoEncontrado("Funcionário não encontrado");
       }
 
       return { sucesso: true, dados: { email: usuario.email } };
@@ -440,12 +446,12 @@ export class ControladorUsuarios {
   ): Promise<ResultadoOperacao<{ mensagem: string }>> {
     try {
       if (!email || !senha) {
-        throw new ErroValidacao("Email e nova senha sao obrigatorios");
+        throw new ErroValidacao("E-mail e nova senha são obrigatórios");
       }
 
       const usuario = await this.repositorioUsuarios.buscarPorEmail(email);
       if (!usuario) {
-        throw new ErroNaoEncontrado("Funcionario nao encontrado");
+        throw new ErroNaoEncontrado("Funcionário não encontrado");
       }
 
       usuario.senha = senha;
@@ -455,7 +461,7 @@ export class ControladorUsuarios {
         { senha }
       );
       if (!usuarioAtualizado) {
-        throw new ErroNaoEncontrado("Funcionario nao encontrado");
+        throw new ErroNaoEncontrado("Funcionário não encontrado");
       }
 
       return {

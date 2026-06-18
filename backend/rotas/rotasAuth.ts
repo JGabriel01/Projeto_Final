@@ -24,7 +24,7 @@ rotasAuth.post("/login", validarCamposBody(["email", "senha"]), async (req, res)
     res.status(409).json({
       sucesso: false,
       erro: {
-        mensagem: "Este usuario ja esta logado. Faca logout antes de entrar novamente",
+        mensagem: "Este usuário já está logado. Faça logout antes de entrar novamente",
         tipo: "ErroAutorizacao",
       },
     });

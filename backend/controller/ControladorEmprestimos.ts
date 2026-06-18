@@ -16,20 +16,20 @@ export class ControladorEmprestimos {
   ): Promise<ResultadoOperacao<Emprestimo>> {
     try {
       if (typeof usuarioId !== "number" || usuarioId <= 0) {
-        throw new ErroEmprestimo("ID do usuario invalido");
+        throw new ErroEmprestimo("ID do usuário inválido");
       }
 
       if (exemplarId !== null && (typeof exemplarId !== "number" || exemplarId <= 0)) {
-        throw new ErroEmprestimo("ID do exemplar invalido");
+        throw new ErroEmprestimo("ID do exemplar inválido");
       }
 
       if (exemplarId !== null) {
         const exemplar = await this.repositorioExemplares.buscarPorId(exemplarId);
         if (!exemplar) {
-          throw new ErroNaoEncontrado(`Exemplar com ID ${exemplarId} nao encontrado`);
+          throw new ErroNaoEncontrado(`Exemplar com ID ${exemplarId} não encontrado`);
         }
         if (String(exemplar.livro?.status || "").toLowerCase() === "inativo") {
-          throw new ErroEmprestimo("Livro inativo nao pode gerar novos emprestimos");
+          throw new ErroEmprestimo("Livro inativo não pode gerar novos empréstimos");
         }
       }
 
@@ -45,7 +45,7 @@ export class ControladorEmprestimos {
         await this.repositorioEmprestimos.adicionarEmprestimo(emprestimo);
       return { sucesso: true, dados: emprestimoCriado };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao criar emprestimo");
+      return this.tratarErro(erro, "Erro ao criar empréstimo");
     }
   }
 
@@ -54,41 +54,41 @@ export class ControladorEmprestimos {
       const emprestimos = await this.repositorioEmprestimos.listarTodos();
       return { sucesso: true, dados: emprestimos };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao listar emprestimos");
+      return this.tratarErro(erro, "Erro ao listar empréstimos");
     }
   }
 
   async buscarPorId(id: number): Promise<ResultadoOperacao<Emprestimo>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       const emprestimo = await this.repositorioEmprestimos.buscarPorId(id);
       if (!emprestimo) {
-        throw new ErroNaoEncontrado(`Emprestimo com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Empréstimo com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: emprestimo };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao buscar emprestimo");
+      return this.tratarErro(erro, "Erro ao buscar empréstimo");
     }
   }
 
   async excluirEmprestimo(id: number): Promise<ResultadoOperacao<{ id: number }>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       const excluiu = await this.repositorioEmprestimos.deletar(id);
       if (!excluiu) {
-        throw new ErroNaoEncontrado(`Emprestimo com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Empréstimo com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: { id } };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao excluir emprestimo");
+      return this.tratarErro(erro, "Erro ao excluir empréstimo");
     }
   }
 
@@ -98,11 +98,11 @@ export class ControladorEmprestimos {
   ): Promise<ResultadoOperacao<Emprestimo>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       if (dados.dataVencimento && isNaN(dados.dataVencimento.getTime())) {
-        throw new ErroValidacao("Data de vencimento invalida");
+        throw new ErroValidacao("Data de vencimento inválida");
       }
       if (
         dados.exemplarId !== undefined &&
@@ -114,12 +114,12 @@ export class ControladorEmprestimos {
 
       const atualizado = await this.repositorioEmprestimos.atualizar(id, dados);
       if (!atualizado) {
-        throw new ErroNaoEncontrado(`Emprestimo com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Empréstimo com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: atualizado };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao atualizar emprestimo");
+      return this.tratarErro(erro, "Erro ao atualizar empréstimo");
     }
   }
 
@@ -129,7 +129,7 @@ export class ControladorEmprestimos {
   ): Promise<ResultadoOperacao<Emprestimo>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
 
       const devolvido = await this.repositorioEmprestimos.registrarDevolucao(
@@ -137,12 +137,12 @@ export class ControladorEmprestimos {
         dataDevolucaoReal
       );
       if (!devolvido) {
-        throw new ErroNaoEncontrado(`Emprestimo com ID ${id} nao encontrado`);
+        throw new ErroNaoEncontrado(`Empréstimo com ID ${id} não encontrado`);
       }
 
       return { sucesso: true, dados: devolvido };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao registrar devolucao");
+      return this.tratarErro(erro, "Erro ao registrar devolução");
     }
   }
 

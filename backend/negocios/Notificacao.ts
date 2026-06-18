@@ -72,10 +72,10 @@ export class Notificacao {
 
   private validarTipo(tipo: string): void {
     if (!tipo || typeof tipo !== "string" || tipo.trim().length === 0) {
-      throw new ErroValidacao("Tipo e obrigatorio");
+      throw new ErroValidacao("Tipo é obrigatório");
     }
     if (tipo.trim().length > 50) {
-      throw new ErroValidacao("Tipo nao pode exceder 50 caracteres");
+      throw new ErroValidacao("Tipo não pode exceder 50 caracteres");
     }
   }
 
@@ -84,19 +84,19 @@ export class Notificacao {
       throw new ErroValidacao("Mensagem deve ter pelo menos 5 caracteres");
     }
     if (mensagem.trim().length > 2000) {
-      throw new ErroValidacao("Mensagem nao pode exceder 2000 caracteres");
+      throw new ErroValidacao("Mensagem não pode exceder 2000 caracteres");
     }
   }
 
   private validarIdUsuario(idUsuario: number): void {
     if (typeof idUsuario !== "number" || idUsuario <= 0) {
-      throw new ErroValidacao("ID do usuario deve ser um numero positivo");
+      throw new ErroValidacao("ID do usuário deve ser um número positivo");
     }
   }
 
   private validarIdEmprestimo(idEmprestimo: number): void {
     if (typeof idEmprestimo !== "number" || idEmprestimo <= 0) {
-      throw new ErroValidacao("ID do emprestimo deve ser um numero positivo");
+      throw new ErroValidacao("ID do empréstimo deve ser um número positivo");
     }
   }
 

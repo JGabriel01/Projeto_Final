@@ -248,6 +248,7 @@
         estado.usuario = { ...estado.usuario, ...usuarioAtual };
         localStorage.setItem("usuario", JSON.stringify(estado.usuario));
       }
+      limparLivrosAusentesDaInterface();
       renderizarTudo();
       renderizarUsuarioAtual();
       renderNotifications();
@@ -854,6 +855,9 @@
         "#editPasswordStrengthText"
       );
     }
+    if (event.target.id === "newCopyCode") {
+      event.target.value = event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    }
   });
 
   byId("notificationsBtn")?.addEventListener("click", () => {
@@ -923,7 +927,7 @@
     await originalUploadBookCover(bookId);
     const pendingCopies = [...document.querySelectorAll(".pending-copy-row")].map((row) => ({
       livroId: Number(bookId),
-      codigoTombo: row.querySelector("[data-copy-code]").textContent,
+      codigoTombo: row.querySelector("[data-copy-code]").textContent.toUpperCase(),
       estado: row.querySelector("[data-copy-state]").textContent,
       localizacao: row.querySelector("[data-copy-location]").textContent,
     }));
@@ -939,7 +943,7 @@
       <div id="bookCopiesBuilder" class="form-panel wide">
         <h3>Criar novo exemplar</h3>
         <div class="form-grid">
-          <label>Código tombo<input id="newCopyCode" type="text"></label>
+          <label>Código tombo<input id="newCopyCode" type="text" placeholder="T20260001" pattern="T[0-9]{8}" title="Use o padrão T20260001" maxlength="9"></label>
           <label>Estado<select id="newCopyState"><option value="novo">Novo</option><option value="bom">Bom</option><option value="regular">Regular</option><option value="danificado">Danificado</option></select></label>
           <label class="wide">Localização<input id="newCopyLocation" type="text"></label>
         </div>
@@ -952,11 +956,15 @@
       </div>
     `);
     byId("addPendingCopyBtn").addEventListener("click", () => {
-      const code = byId("newCopyCode").value.trim();
+      const code = byId("newCopyCode").value.trim().toUpperCase();
       const stateValue = byId("newCopyState").value;
       const location = byId("newCopyLocation").value.trim();
       if (!code || !location) {
         notificar("Informe tombo e localização do exemplar");
+        return;
+      }
+      if (!/^T\d{8}$/.test(code)) {
+        notificar("Código de tombo deve seguir o padrão T20260001");
         return;
       }
       byId("pendingCopiesList").insertAdjacentHTML("afterbegin", `

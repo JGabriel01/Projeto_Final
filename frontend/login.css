@@ -971,7 +971,7 @@ textarea {
   overflow-x: auto;
   overflow-y: hidden;
   padding: 10px 8px 18px;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 .genre-sections {
@@ -1013,7 +1013,7 @@ textarea {
   overflow-x: auto;
   overflow-y: hidden;
   padding-bottom: 8px;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 .book-card {
   position: relative;
@@ -1761,6 +1761,11 @@ body.dark-mode .notification-content {
 
 body.dark-mode .notification-item small {
   color: #d8e3f0;
+}
+
+body.dark-mode .reservation-queue span,
+body.dark-mode .admin-user-line {
+  color: #ffffff;
 }
 
 body.dark-mode .notification-dismiss {

@@ -1,4 +1,4 @@
-import { ErroLivro } from "../excecoes/index.js";
+﻿import { ErroLivro } from "../excecoes/index.js";
 
 export class Livro {
   #idLivro: number;
@@ -115,76 +115,76 @@ export class Livro {
 
   private validarTitulo(titulo: string): void {
     if (!titulo || typeof titulo !== "string") {
-      throw new ErroLivro("Titulo e obrigatorio e deve ser uma string");
+      throw new ErroLivro("Título é obrigatório e deve ser uma string");
     }
     if (titulo.trim().length < 3) {
       throw new ErroLivro("Titulo deve ter pelo menos 3 caracteres");
     }
     if (titulo.trim().length > 200) {
-      throw new ErroLivro("Titulo nao pode exceder 200 caracteres");
+      throw new ErroLivro("Título não pode exceder 200 caracteres");
     }
   }
 
   private validarAutor(autor: string): void {
     if (!autor || typeof autor !== "string") {
-      throw new ErroLivro("Autor e obrigatorio e deve ser uma string");
+      throw new ErroLivro("Autor é obrigatório e deve ser uma string");
     }
     if (autor.trim().length < 3) {
       throw new ErroLivro("Autor deve ter pelo menos 3 caracteres");
     }
     if (autor.trim().length > 150) {
-      throw new ErroLivro("Autor nao pode exceder 150 caracteres");
+      throw new ErroLivro("Autor não pode exceder 150 caracteres");
     }
   }
 
   private validarGenero(genero: string): void {
     if (!genero || typeof genero !== "string") {
-      throw new ErroLivro("Genero e obrigatorio e deve ser uma string");
+      throw new ErroLivro("Gênero é obrigatório e deve ser uma string");
     }
     if (genero.trim().length < 3) {
       throw new ErroLivro("Genero deve ter pelo menos 3 caracteres");
     }
     if (genero.trim().length > 100) {
-      throw new ErroLivro("Genero nao pode exceder 100 caracteres");
+      throw new ErroLivro("Gênero não pode exceder 100 caracteres");
     }
   }
 
   private validarAnoPublicacao(ano: number): void {
     if (typeof ano !== "number") {
-      throw new ErroLivro("Ano de publicacao deve ser um numero");
+      throw new ErroLivro("Ano de publicação deve ser um número");
     }
     const anoAtual = new Date().getFullYear();
     if (ano < 1000 || ano > anoAtual) {
-      throw new ErroLivro(`Ano de publicacao deve estar entre 1000 e ${anoAtual}`);
+      throw new ErroLivro(`Ano de publicação deve estar entre 1000 e ${anoAtual}`);
     }
   }
 
   private validarSinopse(sinopse: string): void {
     if (!sinopse || typeof sinopse !== "string") {
-      throw new ErroLivro("Sinopse e obrigatoria e deve ser uma string");
+      throw new ErroLivro("Sinopse é obrigatória e deve ser uma string");
     }
     if (sinopse.trim().length < 10) {
       throw new ErroLivro("Sinopse deve ter pelo menos 10 caracteres");
     }
     if (sinopse.trim().length > 5000) {
-      throw new ErroLivro("Sinopse nao pode exceder 5000 caracteres");
+      throw new ErroLivro("Sinopse não pode exceder 5000 caracteres");
     }
   }
 
   private validarStatus(status: string): void {
-    const statusValidos = ["disponivel", "dispon�vel", "disponível", "disponÃ­vel", "emprestado", "reservado", "inativo"];
+    const statusValidos = ["disponivel", "disponível", "emprestado", "reservado", "inativo"];
     if (!statusValidos.includes(status)) {
-      throw new ErroLivro("Status invalido. Valores permitidos: disponivel, emprestado, reservado, inativo");
+      throw new ErroLivro("Status inválido. Valores permitidos: disponível, emprestado, reservado, inativo");
     }
   }
 
   estaDisponivel(): boolean {
-    return ["disponivel", "disponível", "disponÃ­vel"].includes(this.#status);
+    return ["disponivel", "disponível"].includes(this.#status);
   }
 
   emprestar(): void {
     if (!this.estaDisponivel()) {
-      throw new ErroLivro("Livro nao esta disponivel para emprestimo");
+      throw new ErroLivro("Livro não está disponível para empréstimo");
     }
     this.#status = "emprestado";
   }
@@ -197,7 +197,7 @@ export class Livro {
     if (this.estaDisponivel()) {
       this.#status = "reservado";
     } else if (this.#status !== "reservado") {
-      throw new Error("Livro nao pode ser reservado no status atual");
+      throw new Error("Livro não pode ser reservado no status atual");
     }
   }
 
@@ -217,3 +217,4 @@ export class Livro {
     };
   }
 }
+

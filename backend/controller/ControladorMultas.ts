@@ -27,7 +27,7 @@ export class ControladorMultas {
   ): Promise<ResultadoOperacao<Multa>> {
     try {
       if (typeof emprestimoId !== "number" || emprestimoId <= 0) {
-        throw new ErroValidacao("ID do emprestimo deve ser positivo");
+        throw new ErroValidacao("ID do empréstimo deve ser positivo");
       }
       const multa = await this.repositorioMultas.gerarPorEmprestimo(
         emprestimoId,
@@ -51,10 +51,10 @@ export class ControladorMultas {
   async buscarPorId(id: number): Promise<ResultadoOperacao<Multa>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
       const multa = await this.repositorioMultas.buscarPorId(id);
-      if (!multa) throw new ErroNaoEncontrado(`Multa com ID ${id} nao encontrada`);
+      if (!multa) throw new ErroNaoEncontrado(`Multa com ID ${id} não encontrada`);
       return { sucesso: true, dados: multa };
     } catch (erro: any) {
       return this.tratarErro(erro, "Erro ao buscar multa");
@@ -76,10 +76,10 @@ export class ControladorMultas {
   ): Promise<ResultadoOperacao<Multa>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
       const multa = await this.repositorioMultas.atualizar(id, dados);
-      if (!multa) throw new ErroNaoEncontrado(`Multa com ID ${id} nao encontrada`);
+      if (!multa) throw new ErroNaoEncontrado(`Multa com ID ${id} não encontrada`);
       return { sucesso: true, dados: multa };
     } catch (erro: any) {
       return this.tratarErro(erro, "Erro ao atualizar multa");
@@ -89,10 +89,10 @@ export class ControladorMultas {
   async excluirMulta(id: number): Promise<ResultadoOperacao<{ id: number }>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
       const excluiu = await this.repositorioMultas.deletar(id);
-      if (!excluiu) throw new ErroNaoEncontrado(`Multa com ID ${id} nao encontrada`);
+      if (!excluiu) throw new ErroNaoEncontrado(`Multa com ID ${id} não encontrada`);
       return { sucesso: true, dados: { id } };
     } catch (erro: any) {
       return this.tratarErro(erro, "Erro ao excluir multa");

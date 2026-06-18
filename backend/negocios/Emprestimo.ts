@@ -1,4 +1,4 @@
-//Classe Emprestimo - Representação de um empréstimo de livro
+// Classe Empréstimo - Representação de um empréstimo de livro
 import { ErroEmprestimo } from "../excecoes/index.js";
 
 export class Emprestimo {
@@ -36,7 +36,6 @@ export class Emprestimo {
       : "ativo";
   }
 
-  // Getters
   get idEmprestimo(): number {
     return this.#idEmprestimo;
   }
@@ -65,13 +64,11 @@ export class Emprestimo {
     return this.#status;
   }
 
-  // Setters com validações
   set dataVencimento(data: Date) {
     this.validarDatas(this.#dataSaida, data);
     this.#dataVencimento = data;
   }
 
-  // Validações privadas
   private validarUsuarioId(usuarioId: number): void {
     if (typeof usuarioId !== "number" || usuarioId <= 0) {
       throw new ErroEmprestimo("ID do usuário deve ser um número positivo");
@@ -94,7 +91,7 @@ export class Emprestimo {
     if (dataVencimento <= dataSaida) {
       throw new ErroEmprestimo("Data de vencimento não pode ser anterior ou igual à data de saída");
     }
-    // Máximo de 30 dias de empréstimo
+
     const diasMaximos = 30;
     const diffMs = dataVencimento.getTime() - dataSaida.getTime();
     const dias = diffMs / (1000 * 60 * 60 * 24);
@@ -103,7 +100,6 @@ export class Emprestimo {
     }
   }
 
-  // Método para registrar devolução
   registrarDevolucao(): void {
     if (this.#status === "devolvido") {
       throw new ErroEmprestimo("Este empréstimo já foi devolvido");
@@ -112,7 +108,6 @@ export class Emprestimo {
     this.#status = this.estaAtrasado() ? "devolvido_atrasado" : "devolvido";
   }
 
-  // Método para verificar atraso
   estaAtrasado(): boolean {
     if (this.#status === "devolvido" || this.#status === "devolvido_atrasado") {
       return (
@@ -123,7 +118,6 @@ export class Emprestimo {
     return new Date() > this.#dataVencimento && this.#status === "ativo";
   }
 
-  // Método para calcular dias de atraso
   calcularDiasAtraso(): number {
     let dataComparacao = new Date();
     if (this.#dataDevolucaoReal !== null) {
@@ -137,7 +131,6 @@ export class Emprestimo {
     return 0;
   }
 
-  // Método para renovar empréstimo (estender data de vencimento)
   renovar(diasAdicionais: number = 14): void {
     if (this.#status !== "ativo") {
       throw new ErroEmprestimo("Apenas empréstimos ativos podem ser renovados");
@@ -146,13 +139,12 @@ export class Emprestimo {
       throw new ErroEmprestimo("Não é possível renovar empréstimos atrasados");
     }
     if (diasAdicionais < 1 || diasAdicionais > 30) {
-      throw new ErroEmprestimo("Dias adicionais deve estar entre 1 e 30");
+      throw new ErroEmprestimo("Dias adicionais devem estar entre 1 e 30");
     }
 
     const novaDataVencimento = new Date(this.#dataVencimento);
     novaDataVencimento.setDate(novaDataVencimento.getDate() + diasAdicionais);
-    
-    // Validar que não excedera 30 dias do vencimento original
+
     const diasTotais = (novaDataVencimento.getTime() - this.#dataSaida.getTime()) / (1000 * 60 * 60 * 24);
     if (diasTotais > 30) {
       throw new ErroEmprestimo("Renovação não pode exceder 30 dias de empréstimo no total");

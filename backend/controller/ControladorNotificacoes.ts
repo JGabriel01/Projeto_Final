@@ -25,7 +25,7 @@ export class ControladorNotificacoes {
       const criada = await this.repositorioNotificacoes.adicionar(notificacao);
       return { sucesso: true, dados: criada };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao criar notificacao");
+      return this.tratarErro(erro, "Erro ao criar notificação");
     }
   }
 
@@ -34,34 +34,34 @@ export class ControladorNotificacoes {
       const notificacoes = await this.repositorioNotificacoes.listarTodos();
       return { sucesso: true, dados: notificacoes };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao listar notificacoes");
+      return this.tratarErro(erro, "Erro ao listar notificações");
     }
   }
 
   async buscarPorId(id: number): Promise<ResultadoOperacao<Notificacao>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
       const notificacao = await this.repositorioNotificacoes.buscarPorId(id);
       if (!notificacao) {
-        throw new ErroNaoEncontrado(`Notificacao com ID ${id} nao encontrada`);
+        throw new ErroNaoEncontrado(`Notificação com ID ${id} não encontrada`);
       }
       return { sucesso: true, dados: notificacao };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao buscar notificacao");
+      return this.tratarErro(erro, "Erro ao buscar notificação");
     }
   }
 
   async buscarPorUsuario(usuarioId: number): Promise<ResultadoOperacao<Notificacao[]>> {
     try {
       if (typeof usuarioId !== "number" || usuarioId <= 0) {
-        throw new ErroValidacao("ID do usuario deve ser positivo");
+        throw new ErroValidacao("ID do usuário deve ser positivo");
       }
       const notificacoes = await this.repositorioNotificacoes.buscarPorUsuario(usuarioId);
       return { sucesso: true, dados: notificacoes };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao listar notificacoes do usuario");
+      return this.tratarErro(erro, "Erro ao listar notificações do usuário");
     }
   }
 
@@ -71,30 +71,30 @@ export class ControladorNotificacoes {
   ): Promise<ResultadoOperacao<Notificacao>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
       const notificacao = await this.repositorioNotificacoes.atualizar(id, dados);
       if (!notificacao) {
-        throw new ErroNaoEncontrado(`Notificacao com ID ${id} nao encontrada`);
+        throw new ErroNaoEncontrado(`Notificação com ID ${id} não encontrada`);
       }
       return { sucesso: true, dados: notificacao };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao atualizar notificacao");
+      return this.tratarErro(erro, "Erro ao atualizar notificação");
     }
   }
 
   async excluirNotificacao(id: number): Promise<ResultadoOperacao<{ id: number }>> {
     try {
       if (typeof id !== "number" || id <= 0) {
-        throw new ErroValidacao("ID deve ser um numero positivo");
+        throw new ErroValidacao("ID deve ser um número positivo");
       }
       const excluiu = await this.repositorioNotificacoes.deletar(id);
       if (!excluiu) {
-        throw new ErroNaoEncontrado(`Notificacao com ID ${id} nao encontrada`);
+        throw new ErroNaoEncontrado(`Notificação com ID ${id} não encontrada`);
       }
       return { sucesso: true, dados: { id } };
     } catch (erro: any) {
-      return this.tratarErro(erro, "Erro ao excluir notificacao");
+      return this.tratarErro(erro, "Erro ao excluir notificação");
     }
   }
 

@@ -160,7 +160,7 @@ selecionar("#copyForm").addEventListener("submit", async (event) => {
       method: "POST",
       body: JSON.stringify({
         livroId: Number(selecionar("#copyBookId").value),
-        codigoTombo: selecionar("#copyCode").value.trim(),
+        codigoTombo: selecionar("#copyCode").value.trim().toUpperCase(),
         estado: selecionar("#copyState").value,
         localizacao: selecionar("#copyLocation").value.trim(),
       }),
@@ -244,7 +244,7 @@ selecionar("#logoutBtn").addEventListener("click", async () => {
   try {
     if (estado.token) await chamarApi("/auth/logout", { method: "POST", body: JSON.stringify({}) });
   } catch {
-    // Mesmo que a sessao ja tenha expirado, limpa o cliente.
+    // Mesmo que a sessão já tenha expirado, limpa o cliente.
   }
   limparSessao();
   mostrarAutenticacao();
@@ -289,6 +289,12 @@ selecionar("#forgotPassword").addEventListener("input", (event) => {
     "#forgotPasswordStrength",
     "#forgotPasswordStrengthText"
   );
+});
+
+["#registerStudentId", "#registerTeacherId", "#copyCode"].forEach((selector) => {
+  selecionar(selector)?.addEventListener("input", (event) => {
+    event.target.value = event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  });
 });
 
 selecionarTodos("[data-password-toggle]").forEach((button) => {
@@ -348,12 +354,12 @@ function elementoPodeRolarVerticalmente(elemento, deltaY) {
 }
 
 document.addEventListener("wheel", (event) => {
-  const listaHorizontal = event.target.closest(".book-showcase, .book-grid, .profile-book-grid");
+  const listaHorizontal = event.target.closest(".book-showcase, .book-grid, .profile-book-grid, .table-wrap");
   if (!listaHorizontal || listaHorizontal.scrollWidth <= listaHorizontal.clientWidth) return;
   if (elementoPodeRolarVerticalmente(event.target, event.deltaY)) return;
 
   const deslocamentoBase = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-  const deslocamento = deslocamentoBase * 1.7;
+  const deslocamento = deslocamentoBase * 7;
   listaHorizontal.scrollLeft += deslocamento;
   event.preventDefault();
 }, { passive: false });
@@ -399,6 +405,7 @@ document.addEventListener("click", async (event) => {
   if (idExclusao && confirm("Remover este livro do acervo? Se ele tiver histórico, será marcado como inativo e reservas pendentes serão canceladas com notificação aos usuários.")) {
     try {
       const resultado = await chamarApi(`/livros/${idExclusao}`, { method: "DELETE" });
+      limparLivroDaInterface(idExclusao);
       notificar(resultado.mensagem || (resultado.acao === "inativado" ? "Livro marcado como inativo" : "Livro removido"));
       await carregarTudo();
     } catch (error) {

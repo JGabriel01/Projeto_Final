@@ -17,7 +17,6 @@ export class Multa {
     dataCriacao: Date = new Date(),
     statusPagamento: string = "pendente"
   ) {
-    // Validações no construtor
     this.validarValor(valor);
     this.validarIdEmprestimo(idEmprestimo);
     this.validarIdExemplar(idExemplar);
@@ -65,7 +64,6 @@ export class Multa {
     this.#statusPagamento = status;
   }
 
-  // Validações privadas
   private validarValor(value: number): void {
     if (typeof value !== "number") {
       throw new ErroMulta("Valor deve ser um número");
@@ -97,7 +95,6 @@ export class Multa {
     }
   }
 
-  // Método para registrar pagamento
   registrarPagamento(): void {
     if (this.#statusPagamento === "cancelada") {
       throw new ErroMulta("Não é possível pagar uma multa cancelada");
@@ -105,7 +102,6 @@ export class Multa {
     this.#statusPagamento = "paga";
   }
 
-  // Método para cancelar multa
   cancelar(): void {
     if (this.#statusPagamento === "paga") {
       throw new ErroMulta("Não é possível cancelar uma multa já paga");

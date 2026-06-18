@@ -230,6 +230,37 @@ function resetarInterfaceSessao() {
   fecharMenuAplicacao();
 }
 
+function limparLivroDaInterface(idLivro) {
+  const id = Number(idLivro);
+  if (!id) return;
+
+  if (estado.idLivroSelecionado === id) estado.idLivroSelecionado = null;
+  if (estado.livroEmAltaSelecionadoId === id) estado.livroEmAltaSelecionadoId = null;
+  if (estado.livroGeneroSelecionadoId === id) estado.livroGeneroSelecionadoId = null;
+  if (estado.livroIndisponivelSelecionadoId === id) estado.livroIndisponivelSelecionadoId = null;
+  if (estado.idLivroPerfilSelecionado === id) estado.idLivroPerfilSelecionado = null;
+
+  if (String(selecionar("#bookId")?.value || "") === String(id)) {
+    fecharFormularioLivro();
+  }
+}
+
+function limparLivrosAusentesDaInterface() {
+  const idsAtuais = new Set((estado.livros || []).map((livro) => Number(livro.idLivro)));
+  [
+    estado.idLivroSelecionado,
+    estado.livroEmAltaSelecionadoId,
+    estado.livroGeneroSelecionadoId,
+    estado.livroIndisponivelSelecionadoId,
+    estado.idLivroPerfilSelecionado,
+  ].forEach((id) => {
+    if (id && !idsAtuais.has(Number(id))) limparLivroDaInterface(id);
+  });
+
+  const idEmEdicao = Number(selecionar("#bookId")?.value || 0);
+  if (idEmEdicao && !idsAtuais.has(idEmEdicao)) limparLivroDaInterface(idEmEdicao);
+}
+
 function renderizarUsuarioAtual() {
   if (!estado.usuario) return;
   selecionar("#profileName").textContent = estado.usuario.nome;

@@ -34,7 +34,7 @@ rotasLivros
       if (!req.file) {
         res.status(400).json({
           sucesso: false,
-          erro: { mensagem: "Arquivo de capa nao enviado", tipo: "ErroValidacao" },
+          erro: { mensagem: "Arquivo de capa não enviado", tipo: "ErroValidacao" },
         });
         return;
       }

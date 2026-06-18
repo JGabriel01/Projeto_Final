@@ -7,6 +7,7 @@
     "dev": "tsx script.ts",
     "server": "tsx server.ts",
     "start": "tsx server.ts",
+    "studio": "prisma studio --url file:./dev.db",
     "build": "tsc",
     "simular:atraso": "node scripts/simular-emprestimo-atrasado.cjs",
     "recalcular:multas": "node scripts/recalcular-multas.cjs",
